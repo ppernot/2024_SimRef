@@ -1,0 +1,2 @@
+For 68% expected confidence level, qhat = 0.01212766581809073
+For 95% expected confidence level, qhat = 0.027450564267796015

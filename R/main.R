@@ -26,8 +26,7 @@ nMC   = 10000
 nBoot =  5000
 
 ## Data summary and properties ####
-if(FALSE)
-  source("./datasetsProperties.R")
+source("./datasetsProperties.R")
 
 ## Scores ####
 calcScores = FALSE
@@ -45,18 +44,18 @@ for(i in seq_along(stats)) {
     bias     = signif(bias[,i],2),
     CI       = ciScores[,i],
     zBS      = round(zmatBS[,i],2),
-    
+
     muRefN   = signif(muSimN[,i],3),
     seRefN   = signif(seSimN[,i],2),
     zSimN    = round(zmatSimN[,i],2),
-    ciRASN   = ciRASN[,i],
-    zSimNRAS = round(zmatSimRasN[,i],2),
-    
+    ci2N     = ci2N[,i],
+    zSim2N   = round(zmatSim2N[,i],2),
+
     muRefT   = signif(muSimT[,i],3),
     seRefT   = signif(seSimT[,i],2),
     zSimT    = round(zmatSimT[,i],2),
-    ciRAST   = ciRAST[,i],
-    zSimTRAS = round(zmatSimRasT[,i],2)
+    ci2T     = ci2T[,i],
+    zSim2T   = round(zmatSim2T[,i],2)
   )
   # print(knitr::kable(df))
   sink(file = file.path(tabDir,paste0('tab',stats[i],'.tex')))
@@ -107,7 +106,7 @@ for(stat in 1:length(stats)) {
           xpd = FALSE,
           col = gPars$cols[1:length(methods)],
           add = TRUE)
-  
+
   box()
 }
 dev.off()

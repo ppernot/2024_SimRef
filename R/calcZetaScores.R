@@ -8,12 +8,12 @@ muBS    = c(1, 0, NA)
 smc     = matrix(NA, nrow = nMC, ncol = length(stats))
 
 scores = bias = zmatBS  = zmatSimN = zmatSimT =
-  zmatSimRasN = zmatSimRasT = muSimN = seSimN = muSimT = seSimT =
+  zmatSim2N = zmatSim2T = muSimN = seSimN = muSimT = seSimT =
   ciScores = ciRasT = ciRasN =
   matrix(NA, nrow = length(setList), ncol = length(stats))
 
 colnames(zmatBS) = colnames(zmatSimN) = colnames(zmatSimT) =
-  colnames(zmatSimRasN) = colnames(zmatSimRasT) =stats
+  colnames(zmatSim2N) = colnames(zmatSim2T) =stats
 
 for(i in seq_along(setList)) {
   D2 = dataList[[paste0(setList[i],'_cal')]]; print(setList[i])
@@ -48,7 +48,7 @@ for(i in seq_along(setList)) {
   bsSim$t0 = muSimN[i,]
   bsSim$bias = 0
   bsSim$bca = ciSim
-  zmatSimRasN[i,] = -fZetaBS(bsSim, scores[i,])
+  zmatSim2sN[i,] = -fZetaBS(bsSim, scores[i,])
 
   df = ZdistPars[i,"df"]
   for(j in 1:nMC)
@@ -72,15 +72,15 @@ for(i in seq_along(setList)) {
   bsSim$t0 = muSimT[i,]
   bsSim$bias = 0
   bsSim$bca = ciSim
-  zmatSimRasT[i,] = -fZetaBS(bsSim, scores[i,])
+  zmatSim2T[i,] = -fZetaBS(bsSim, scores[i,])
 
 }
 stopCluster(cl)
 
 save(
   stats, methods, setList, scores, bias, ciScores, zmatBS,
-  muSimN, seSimN, zmatSimN, ciRasN, zmatSimRasN,
-  muSimT, seSimT, zmatSimT, ciRasT, zmatSimRasT,
+  muSimN, seSimN, zmatSimN, ci2N, zmatSim2N,
+  muSimT, seSimT, zmatSimT, ci2T, zmatSim2T,
   file = 'zetaScores.Rda'
 )
 

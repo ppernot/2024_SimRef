@@ -96,7 +96,7 @@ png(
 )
 par(
   mfrow = c(3, 3),
-  mar = gPars$mar,
+  mar = c(3,2,2,0), #gPars$mar,
   mgp = gPars$mgp,
   pty = 's',
   tcl = gPars$tcl,
@@ -110,11 +110,15 @@ for(i in seq_along(setList)) {
   uE = D2$uE
   xlim = sd(E)*c(-3,3)
   sel = abs(E) < xlim[2]
+
+  h1 = hist(E[sel], nclass = 25, plot = FALSE)
+  ylim = c(0,1.35*max(h1$density))
   hist(
     E[sel], freq = FALSE, col = gPars$cols_tr[1],
     xlim = xlim, main = paste0('Set ',i),
-    xlab = paste0('Error ',D2$unit)
+    xlab = paste0('Error ',D2$unit), ylim = ylim
   )
+  abline(v=0, lty = 2, col = 'gray25', lwd = 2* gPars$lwd)
   curve(
     dnorm(x,mean(E),sd(E)),
     from = xlim[1], to = xlim[2], lwd = 3*gPars$lwd,
@@ -128,6 +132,16 @@ for(i in seq_along(setList)) {
     from = xlim[1], to = xlim[2], lwd = 3*gPars$lwd,
     n= 1000, col = gPars$cols[6], add=TRUE)
 
+  if(i==1)
+    legend(
+      'topright', bty = 'n', cex=0.8,
+      legend = c('Data','Normal', 'Student'),
+      col = c(gPars$cols[c(1,2,6)]),
+      lty = c(0,1,1), lwd = 3 * gPars$lwd,
+      pch = c(22,NA,NA), pt.bg = 'gray',
+      pt.lwd = 2, pt.cex = 1.5
+    )
+
 }
 dev.off()
 
@@ -139,7 +153,7 @@ png(
 )
 par(
   mfrow = c(3, 3),
-  mar = gPars$mar,
+  mar = c(3,2,2,0), #gPars$mar,
   mgp = gPars$mgp,
   pty = 's',
   tcl = gPars$tcl,
@@ -157,9 +171,10 @@ for(i in seq_along(setList)) {
   h = hist(Z[sel], plot = FALSE)
   hist(
     Z[sel], freq = FALSE, col = gPars$cols_tr[1],
-    xlim = xlim, main = paste0('Set ',i), nclass = 21,
-    xlab = 'Z', ylim = 1.3 * c(0,max(h$density))
+    xlim = xlim, main = paste0('Set ',i), #nclass = 21,
+    xlab = 'Z', ylim = 1.35 * c(0,max(h$density))
   )
+  abline(v=0, lty = 2, col = 'gray25', lwd = 2* gPars$lwd)
   # Normal fit
   curve(
     dnorm(x,mean(Z),sd(Z)),
@@ -175,41 +190,20 @@ for(i in seq_along(setList)) {
     from = xlim[1], to = xlim[2], lwd = 3*gPars$lwd,
     n= 1000, col = gPars$cols[6], add=TRUE)
 
+  if(i==1)
+    legend(
+      'topright', bty = 'n', cex=0.8,
+      legend = c('Data','Normal', 'Student'),
+      col = c(gPars$cols[c(1,2,6)]),
+      lty = c(0,1,1), lwd = 3 * gPars$lwd,
+      pch = c(22,NA,NA), pt.bg = 'gray',
+      pt.lwd = 2, pt.cex = 1.5
+    )
+
 }
 dev.off()
 
-png(
-  file = file.path(figDir, paste0('fig_dist_uE.png')),
-  width  = 2*gPars$reso,
-  height = 2*gPars$reso
-)
-par(
-  mfrow = c(3, 3),
-  mar = gPars$mar,
-  mgp = gPars$mgp,
-  pty = 's',
-  tcl = gPars$tcl,
-  cex = 1 * gPars$cex,
-  cex.main = 1,
-  lwd = gPars$lwd
-)
-for(i in seq_along(setList)) {
-  D2 = dataList[[paste0(setList[i],'_cal')]]
-  E  = D2$E
-  uE = D2$uE
-  # xlim = sd(uE)*c(-3,3)
-  # sel = abs(E) < xlim[2]
-  hist(
-    log10(uE), freq = FALSE, col = gPars$cols_tr[1],
-    main = paste0('Set ',i),
-    xlab = paste0('log Uncertainty ',D2$unit)
-  )
-  # curve(
-  #   dnorm(x,mean(E),sd(E)),
-  #   from = xlim[1], to = xlim[2], lwd = 2*gPars$lwd,
-  #   n= 1000, col = gPars$cols[2], add=TRUE)
-}
-dev.off()
+
 
 png(
   file = file.path(figDir, paste0('fig_dist_Esim.png')),
@@ -218,9 +212,9 @@ png(
 )
 par(
   mfrow = c(3, 3),
-  mar = gPars$mar,
+  mar = c(3,2,2,0), #gPars$mar,
   mgp = gPars$mgp,
-  pty = 'm',
+  pty = 's',
   tcl = gPars$tcl,
   cex = 1 * gPars$cex,
   cex.main = 1,
@@ -264,12 +258,70 @@ for(i in seq_along(setList)) {
 
   if(i==1)
     legend(
-      'topleft', bty = 'n', cex=0.8,
+      'topright', bty = 'n', cex=0.8,
       legend = c('Data','Normal', 'Student'),
       col = c(gPars$cols[c(1,2,6)]),
       lty = c(0,1,1), lwd = 3 * gPars$lwd,
-      pch = c(1,NA,NA)
+      pch = c(22,NA,NA), pt.bg = 'gray',
+      pt.lwd = 2, pt.cex = 1.5
     )
 
 }
 dev.off()
+
+
+library(MCMCpack)
+png(
+  file = file.path(figDir, paste0('fig_dist_uE.png')),
+  width  = 2*gPars$reso,
+  height = 2*gPars$reso
+)
+par(
+  mfrow = c(3, 3),
+  mar = c(3,2,2,0), #gPars$mar,
+  mgp = gPars$mgp,
+  pty = 's',
+  tcl = gPars$tcl,
+  cex = 1 * gPars$cex,
+  cex.main = 1,
+  lwd = gPars$lwd
+)
+
+parstab = matrix(NA, nrow = length(setList), ncol = 2)
+colnames(parstab) = c("shape","scale")
+
+for(i in seq_along(setList)) {
+  D2 = dataList[[paste0(setList[i],'_cal')]]
+  uE = D2$uE
+
+  fit.t<-fitdistrplus::fitdist(
+    1/uE^2, "gamma", method = "mle",
+    start = list(shape = 10, scale = 1),
+    keepdata = FALSE)
+  pars = summary(fit.t)$estimate
+  shape = pars["shape"]
+  scale = pars["scale"]
+
+  sel = uE^2 < quantile(uE^2,probs = 0.99)
+  X = uE[sel]^2
+  h1 = hist(X, nclass = 33, plot = FALSE)
+  ylim = c(0,1.35*max(h1$density))
+  hist(
+    X, freq = FALSE, col = gPars$cols_tr[1],
+    main = paste0('Set ',i), nclass = 33,
+    xlab = 'uE^2'
+  )
+  curve(
+    MCMCpack::dinvgamma(x,shape = shape, scale = 1/scale),
+    from = min(X), to = max(X), lwd = 3*gPars$lwd,
+    n= 1000, col = gPars$cols[6], add=TRUE)
+
+  parstab[i,]=c(shape, 1/scale)
+
+}
+
+dev.off()
+
+sink(file =  file.path(tabDir,'tabParsFituE.tex'))
+print(knitr::kable(signif(parstab,3), 'latex'))
+sink()

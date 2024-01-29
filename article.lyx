@@ -143,21 +143,23 @@ pascal.pernot@cnrs.fr
 
 \begin_layout Abstract
 \noindent
-The validation of calibration for Machine Learning Uncertainty Quantification
- (ML-UQ) procedures requires reference values or acceptability limits for
- the calibration statistics.
- However, some popular calibration statistic do not have predefined reference
- values and are mostly used for comparative studies.
- An option is to estimate simulated reference values, based on the probabilistic
- generation of errors from actual uncertainties.
- As the generative probability distribution for the errors is generally
- not well defined, the sensitivity of simulated reference values to its
- choice might be problematic.
- This study explores various aspects of this problem for basic correlation
+Some popular Machine Learning Uncertainty Quantification (ML-UQ) calibration
+ statistics do not have predefined reference values and are mostly used
+ for comparative studies.
+ In consequence, calibration is almost never validated and the diagnostic
+ is left to the appreciation of the reader.
+ Simulated reference values, based on the probabilistic generation of errors
+ from actual uncertainties, have been proposed to palliate this problem.
+ As the generative probability distribution for the simulation of errors
+ is often not constrained, the sensitivity of simulated reference values
+ to its choice might be problematic, shedding a doubt on the calibration
+ diagnostic.
+ This study explores various facets of this problem, focusing on correlation
  and average calibration statistics.
  It shows that not all calibration statistics are reliable and that some
  are excessively sensitive to the choice of generative distribution.
- A robust validation workflow is proposed.
+ A robust validation workflow to deal with simulated reference values is
+ proposed.
 \end_layout
 
 \begin_layout Section
@@ -231,7 +233,7 @@ ion,
 \begin_inset Formula $D$
 \end_inset
 
-: calibration curves and calibration error
+ (typically a normal distribution): calibration curves and calibration error
 \begin_inset CommandInset citation
 LatexCommand citep
 key "Tran2020"
@@ -242,9 +244,9 @@ key "Tran2020"
 \begin_inset Formula $D$
 \end_inset
 
- to simulate reference value.
- Such is not the case for many other calibration statistics such as the
- calibration error, confidence curves
+ to simulate a reference value.
+ However, this is not the case for many other calibration statistics, such
+ as the calibration error, confidence curves
 \begin_inset CommandInset citation
 LatexCommand citep
 key "Pernot2022c"
@@ -259,8 +261,12 @@ key "Pernot2023a_arXiv"
 \end_inset
 
 .
- Thus, the question arises of the sensitivity of the simulated reference
- value to the choice of generative distribution.
+ Without constraint on 
+\begin_inset Formula $D$
+\end_inset
+
+, the question arises of the sensitivity of the simulated reference values
+ to the choice of generative distribution.
 \end_layout
 
 \begin_layout Standard
@@ -272,15 +278,15 @@ key "Pernot2022c"
 \end_inset
 
  enables to set the main topics for the present study.
- A confidence curve is defined as an error statistic, often the mean absolute
- error (MAE), evaluated for datasets iteratively pruned from their largest
- uncertainties.
+ A confidence curve is obtained by estimating an error statistic (e.g.
+ the mean absolute error, MAE) for a dataset iteratively pruned from its
+ largest uncertainties.
  Plotted against the percentage of pruning, the confidence curve tests how
  the largest errors are associated with the largest uncertainties.
  Ideally, a confidence curve should be monotonously decreasing, but there
  is no predefined reference curve to assess its quality.
- In this context, a confidence curve can inform us on the link between errors
- and uncertainties, but not about calibration.
+ In this context, a confidence curve can inform us on the quality of the
+ link between errors and uncertainties, but not on calibration.
  Using a simulated reference curve can solve this problem, at the cost of
  a choice for the generative distribution 
 \begin_inset Formula $D$
@@ -294,7 +300,7 @@ key "Pernot2022c"
 
 \end_inset
 
- has shown two main points: 
+ has raised two main points: 
 \end_layout
 
 \begin_layout Itemize
@@ -307,7 +313,7 @@ the sensitivity of the simulated reference curve to
 \begin_inset Formula $D$
 \end_inset
 
-, while the root mean-squared error (RMSE) based one is not.
+, while the root mean-squared error (RMSE) based one is not;
 \end_layout
 
 \begin_layout Itemize
@@ -330,12 +336,8 @@ The present study considers these two points for other calibration statistics.
  More specifically, it aims to test how simulated reference values for calibrati
 on statistics are sensitive to the choice of a generative distribution,
  how this impacts the validation procedure, and whether the uncertainty
- on the simulated reference value is a good choice for validation.
- 
-\end_layout
-
-\begin_layout Standard
-This study is limited to three statistics linked to ML regression problems:
+ on the simulated reference value is a good choice of metric for validation.
+ The focus is limited to three statistics linked to ML regression problems:
  the correlation coefficient between absolute errors and uncertainties (CC),
  and two average calibration statistics, the relative calibration error
  (RCE) and the mean squared 
@@ -439,21 +441,21 @@ key "Pernot2022b"
  on a probabilistic model
 \begin_inset Formula 
 \begin{equation}
-E_{i}\sim D(0,u_{E_{i}})\label{eq:probmod}
+E_{i}\sim u_{E_{i}}D(0,1)\label{eq:probmod}
 \end{equation}
 
 \end_inset
 
 linking errors to uncertainties, where 
-\begin_inset Formula $D(\mu,\sigma)$
+\begin_inset Formula $D(0,1)$
 \end_inset
 
  is a probability density function with mean 
-\begin_inset Formula $\mu$
+\begin_inset Formula $\mu=0$
 \end_inset
 
  and standard deviation 
-\begin_inset Formula $\sigma$
+\begin_inset Formula $\sigma=1$
 \end_inset
 
 .
@@ -461,17 +463,43 @@ linking errors to uncertainties, where
 \begin_inset Formula $\mu=0$
 \end_inset
 
-) and that uncertainty describe the 
+) and that uncertainty quantifies the 
 \emph on
 dispersion
 \emph default
- of errors, according to the metrological standard.
+ of errors, according to the metrological definition.
 \begin_inset CommandInset citation
 LatexCommand citep
 key "GUM"
 
 \end_inset
 
+ 
+\end_layout
+
+\begin_layout Standard
+Except in some instances where 
+\begin_inset Formula $D$
+\end_inset
+
+ is defined by the method used to generate the dataset (gaussian process,
+ normal likelihood models...), the shape of 
+\begin_inset Formula $D$
+\end_inset
+
+ is unknown.
+ This is notably the case when uncertainties are 
+\emph on
+post-hoc calibrated
+\emph default
+
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Levi2022,Busk2022"
+
+\end_inset
+
+.
  
 \end_layout
 
@@ -518,15 +546,67 @@ reference "eq:probmod"
 scale mixture distribution
 \emph default
  
-\begin_inset Formula $H$
-\end_inset
-
-, given by
 \begin_inset Formula 
 \begin{equation}
 H(E)={\displaystyle \int_{0}^{\infty}D(E|0,\sigma)\,G(\sigma)\thinspace d\sigma}
 \end{equation}
 
+\end_inset
+
+
+\begin_inset VSpace medskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\series bold
+Example - the NIG distribution.
+
+\series default
+ For a normal distribution 
+\begin_inset Formula $D=N(0,\sigma)$
+\end_inset
+
+ and a distribution of variances described by an inverse gamma distribution
+ 
+\begin_inset Formula $\sigma^{2}\sim IG(\frac{\nu}{2},\frac{\nu}{2})$
+\end_inset
+
+, the compound distribution 
+\begin_inset Formula $H$
+\end_inset
+
+ is a Student's-
+\emph on
+t
+\emph default
+ distribution with 
+\begin_inset Formula $\nu$
+\end_inset
+
+ degrees of freedom 
+\begin_inset Formula $t(\nu)$
+\end_inset
+
+.
+ This is a special case of the so-called Normal Inverse Gamma (NIG) distribution
+ used, for instance, in evidential inference
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Amini2019"
+
+\end_inset
+
+.
+\begin_inset space \hfill{}
+\end_inset
+
+ 
+\begin_inset Formula $\oblong$
 \end_inset
 
 
@@ -541,6 +621,11 @@ name "subsec:Some-calibration-statistics"
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+The generative model described above is at the basis of two families of
+ calibration statistics.
 \end_layout
 
 \begin_layout Subsubsection
@@ -559,12 +644,11 @@ name "par:RCE"
 \end_layout
 
 \begin_layout Standard
-The variance of the compound distribution is obtained by the 
+The variance of the compound distribution of errors is obtained by the 
 \emph on
 law of total variance
 \emph default
 , i.e.
- 
 \begin_inset Formula 
 \begin{align}
 \mathrm{Var}(E) & =\left\langle \mathrm{Var}_{D}(E|\sigma)\right\rangle _{G}+\mathrm{Var}_{G}\left(\left\langle E|\sigma\right\rangle _{D}\right)\label{eq:totalVar-1}\\
@@ -573,13 +657,12 @@ law of total variance
 
 \end_inset
 
-The first term of the RHS can be estimated as the mean squared uncertainty
- 
+The first term of the RHS is the mean squared uncertainty 
 \begin_inset Formula $<u_{E}^{2}>$
 \end_inset
 
 .
- This expression can be compared to the standard expression
+ This expression can be compared to the standard expression for the variance
 \begin_inset Formula 
 \begin{align}
 \mathrm{Var}(E) & =<E^{2}>-<E>^{2}\label{eq:totalVar-1-1}
@@ -623,46 +706,55 @@ key "Levi2022"
 \noindent
 
 \series bold
-Example - the NIG distribution.
+Example, followed.
 
 \series default
- For a normal distribution 
-\begin_inset Formula $D=N(0,\sigma)$
-\end_inset
-
- and a distribution of variances described by an inverse gamma distribution
- 
-\begin_inset Formula $\sigma^{2}\sim IG(\frac{\nu}{2},\frac{\nu}{2})$
-\end_inset
-
-, the compound distribution 
-\begin_inset Formula $H$
-\end_inset
-
- is a Student's-
+ Considering the NIG model, one can easily verify from the properties of
+ the Student's-
 \emph on
 t
 \emph default
- distribution with 
-\begin_inset Formula $\nu$
-\end_inset
-
- degrees of freedom.
- This is a special case of the so-called Normal Inverse Gamma (NIG) distribution
- used, for instance, in evidential inference
-\begin_inset CommandInset citation
-LatexCommand citep
-key "Amini2019"
-
-\end_inset
-
-.
- For this model, one can easily verify that 
+ distribution that
 \begin_inset Formula 
 \begin{equation}
-\mathrm{Var}(E)=<E^{2}>=<u_{E}^{2}>=\sigma^{2}\nu/(\nu-2)
+<E^{2}>=\sigma^{2}\nu/(\nu-2)
 \end{equation}
 
+\end_inset
+
+(using 
+\begin_inset Formula $<E>=0$
+\end_inset
+
+), and from the inverse gamma distribution
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Evans2000"
+
+\end_inset
+
+ that 
+\begin_inset Formula 
+\begin{equation}
+<u_{E}^{2}>=\sigma^{2}\nu/(\nu-2)
+\end{equation}
+
+\end_inset
+
+so that Eq.
+\begin_inset space \thinspace{}
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:RMS=RMV"
+
+\end_inset
+
+ is fulfilled.
+ 
+\begin_inset space \hfill{}
 \end_inset
 
  
@@ -680,7 +772,6 @@ key "Amini2019"
 \end_layout
 
 \begin_layout Standard
-\noindent
 Based on Eq.
 \begin_inset space \thinspace{}
 \end_inset
@@ -723,7 +814,31 @@ where
 \end_layout
 
 \begin_layout Standard
-One finds in the literature the Expected Calibration Error (ECE)
+The RCE is involved in the Expected Normalized Calibration Error (
+\begin_inset Formula $ENCE=\sum_{i}|RCE_{i}|$
+\end_inset
+
+ where 
+\begin_inset Formula $RCE_{i}$
+\end_inset
+
+ is estimated over a bin 
+\begin_inset Formula $i$
+\end_inset
+
+)
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Levi2022"
+
+\end_inset
+
+ which is a bin-based statistic of 
+\emph on
+conditional
+\emph default
+ calibration.
+ One finds also in the literature the Expected Calibration Error (ECE)
 \begin_inset CommandInset citation
 LatexCommand citep
 key "Levi2022"
@@ -744,18 +859,7 @@ ECE=RMV-RMSE
 
 which is a variant that does not bring additional information over the RCE
  as far as validation is concerned.
- The RCE is also involved in the Expected Normalized Calibration Error (ENCE)
-\begin_inset CommandInset citation
-LatexCommand citep
-key "Levi2022"
-
-\end_inset
-
- which is a bin-based statistic of 
-\emph on
-conditional
-\emph default
- calibration, not considered directly in the present article.
+ 
 \end_layout
 
 \begin_layout Subsubsection
@@ -850,7 +954,11 @@ key "Pernot2023d"
 \end_inset
 
 .
- The 
+ 
+\end_layout
+
+\begin_layout Standard
+The 
 \emph on
 z
 \emph default
@@ -875,7 +983,8 @@ The ZMS does not depend on a distribution hypothesis and its target value
 \end_layout
 
 \begin_layout Standard
-Another avatar of the ZMS is the negative log likelihood (NLL) defined by
+An derivative of the ZMS is the negative log likelihood (NLL) score defined
+ by
 \begin_inset CommandInset citation
 LatexCommand citep
 key "Busk2023"
@@ -920,7 +1029,11 @@ key "Gneiting2007a"
  by arbitrary large uncertainties.
  The NLL is the logarithm of a normal probability density function and therefore
  should be used only when the errors and uncertainties are linked by a standard
- normal generative distribution.
+ normal generative distribution (
+\begin_inset Formula $D=N(0,1)$
+\end_inset
+
+).
  Knowing the reference value of 
 \begin_inset Formula $<Z^{2}>$
 \end_inset
@@ -944,15 +1057,12 @@ key "Rasmussen2023"
 
 \end_inset
 
- threat the NLL as if it had no predefined reference value.
- For a given set of uncertainties, validation of the NLL is equivalent to
- the validation of the ZMS, with the additional constraint of a normal generativ
-e distribution.
- 
-\end_layout
-
-\begin_layout Standard
-Only the ZMS, which presents less usage constraints, will be considered
+ threat the NLL as if it had no predefined reference value and needed a
+ simulated reference.
+ However, for a given set of uncertainties, validation of the NLL is equivalent
+ to the validation of the ZMS, with the additional constraint of a normal
+ generative distribution.
+ Only the ZMS, which presents less usage restrictions, will be considered
  in this study.
 \end_layout
 
@@ -972,8 +1082,8 @@ CC=\mathrm{cor}(|E|,u_{E})
 is used to assess the strength of the link between these variables.
  One expects large absolute errors to be associated with large uncertainties
  and small uncertainties to be associated with small absolute errors.
- The link is not symmetric, as small absolute errors might be associated
- with large uncertainties.
+ However, the link is not symmetric, as small absolute errors might be associate
+d with large uncertainties.
  To account for a non-linear link, 
 \emph on
 Spearman's
@@ -982,14 +1092,7 @@ Spearman's
 \emph on
 rank correlation coefficient
 \emph default
- is preferred to measure its strength
-\begin_inset CommandInset citation
-LatexCommand citep
-key "Hirschfeld2020,Rasmussen2023"
-
-\end_inset
-
-.
+ is preferred to estimate CC.
  
 \end_layout
 
@@ -1002,7 +1105,8 @@ key "Pernot2022b"
 
 \end_inset
 
- and one does not have a predefined reference value.
+ and CC does not have a predefined reference value, which is a problem for
+ its validation.
  
 \end_layout
 
@@ -1040,15 +1144,15 @@ reference "sec:Errors-and-z-scores"
 
 ), one has to infer confidence intervals on the statistics by bootstrapping
  (BS).
- The most reliable approach in these conditions is the Bias Corrected Accelerate
-d BS method
+ The most reliable approach in these conditions is considered to be the
+ Bias Corrected Accelerated BS method
 \begin_inset CommandInset citation
 LatexCommand citep
 key "DiCiccio1996"
 
 \end_inset
 
-.
+, which is uses throughout this study.
  
 \end_layout
 
@@ -1121,10 +1225,9 @@ The most straightforward validation approach is to check that the target
 
 \end_inset
 
-It is interesting to have a more informative measure of agreement than a
- binary result.
- For this, one defines a standardized score considering the possible asymmetry
- of 
+To go beyond a binary result, it is interesting to have a more informative
+ measure of agreement, and one defines a standardized score considering
+ the possible asymmetry of 
 \begin_inset Formula $I_{BS}$
 \end_inset
 
@@ -1160,12 +1263,19 @@ The standardized score
 \begin_inset Formula $\vartheta_{ref}$
 \end_inset
 
-, over the absolute value of the distance between the mean statistic and
- the limit of the confidence interval 
+, over the absolute value of the distance between the 
+\begin_inset Formula $\vartheta_{est}$
+\end_inset
+
+ and the limit of the confidence interval 
 \begin_inset Formula $I=[I^{-},I^{+}]$
 \end_inset
 
- closest to it.
+ closest to 
+\begin_inset Formula $\vartheta_{ref}$
+\end_inset
+
+.
  More concretely
 \begin_inset Formula 
 \begin{equation}
@@ -1186,7 +1296,7 @@ The compatibility of the statistic with its reference value can then be
 
 \end_inset
 
-This test is equivalent to the interval test (Eq.
+which is equivalent to the interval test (Eq.
 \begin_inset space \thinspace{}
 \end_inset
 
@@ -1197,7 +1307,8 @@ reference "eq:int-valid"
 
 \end_inset
 
-), but the value of 
+).
+ Moreover, the value of 
 \begin_inset Formula $\zeta$
 \end_inset
 
@@ -1230,7 +1341,7 @@ reference "eq:zeta-def"
 \end_inset
 
 which will be considered below as the benchmark method against which the
- simulation-based methods will be evaluated.
+ alternative simulation-based methods will be evaluated.
 \end_layout
 
 \begin_layout Subsubsection
@@ -1263,7 +1374,7 @@ For those statistics without a predefined reference value, as for instance
 
 \begin_layout Enumerate
 Choose a unit-variance generative distribution 
-\begin_inset Formula $D$
+\begin_inset Formula $D(0,1)$
 \end_inset
 
 
@@ -1282,10 +1393,14 @@ reference "eq:probmod"
 \end_inset
 
  and estimate the corresponding statistic 
-\begin_inset Formula $\tilde{\vartheta}$
+\begin_inset Formula $\tilde{\vartheta}_{D}$
 \end_inset
 
+, where the subscript 
+\begin_inset Formula $D$
+\end_inset
 
+ denotes the choice of generative distribution.
 \end_layout
 
 \begin_layout Enumerate
@@ -1299,7 +1414,7 @@ Repeat step 2.
 
 \begin_layout Enumerate
 Take the mean value 
-\begin_inset Formula $\tilde{\vartheta}_{ref}=<\tilde{\vartheta}>$
+\begin_inset Formula $\tilde{\vartheta}_{D,ref}=<\tilde{\vartheta}_{D}>$
 \end_inset
 
  and estimate the 
@@ -1307,11 +1422,19 @@ Take the mean value
 standard error
 \emph default
  on 
-\begin_inset Formula $\tilde{\vartheta}_{ref}$
+\begin_inset Formula $\tilde{\vartheta}_{D,ref}$
 \end_inset
 
- 
-\begin_inset Formula $u(\tilde{\vartheta}_{ref})=\mathrm{sd}(\tilde{\vartheta})/\sqrt{N}$
+: 
+\begin_inset Formula $u(\tilde{\vartheta}_{D,ref})=\mathrm{sd}(\tilde{\vartheta}_{D})/\sqrt{N}$
+\end_inset
+
+, where 
+\begin_inset Formula $\mathrm{sd}(x)$
+\end_inset
+
+ is the standard deviation of variable 
+\begin_inset Formula $x$
 \end_inset
 
 .
@@ -1327,7 +1450,7 @@ For
 \end_inset
 
 , one should have 
-\begin_inset Formula $u(\tilde{\vartheta}_{ref})\ll\sigma_{BS}$
+\begin_inset Formula $u(\tilde{\vartheta}_{D,ref})\ll\sigma_{BS}$
 \end_inset
 
  and Eq.
@@ -1346,71 +1469,70 @@ reference "eq:zeta-def"
  On gets then 
 \begin_inset Formula 
 \begin{equation}
-\zeta_{SimD}=\zeta(\vartheta_{est},\tilde{\vartheta}_{ref},I_{BS},D)
+\zeta_{SimD}=\zeta(\vartheta_{est},\tilde{\vartheta}_{D,ref},I_{BS})
 \end{equation}
 
 \end_inset
 
-where the subscript 
-\begin_inset Formula $D$
-\end_inset
 
- denotes the choice of generative distribution.
 \end_layout
 
 \begin_layout Standard
-Note that this approach differs from the one proposed by Rasmussen 
-\emph on
-et al.
-\emph default
-
+Note that this approach differs from the one proposed previously in the
+ literature
 \begin_inset CommandInset citation
 LatexCommand citep
-key "Rasmussen2023"
+key "Pernot2022c,Rasmussen2023"
 
 \end_inset
 
-.
- These authors consider the value of the statistic as fixed, and the reference
+ where the value of the statistic was considered as fixed and the reference
  value as a random variable with uncertainty 
-\begin_inset Formula $\mathrm{sd}(\tilde{\vartheta})$
+\begin_inset Formula $\mathrm{sd}(\tilde{\vartheta_{D}})$
 \end_inset
 
 .
- On gets thus a standardized score 
+ This scenario is implemented for comparison as 
 \begin_inset Formula 
 \begin{equation}
-\zeta_{SimRasD}==\zeta(\vartheta_{est},\tilde{\vartheta}_{ref},I_{Sim},D)
+\zeta_{Sim2D}==\zeta(\vartheta_{est},\tilde{\vartheta}_{D,ref},I_{D})
 \end{equation}
 
 \end_inset
 
 using a confidence interval 
-\begin_inset Formula $I=I_{sim}$
+\begin_inset Formula $I_{D}$
 \end_inset
 
- estimated from the simulated sample of 
-\begin_inset Formula $\tilde{\vartheta}$
+ estimated from the the quantiles of the simulated sample of 
+\begin_inset Formula $\tilde{\vartheta}_{D}$
 \end_inset
 
 .
 \end_layout
 
 \begin_layout Standard
-Note that tests based on the latter approach present two drawbacks when
- compared to the bootstrapping-based procedures: (1) they ignore uncertainty
- on 
+Note that validation tests based on the latter approach present two drawbacks
+ when compared to the bootstrapping-based procedures: (1) they ignore uncertaint
+y on 
 \begin_inset Formula $\vartheta_{est}$
 \end_inset
 
 , creating an asymmetric treatment of the statistics, depending on the existence
  or not of a known reference value; (2) the limits of the confidence interval
  
-\begin_inset Formula $I_{sim}$
+\begin_inset Formula $I_{D}$
 \end_inset
 
  can be very sensitive to the choice of generative distribution 
 \begin_inset Formula $D$
+\end_inset
+
+
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Pernot2022c"
+
 \end_inset
 
 , as will be illustrated in the next section.
@@ -1437,17 +1559,17 @@ The datasets
 \end_layout
 
 \begin_layout Standard
-Nine 
-\begin_inset Quotes eld
-\end_inset
-
+Nine test sets, including errors and 
+\emph on
 calibrated
-\begin_inset Quotes erd
-\end_inset
-
- test sets, including errors and uncertainties, have been taken from the
- recent ML-UQ literature for the prediction of various physico-chemical
- properties by a diverse panel of ML methods.
+\emph default
+ uncertainties, have been taken from the recent ML-UQ literature for the
+ prediction of various physico-chemical properties by a diverse panel of
+ ML methods.
+ The selection rejected small datasets and those presenting duplicated propertie
+s.
+ Note that the uncertainties have been calibrated by a palette of methods
+ with various levels of success.
  The datasets names, sizes and bibliographic references are gathered in
  Table
 \begin_inset space \thinspace{}
@@ -2081,7 +2203,7 @@ The nine datasets used in this study.
 
 \end_inset
 
-
+ 
 \end_layout
 
 \begin_layout Subsubsection
@@ -2121,8 +2243,8 @@ reference "tab:data-summary"
 
 \end_inset
 
- reports the mean values, standard deviations and the effective number of
- degrees of freedom 
+ reports the mean values, standard deviations, relative bias and effective
+ number of degrees of freedom 
 \begin_inset Formula $\nu_{eff}$
 \end_inset
 
@@ -2135,7 +2257,7 @@ t
 \end_inset
 
 , the farther from a normal distribution).
- The fit accounts for a possible bias in the dataset, which is non-negligible
+ This fit accounts for a possible bias in the dataset, which is non-negligible
  (above 5
 \begin_inset space \thinspace{}
 \end_inset
@@ -2160,7 +2282,11 @@ reference "fig:Z-dist"
 
 \end_inset
 
- compare the fits of the data (histograms) by normal and Student's-
+ compare the fits of the errors and 
+\emph on
+z
+\emph default
+-scores by normal and Student's-
 \emph on
 t
 \emph default
@@ -3226,7 +3352,7 @@ status collapsed
 \align center
 \begin_inset Graphics
 	filename Figs/fig_dist_E.png
-	lyxscale 30
+	lyxscale 25
 	width 90text%
 
 \end_inset
@@ -3244,7 +3370,7 @@ name "fig:E-dist"
 
 \end_inset
 
-Error distributions with normal (red line) and Student's-
+Error distributions (histograms) with normal (red line) and Student's-
 \emph on
 t
 \emph default
@@ -3253,7 +3379,7 @@ t
 \begin_inset Formula $\pm3$
 \end_inset
 
- standard deviations, hiding outlying errors.
+ standard deviations, hiding a few outlying errors.
 \end_layout
 
 \end_inset
@@ -3274,7 +3400,7 @@ status collapsed
 \align center
 \begin_inset Graphics
 	filename Figs/fig_dist_Z.png
-	lyxscale 30
+	lyxscale 25
 	width 90text%
 
 \end_inset
@@ -3292,22 +3418,20 @@ name "fig:Z-dist"
 
 \end_inset
 
-
-\emph on
-Z
-\emph default
--score distributions with normal (red line) and Student's-
-\emph on
-t
-\emph default
- (blue line) fits.
- For legibility, the histograms have been truncated to 
-\begin_inset Formula $\pm3$
+Same as Fig.
+\begin_inset space \thinspace{}
 \end_inset
 
- standard deviations, hiding outlying 
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:E-dist"
+
+\end_inset
+
+ for
 \emph on
-z
+ z
 \emph default
 -scores.
 \end_layout
@@ -3327,14 +3451,15 @@ The histograms and
 \begin_inset Formula $\nu_{eff}$
 \end_inset
 
- values indicate that none of the the error distributions is close to normal
+ values indicate that none of the the error distributions is close to normal,
+ which is a common feature
 \begin_inset CommandInset citation
 LatexCommand citep
 key "Pernot2020b,Pernot2021"
 
 \end_inset
 
-, which is consistent with the generative model and the wide distributions
+, and is consistent with the generative model and the wide distributions
  of uncertainties in these datasets (Appendix
 \begin_inset space \thinspace{}
 \end_inset
@@ -3373,7 +3498,7 @@ t
 \emph default
  distributions are not meant here to provide a perfect fit of the data (although
  the fits can be seen as rather good in the area covered by the histograms),
- but only to illustrate and characterize their non-normality.
+ but only to illustrate and characterize their departure from normality.
 \end_layout
 
 \begin_layout Standard
@@ -3460,7 +3585,7 @@ reference "fig:Esim-dist"
 \begin_inset Float figure
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \noindent
@@ -3726,7 +3851,7 @@ key "Rasmussen2023"
 
 \end_inset
 
- (SimRasN and SimRasT).
+ (Sim2N and Sim2T).
  The 
 \begin_inset Formula $t_{\nu_{eff}}$
 \end_inset
@@ -3756,25 +3881,28 @@ Let us first consider the results for the ZMS statistic.
  There is a good agreement between the three bootstrapped CI-based estimations
  (BS, SimN, SimT).
  The absence of notable difference between the SimN and SimT results confirms
- the low sensitivity of this approach method to the choice for 
+ the low sensitivity of this method to the choice for 
 \begin_inset Formula $D$
 \end_inset
 
 .
- It has to be noted that the SimT and SimRasT models cannot be used for
- Set 6 because it leads to an infinite variance Student's distribution (
+ It has to be noted that the SimT and Sim2T models cannot be used for Set
+ 6 because it leads to an infinite variance Student's distribution (
 \begin_inset Formula $\nu_{eff,Z}<2$
 \end_inset
 
 ).
- It is also clear that the SimRasN and SimRasT scores differ notably from
- the other scores and between them, confirming a high sensitivity of the
- CI of the simulated samples to 
+ It is also clear that the Sim2N and Sim2T scores differ notably from the
+ other scores and between them, confirming a high sensitivity of 
+\begin_inset Formula $I_{D}$
+\end_inset
+
+ to 
 \begin_inset Formula $D$
 \end_inset
 
 .
- The same observations arise from the results for the RCE statistic.
+ The same observations apply to the RCE statistic.
 \end_layout
 
 \begin_layout Standard
@@ -3787,15 +3915,15 @@ For the CC statistic, it appears that the choice of
 \begin_inset Formula $D$
 \end_inset
 
-, the CC statistic cannot be reliably validated for the present datasets.
+, the CC statistic cannot be reliably validated for the studied datasets.
  Note that, by chance and despite the amplitude of the 
 \begin_inset Formula $D$
 \end_inset
 
--induced discrepancy, all the CC validation statistics for a given dataset
+-induced discrepancies, all the CC validation statistics for a given dataset
  agree on the binary validation diagnostic.
- One might thus conclude that only Sets 3 and 4 have CCs compatible with
- their simulated reference values.
+ One might be tempted to conclude that only Sets 3 and 4 have CCs compatible
+ with their simulated reference values.
  Note that in this case, the bootstrapped and simulated 
 \begin_inset Formula $\zeta$
 \end_inset
@@ -3940,7 +4068,7 @@ key "Rasmussen2023"
 \end_inset
 
  proposed to use the standard deviation or CI of the simulated reference
- value as a metric to compare the statistic to its reference value.
+ value as a metric to compare the estimated statistic to its reference value.
  This study shows unambiguously that several disadvantages come with this
  approach: (i) it introduces an asymmetry between the statistics with known
  and unknown reference values, using bootstrapping-based uncertainties for
@@ -3951,8 +4079,8 @@ key "Rasmussen2023"
 
 \end_inset
 
-; (ii) the standard deviation of the simulated reference values is strongly
- dependent on the chosen generative distribution 
+; (ii) the standard deviation (or CI) of the simulated reference values
+ is strongly dependent on the chosen generative distribution 
 \begin_inset Formula $D$
 \end_inset
 
@@ -3981,7 +4109,7 @@ Assessing and reducing the sensitivity of
 \end_layout
 
 \begin_layout Standard
-To circumvent these issues, it is proposed here to use the bootstrapping-based
+To circumvent these issues, it is suggested here to use the bootstrapping-based
  intervals independently of the existence of a reference value, and to character
 ize the simulated reference by its 
 \emph on
@@ -4012,9 +4140,9 @@ Another and less manageable source of dependence of the
 \end_inset
 
  comes through the simulated reference value itself.
- For instance, the mean value of any statistic that involve a sign loss
+ For instance, the mean value of any statistic that involves a sign loss
  of the simulated errors (e.g.
- absolute value, squares value...) is likely to be affected by the shape/width
+ absolute value, squared value...) is likely to be affected by the shape/width
  of the errors distribution.
  This is particularly visible for the CC statistic, but much less for the
  ZMS or RCE statistics.
@@ -4031,14 +4159,12 @@ key "Pernot2022c"
 \end_inset
 
 , which was not the case for the MAE.
- However, the simulation-based CI for the RMSE reference was shown to be
- sensitive to 
-\begin_inset Formula $D$
-\end_inset
-
-, which can be solved as shown above by a pure bootstrapping approach.
- The sensitivity of a simulated reference value to the generative model
- has therefore to be directly assessed before using it for validation.
+ 
+\emph on
+The sensitivity of a simulated reference value to the generative model has
+ therefore to be directly assessed before using it for validation
+\emph default
+.
 
 \color orange
  
@@ -4105,7 +4231,8 @@ The recommended workflow
 \end_layout
 
 \begin_layout Standard
-The recommended validation workflow is summarized in Fig.
+A recommended validation workflow summarizing these results is shown in
+ Fig.
 \begin_inset space \thinspace{}
 \end_inset
 
@@ -4209,7 +4336,7 @@ z
 \end_layout
 
 \begin_layout Standard
-When there is no predefined reference value for a statistic, it has been
+In the absence of a predefined reference value for a statistic, it has been
  proposed to generate synthetic errors from the actual uncertainties and
  to estimate a simulated reference value from this ideal dataset
 \begin_inset CommandInset citation
@@ -4225,13 +4352,6 @@ on
 \end_inset
 
  linking the errors to the uncertainties.
- Except in rare cases where the choice is imposed by the method used to
- generate the dataset (gaussian process, normal likelihood models...), the
- shape of 
-\begin_inset Formula $D$
-\end_inset
-
- is not known.
  
 \end_layout
 
@@ -4310,15 +4430,16 @@ key "Pernot2022c,Rasmussen2023"
 \end_inset
 
 .
- Instead, the standard error on the simulated value should be lowered by
- sufficient repeats of the simulation procedure, in order to become negligible
- before the uncertainty on the statistic estimated by bootstrapping.
+ Instead, the standard error on the simulated reference value should be
+ lowered by sufficient repeats of the simulation procedure, in order to
+ become negligible before the uncertainty on the statistic estimated by
+ bootstrapping.
  
 \end_layout
 
 \begin_layout Standard
 The best way to use simulated reference values for validation is finally
- to use the benchmark bootstrapping approach with a plugged in simulated
+ to use the benchmark bootstrapping approach with a plugged-in simulated
  reference value.
  It was shown on the ZMS and RCE to provide consistent results with the
  benchmark approach using the predefined reference value.
@@ -4332,9 +4453,10 @@ Conclusion
 This study sheds a critical look on the validation of average calibration
  statistics (ZMS, RCE) and a correlation statistic (CC).
  A benchmark method was defined for those statistics with a predefined reference
- value (ZMS, RCE) and compared to simulation approaches used for statistics
- with no predefined reference value (CC).
- This led us to define a robust validation workflow (Fig.
+ value (ZMS, RCE) and compared to simulation approaches that could be used
+ for statistics with no predefined reference value (CC).
+ A robust validation workflow was proposed to deal with the main obstacles
+ of this validation approach (Fig.
 \begin_inset space \thinspace{}
 \end_inset
 
@@ -4345,57 +4467,79 @@ reference "fig:Flowchart-for-the"
 
 \end_inset
 
-), and to reach important conclusions about the studied statistics.
+).
+ Moreover, some important conclusions about the studied statistics has been
+ obtained by studying a series of ML-UQ datasets from the literature:
 \end_layout
 
-\begin_layout Paragraph*
-Do not use the RCE statistic to validate average calibration.
-\end_layout
+\begin_layout Itemize
 
-\begin_layout Standard
-A first, unexpected, result coming from the application of the benchmark
+\emph on
+Do not use the RCE statistic to validate average calibration
+\emph default
+.
+ A first, unexpected, result coming from the application of the benchmark
  method to various datasets is that the ZMS and RCE statistics provide often
  discrepant calibration diagnostics, which led to the demonstration that
  the RCE statistic cannot be reliably used for the kind of datasets analyzed
  here.
- The main problem seems to be due to wide distributions of uncertainties,
- leading to heavy-tailed error distributions.
+ The main problem seems to be due to the very skewed and heavy-tailed distributi
+ons of uncertainties leading to unreliable estimation of 
+\begin_inset Formula $<u_{E}^{2}>$
+\end_inset
+
+.
  This is unfortunately a very common scenario for ML-UQ datasets, so that
  one can conclude that the RCE and its ECE relative, should not be used
  to test average calibration.
  Note that this also raises a doubt about calibration procedures based on
  the nullification of this type of calibration error.
- In contrast, the ZMS statistic, which deals globally with better-behaved
- distributions has no reliability issue, and is recommended.
+ In contrast, the ZMS statistic, which deals globally with the better-behaved
+ distributions of scaled errors (
+\begin_inset Formula $Z$
+\end_inset
+
+) has no reliability issue, and is therefore recommended.
  
 \end_layout
 
-\begin_layout Paragraph*
-Do not use CC as a validation statistic.
- 
-\end_layout
+\begin_layout Itemize
 
-\begin_layout Standard
-It was shown the simulation of reference values for the correlation coefficient
- between absolute errors and uncertainties is highly sensitive to the choice
- of generative distribution.
+\emph on
+Do not use CC as a validation statistic
+\emph default
+.
+ It was shown that the simulation of reference values for the correlation
+ coefficient between absolute errors and uncertainties is highly sensitive
+ to the choice of generative distribution.
  If 
 \begin_inset Formula $D$
 \end_inset
 
- is unknown, it is therefore recommended to avoid CC to draw any conclusion
- about the proper relationship between errors and uncertainties.
+ is unknown, it is recommended to avoid CC to draw any conclusion about
+ the proper relationship between errors and uncertainties.
  Checking that the CC value is positive is the best that can be done.
  A much more powerful and reliable substitute to CC is the plotting of RMSE-base
-d confidence curves with bootstrapped CI and simulated reference value.
+d 
+\emph on
+confidence curves
+\emph default
+ with bootstrapped CI and simulated reference value
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Pernot2022c"
+
+\end_inset
+
+.
 \end_layout
 
-\begin_layout Paragraph*
+\begin_layout Itemize
+
+\emph on
 What about conditional calibration ?
-\end_layout
-
-\begin_layout Standard
-Another level of complexity is introduced by statistics for 
+\emph default
+ Another level of complexity is introduced by statistics for 
 \emph on
 conditional
 \emph default
@@ -4417,11 +4561,34 @@ key "Levi2022"
 
 \end_inset
 
-, and in consequence will not be reliable in conditions where the bins present
- wide distributions of uncertainties that disrupt the RCE.
- This is the case when testing adaptivity.
- On the contrary, testing consistency involves the binning of the uncertainties,
- which is likely to solve the RCE problem.
+, and in consequence it will not be reliable in conditions where the bins
+ present a distribution of uncertainties that disrupt the estimation of
+ RCE.
+ This will be the case when testing 
+\emph on
+adaptivity
+\emph default
+
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Pernot2023d"
+
+\end_inset
+
+.
+ On the contrary, testing 
+\emph on
+consistency
+\emph default
+
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Pernot2023d"
+
+\end_inset
+
+ involves the binning of the uncertainties, which is likely to solve the
+ RCE problem.
  However, as the ENCE, and its counterpart based on ZMS have no predefined
  reference values
 \begin_inset CommandInset citation
@@ -4605,8 +4772,8 @@ reference "fig:Unc-dist"
 
 \end_inset
 
- presents histograms of the uncertainties from the datasets used in the
- application section (cf.
+ presents histograms of the squared uncertainties from the datasets used
+ in the application section (cf.
  Table
 \begin_inset space \thinspace{}
 \end_inset
@@ -4619,21 +4786,46 @@ reference "tab:data"
 \end_inset
 
 ).
-\end_layout
+ 
+\begin_inset Formula $u_{E}^{2}$
+\end_inset
 
-\begin_layout Standard
+ has been fitted by an inverse gamma distribution 
+\begin_inset Formula $IG(k,\theta)$
+\end_inset
+
+, to assess the pertinence of the NIG model.
+ The fit curves are overlaid on the histograms and show a reasonable agreement,
+ except for Set 6.
+ The parameters of the fitted 
+\begin_inset Formula $IG(k,\theta$
+\end_inset
+
+) distribution are reported in Table
+\begin_inset space \thinspace{}
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:uEfit"
+
+\end_inset
+
+.
+ 
 \begin_inset Float figure
 placement h
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \noindent
 \align center
 \begin_inset Graphics
 	filename Figs/fig_dist_uE.png
-	lyxscale 30
+	lyxscale 25
 	width 90text%
 
 \end_inset
@@ -4661,14 +4853,714 @@ Uncertainty distributions.
 
 \end_inset
 
+ 
+\begin_inset Float table
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="10" columns="6">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="decimal" decimal_point="." valignment="top">
+<column alignment="decimal" decimal_point="." valignment="top">
+<column alignment="decimal" decimal_point="." valignment="top">
+<column alignment="decimal" decimal_point="." valignment="top">
+<column alignment="decimal" decimal_point="." valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Set # 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $k=\nu/2$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\vartheta=\nu/2*\sigma^{2}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\nu=2k$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\nu_{eff}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.60
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.15E-01
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3.2
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3.0
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.33 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2.46E-03
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.66 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.4
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+4.52 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+7.32E-01
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+9.04 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+6.8
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+4 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.57 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2.44E-01
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3.14 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3.3
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+5 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+21.10 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.82
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+42.20 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+4.0
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+6 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.20 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3.12E-04
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.40 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.3
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+7 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.81 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.72E-04
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3.61 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2.2
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+8 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+23.40 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.91
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+46.80 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3.9
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+9 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+16.90 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3.91E-01
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+33.80 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2.9
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "tab:uEfit"
+
+\end_inset
+
+Parameter of the fit of the squared uncertainties by 
+\begin_inset Formula $IG(k\theta)$
+\end_inset
+
+ distributions.
+ 
+\begin_inset Formula $k$
+\end_inset
+
+ is the shape parameter, assimilated to 
+\begin_inset Formula $\nu/2$
+\end_inset
+
+ in the NIG model, and 
+\begin_inset Formula $\vartheta$
+\end_inset
+
+ is the scale parameter, which absorbs the scale of 
+\begin_inset Formula $u_{E}^{2}$
+\end_inset
+
+, noted 
+\begin_inset Formula $\sigma^{2}$
+\end_inset
+
+.
+ The values of the 
+\begin_inset Formula $\nu_{eff}$
+\end_inset
+
+ parameters obtained from the fit of the errors distribution by the NIG
+ model (Table
+\begin_inset space \thinspace{}
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:data-summary"
+
+\end_inset
+
+) are reported for comparison with 
+\begin_inset Formula $\nu=2k$
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
 
 \end_layout
 
 \begin_layout Standard
-\begin_inset Newpage clearpage
+In the hypothesis that the generative distribution 
+\begin_inset Formula $D$
+\end_inset
+
+ is standard normal, one should have approximately 
+\begin_inset Formula $\nu_{eff}\simeq\nu$
+\end_inset
+
+, where 
+\begin_inset Formula $\nu_{eff}$
+\end_inset
+
+ was estimated for the error distributions (Table
+\begin_inset space \thinspace{}
 \end_inset
 
 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:data-summary"
+
+\end_inset
+
+).
+ This is the case for Sets 1 and 4, and to a lesser extent for Sets 2, 3,
+ 6 and 7.
+ On the contrary, Sets 5, 8 and 9 have very large shape parameters which
+ contrast strongly with the small values of 
+\begin_inset Formula $\nu_{eff}$
+\end_inset
+
+.
+ In the hypothesis of calibrated datasets, this would hint to a rather general
+ non-normality of the generative distribution 
+\begin_inset Formula $D$
+\end_inset
+
+.
+ However, as only Sets 1, 6 and 9 are calibrated according to the ZMS score,
+ more many examples of datasets validated for average calibration would
+ be necessary to conclude.
 \end_layout
 
 \begin_layout Section
@@ -4688,13 +5580,13 @@ This study shows that the estimation of statistics for error or
 z
 \emph default
 -scores sets should not rely on normality hypotheses.
- This extends also to the Central Limit Theorem: one cannot expect mean
- values such as 
-\begin_inset Formula $\overline{E^{2}}$
+ This extends also to the Central Limit Theorem (CLT): one cannot expect
+ mean values such as 
+\begin_inset Formula $<E^{2}>$
 \end_inset
 
-or 
-\begin_inset Formula $\overline{Z^{2}}$
+ or 
+\begin_inset Formula $<Z^{2}>$
 \end_inset
 
  to have normal distributions, and one should not use the corresponding
@@ -4703,20 +5595,10 @@ or
 \end_layout
 
 \begin_layout Standard
-As an illustration, let us consider for 
-\begin_inset Formula $Z$
-\end_inset
-
- a normal and a Student's-
-\emph on
-t
-\emph default
- distribution with 6 degrees of freedom (which is larger than most of the
- values reported above).
- As the ZMS is a mean of a large dataset, it is customary to invoke the
- Central Limit Theorem and assume that it is a random variate with a normal
- distribution.
- In this case, its uncertainty is defined as
+As an illustration, let us consider the ZMS.
+ When it is the mean of a large dataset, it is customary to invoke the CLT
+ and assume that it is a random variate with a normal distribution and an
+ uncertainty
 \begin_inset Formula 
 \begin{equation}
 \sigma_{ZMS}=\sqrt{\frac{Var(Z^{2})}{M}}
@@ -4724,15 +5606,7 @@ t
 
 \end_inset
 
-and one can test the ZMS value by a normalized score
-\begin_inset Formula 
-\begin{equation}
-|z_{ZMS}|\le1
-\end{equation}
-
-\end_inset
-
-defined as
+enabling to define a normalized score
 \begin_inset Formula 
 \begin{equation}
 z_{ZMS}=\frac{\overline{Z^{2}}-1}{U_{ZMS,\alpha}}
@@ -4785,7 +5659,6 @@ The coverage
 \end_inset
 
 % risk of test errors.
- 
 \end_layout
 
 \begin_layout Standard
@@ -4793,23 +5666,44 @@ Let us consider for
 \begin_inset Formula $Z$
 \end_inset
 
- a normal and a Student's-
+ a normal and two Student's-
 \emph on
 t
 \emph default
- distribution with 4 (
-\begin_inset Formula $t_{4}(Z)$
+ distributions with 4 (
+\begin_inset Formula $Z\sim t(\nu=4)$
 \end_inset
 
 ) and 6 (
-\begin_inset Formula $t_{6}(Z)$
+\begin_inset Formula $Z\sim t(\nu=6)$
 \end_inset
 
 ) degrees of freedom (the latter is larger than most of the values reported
- above).
+ for the studied datasets in Sect.
+\begin_inset space \thinspace{}
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Applications"
+
+\end_inset
+
+).
  Fig.
+\begin_inset space \thinspace{}
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:LUP"
+
+\end_inset
+
  reports the probability that 
-\begin_inset Formula $z_{ZMS}\le1$
+\begin_inset Formula $|z_{ZMS}|\le1$
 \end_inset
 
  for these distributions (it should ideally be equal to 
@@ -4820,7 +5714,8 @@ t
 \begin_inset space \thinspace{}
 \end_inset
 
-000, with mean values and error bars were estimated from a Monte Carlo sample
+000.
+ The mean values and error bars were estimated from a Monte Carlo sample
  of size 10
 \begin_inset space \thinspace{}
 \end_inset
@@ -4861,19 +5756,23 @@ Estimated coverage of a 95
 
 % confidence interval on the ZMS based on a normality hypothesis for the
  distribution of 
-\begin_inset Formula $\overline{Z^{2}}$
+\begin_inset Formula $<Z^{2}>$
 \end_inset
 
 .
- Black symbols: normal distribution of 
+ Black dots: normal distribution of 
 \begin_inset Formula $Z$
 \end_inset
 
- values; red symbols: Student's
-\emph on
--t
-\emph default
- distribution with 6 degrees of freedom.
+ values; red triangles: 
+\begin_inset Formula $Z\sim t(\nu=4)$
+\end_inset
+
+; and orange diamonds: 
+\begin_inset Formula $Z\sim t(\nu=6)$
+\end_inset
+
+.
 \end_layout
 
 \end_inset
@@ -4957,7 +5856,7 @@ reference "sec:Errors-and-z-scores"
 \end_layout
 
 \begin_layout Standard
-In order to resolve this issue, simulated samples (
+In order to explore this issue, simulated samples (
 \begin_inset Formula $N=10^{4}$
 \end_inset
 
@@ -5000,7 +5899,7 @@ reference "sec:Errors-and-z-scores"
 \begin_inset Formula $|\zeta|\le1$
 \end_inset
 
- and the probability of validity was estimated as
+ and a probability of validity was estimated as
 \begin_inset Formula 
 \begin{equation}
 p_{val}=\frac{1}{N}\sum_{i=1}^{N}\boldsymbol{1}(|\zeta|_{i}\le1)
@@ -5096,7 +5995,7 @@ This test shows that the ZMS is not sensitive to
 \begin_inset Formula $\nu$
 \end_inset
 
- and it provides intervals that consistently validate 95
+ and that it provides intervals that consistently validate 95
 \begin_inset space \thinspace{}
 \end_inset
 
@@ -5115,38 +6014,195 @@ This test shows that the ZMS is not sensitive to
 
 .
  
-\begin_inset Note Note
-status collapsed
+\end_layout
+
+\begin_layout Standard
+The RCE depends on two statistics 
+\begin_inset Formula $<E^{2}>$
+\end_inset
+
+ and 
+\begin_inset Formula $<u_{E}^{2}>$
+\end_inset
+
+.
+ To understand better the reliability problem of the RCE at low 
+\begin_inset Formula $\nu$
+\end_inset
+
+ values, 
+\begin_inset Formula $10^{4}$
+\end_inset
+
+ mean values of 
+\begin_inset Formula $M$
+\end_inset
+
+ samples of 
+\begin_inset Formula $x^{2}\sim IG(\frac{\nu}{2},\frac{\nu}{2})$
+\end_inset
+
+ distributions, with 
+\begin_inset Formula $\nu$
+\end_inset
+
+ varying between 3 and 10 were generated.
+ The dispersion of 
+\begin_inset Formula $<x^{2}>$
+\end_inset
+
+ is shown in Fig.
+\begin_inset space \thinspace{}
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:invGammaMean"
+
+\end_inset
+
+ for 
+\begin_inset Formula $M=5000$
+\end_inset
+
+ and 
+\begin_inset Formula $M=10\thinspace000$
+\end_inset
+
+.
+ 
+\begin_inset Float figure
+wide false
+sideways false
+status open
 
 \begin_layout Plain Layout
-For the kind of error distributions used in the present study, the RCE is
- not a reliable validation statistic for average calibration.
+\noindent
+\align center
+\begin_inset Graphics
+	filename Figs/fig_InvGammaMean.png
+	lyxscale 30
+	width 90text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:invGammaMean"
+
+\end_inset
+
+Divergence of sample means of 
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+
+\begin_inset Formula $IG(\frac{\nu}{2},\frac{\nu}{2})$
+\end_inset
+
+
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+ distributions for two sample sizes and a range of 
+\begin_inset Formula $\nu$
+\end_inset
+
+ values.
+ The exact value for 
+\begin_inset Formula $<x^{2}>$
+\end_inset
+
+ is 
+\begin_inset Formula $\nu/(\nu-2)$
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+One observes that the number of outliers increases systematically as 
+\begin_inset Formula $\nu$
+\end_inset
+
+ decreases, and that they occur only as positive deviations (
+\begin_inset Formula $<x^{2}>$
+\end_inset
+
+ larger than 
+\begin_inset Formula $\nu/(\nu-2)$
+\end_inset
+
+).
+ In parallel, the median value of the distribution tends to become negative.
+ These effects are amplified for 
+\begin_inset Formula $M=5000$
+\end_inset
+
+ when compared to 
+\begin_inset Formula $M=10\thinspace000$
+\end_inset
+
+.
  
 \end_layout
 
-\begin_layout Plain Layout
-This conclusion stands also for the expected calibration error (ECE).
- The ENCE that is used to assess 
-\emph on
-local
-\emph default
- calibration is based on RCE values for binned data.
- If the bins are based on the uncertainties, one gets much less skewed uncertain
-ty distributions within each bin, and the problem exposed here should disappear.
- However, if the binning is based on input features to assess adaptivity
-\begin_inset CommandInset citation
-LatexCommand citep
-key "Pernot2023d"
-
+\begin_layout Standard
+Five of the nine studied datasets have 
+\begin_inset Formula $\nu$
 \end_inset
 
-, the problem would persist, as each bin is expected to contain uncertainty
- values drawn from the full distribution.
-\end_layout
-
+ values for uncertainties smaller than 4 (Table
+\begin_inset space \thinspace{}
 \end_inset
 
 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:uEfit"
+
+\end_inset
+
+).
+ In such cases, one should not expect the 
+\begin_inset Formula $<E^{2}>=<u_{E}^{2}>$
+\end_inset
+
+ equation to be fulfilled.
 \end_layout
 
 \begin_layout Section
@@ -5302,7 +6358,7 @@ BS
 \begin_inset Text
 
 \begin_layout Plain Layout
-SimN, SimRasN
+SimN, Sim2N
 \end_layout
 
 \end_inset
@@ -5356,7 +6412,7 @@ SimN, SimRasN
 \begin_inset Text
 
 \begin_layout Plain Layout
-SimT, SimRasT
+SimT, Sim2T
 \end_layout
 
 \end_inset
@@ -7341,7 +8397,7 @@ BS
 \begin_inset Text
 
 \begin_layout Plain Layout
-SimN, SimRasN
+SimN, Sim2N
 \end_layout
 
 \end_inset
@@ -7395,7 +8451,7 @@ SimN, SimRasN
 \begin_inset Text
 
 \begin_layout Plain Layout
-SimT, SimRasT
+SimT, Sim2T
 \end_layout
 
 \end_inset
@@ -9378,7 +10434,7 @@ BS
 \begin_inset Text
 
 \begin_layout Plain Layout
-SimN, SimRasN
+SimN, Sim2N
 \end_layout
 
 \end_inset
@@ -9432,7 +10488,7 @@ SimN, SimRasN
 \begin_inset Text
 
 \begin_layout Plain Layout
-SimT, SimRasT
+SimT, Sim2T
 \end_layout
 
 \end_inset
@@ -11455,7 +12511,7 @@ Bootstrapped
 \begin_inset Text
 
 \begin_layout Plain Layout
-SimRas
+Sim2
 \end_layout
 
 \end_inset
@@ -11507,7 +12563,7 @@ In the absence of a predefined reference value,
 
 \begin_layout Standard
 \align block
-In the Sim and SimRas schemes, synthetic error sets are generated according
+In the Sim and Sim2 schemes, synthetic error sets are generated according
  to
 \begin_inset Formula 
 \begin{equation}
@@ -11529,7 +12585,7 @@ where
 \end_inset
 
  (
-\begin_inset Formula $\epsilon_{i}\sim D$
+\begin_inset Formula $\epsilon_{i}\sim D(0,1)$
 \end_inset
 
  ).

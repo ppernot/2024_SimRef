@@ -1,3 +1,4 @@
+# Calculations ####
 cl <- makeCluster(detectCores())
 
 size = meanE = sigE = meanZ = sigZ =  biasE = biasZ = c()
@@ -55,7 +56,7 @@ for(i in seq_along(setList)) {
 }
 stopCluster(cl)
 
-# Presentation table
+# Tables ####
 df = cbind(
   iD = 1:length(setList),
   data = setList,
@@ -88,6 +89,7 @@ sink(file =  file.path(tabDir,'tabDataPropZ.tex'))
 print(knitr::kable(df, 'latex'))
 sink()
 
+# Figs ####
 
 png(
   file = file.path(figDir, paste0('fig_dist_E.png')),
@@ -171,7 +173,7 @@ for(i in seq_along(setList)) {
   h = hist(Z[sel], plot = FALSE)
   hist(
     Z[sel], freq = FALSE, col = gPars$cols_tr[1],
-    xlim = xlim, main = paste0('Set ',i), #nclass = 21,
+    xlim = xlim, main = paste0('Set ',i),
     xlab = 'Z', ylim = 1.35 * c(0,max(h$density))
   )
   abline(v=0, lty = 2, col = 'gray25', lwd = 2* gPars$lwd)
@@ -180,8 +182,7 @@ for(i in seq_along(setList)) {
     dnorm(x,mean(Z),sd(Z)),
     from = xlim[1], to = xlim[2], lwd = 3*gPars$lwd,
     n= 1000, col = gPars$cols[2], add=TRUE)
-  # t_ls fit
-
+  # Student's fit
   curve(
     dt_ls(x,
           df = ZdistPars[i,"df"],
@@ -202,7 +203,6 @@ for(i in seq_along(setList)) {
 
 }
 dev.off()
-
 
 
 png(
@@ -270,7 +270,6 @@ for(i in seq_along(setList)) {
 dev.off()
 
 
-library(MCMCpack)
 png(
   file = file.path(figDir, paste0('fig_dist_uE.png')),
   width  = 2*gPars$reso,

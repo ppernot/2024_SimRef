@@ -1,24 +1,19 @@
 figDir = '../Figs'
 tabDir = '../Tabs'
-library(ErrViewLib)
-library(CHNOSZ)
-library(rcdk); sp <- get.smiles.parser()
+
 library(fitdistrplus)
 library(nptest)
 library(parallel)
+library(MCMCpack)
+library(ErrViewLib)
 gPars = ErrViewLib::setgPars(type = 'publish')
 scalePoints = 0.2
 
-# Load functions
+# Load functions ####
 source('functions.R')
 
-# Load datasets
-newData = FALSE
-if(newData) {
-  source('getData.R')
-} else {
-  load(file = 'data.Rda')
-}
+# Load datasets ####
+source('getData.R')
 
 
 # Results ####
@@ -120,7 +115,7 @@ if(FALSE)
 ## Appendix C ####
 doCalc = FALSE
 if(doCalc) {
-  # Takes 1/2 day to run...
+  # Takes about 1/2 day to run...
   source("testValidRCE.R")
 } else {
   load('testValidRCE.Rda')

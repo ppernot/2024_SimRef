@@ -147,7 +147,7 @@ Some popular Machine Learning Uncertainty Quantification (ML-UQ) calibration
  statistics do not have predefined reference values and are mostly used
  for comparative studies.
  In consequence, calibration is almost never validated and the diagnostic
- is left to the appreciation of the reader.
+ is often left to the appreciation of the reader.
  Simulated reference values, based on the probabilistic generation of errors
  from actual uncertainties, have been proposed to palliate this problem.
  As the generative probability distribution for the simulation of errors
@@ -156,8 +156,9 @@ Some popular Machine Learning Uncertainty Quantification (ML-UQ) calibration
  diagnostic.
  This study explores various facets of this problem, focusing on correlation
  and average calibration statistics.
- It shows that not all calibration statistics are reliable and that some
- are excessively sensitive to the choice of generative distribution.
+ It shows that not all calibration statistics are reliable in this context
+ and that some are excessively sensitive to the choice of generative distributio
+n.
  A robust validation workflow to deal with simulated reference values is
  proposed.
 \end_layout
@@ -169,19 +170,31 @@ Introduction
 \begin_layout Standard
 Most calibration statistics are used to compare methods or datasets but
  are missing a reference value for validation.
- For instance, the negative log-likelihood (NLL) should be as small as possible,
- but is not clear which value is acceptable to declare that a dataset is
- properly calibrated.
- The situation is similar for statistics such as the correlation coefficient
- between absolute errors and uncertainties, and for some local calibration
- statistics, such as the expected normalized calibration error (ENCE)
+ For instance, the correlation coefficient between absolute errors and uncertain
+ties
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Tynes2021"
+
+\end_inset
+
+ should be positive, but has no predefined reference value to compare with
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Pernot2022b"
+
+\end_inset
+
+.
+ This is also the case for some local calibration statistics, such as the
+ expected normalized calibration error (ENCE)
 \begin_inset CommandInset citation
 LatexCommand citep
 key "Levi2022"
 
 \end_inset
 
- which value depends moreover on a binning scheme
+, which value depends moreover on the chosen binning scheme
 \begin_inset CommandInset citation
 LatexCommand citep
 key "Pernot2023a_arXiv"
@@ -215,16 +228,19 @@ key "Rasmussen2023"
 \end_inset
 
  reference values has been recently proposed to palliate the absence of
- predefined reference values for a calibration statistic.
- A simulated reference value is estimated as the statistic applied to the
+ reference values for a calibration statistic.
+ A simulated reference value is estimated by applying the statistic to the
  actual uncertainties and simulated errors, generated from the uncertainties
- using a model distribution.
+ using a model generative distribution 
+\begin_inset Formula $D$
+\end_inset
+
+.
  
 \end_layout
 
 \begin_layout Standard
-The main problem with simulated references is the choice of generative distribut
-ion, 
+The main problem with simulated references is the choice of 
 \begin_inset Formula $D$
 \end_inset
 
@@ -240,7 +256,7 @@ key "Tran2020"
 
 \end_inset
 
-, negative log_likelihood (NLL), fixing the choice of 
+, negative log-likelihood (NLL), fixing the choice of 
 \begin_inset Formula $D$
 \end_inset
 
@@ -277,7 +293,7 @@ key "Pernot2022c"
 
 \end_inset
 
- enables to set the main topics for the present study.
+ enables to underline the main topics of the present study.
  A confidence curve is obtained by estimating an error statistic (e.g.
  the mean absolute error, MAE) for a dataset iteratively pruned from its
  largest uncertainties.
@@ -292,8 +308,7 @@ key "Pernot2022c"
 \begin_inset Formula $D$
 \end_inset
 
-.
- Pernot
+, about which Pernot
 \begin_inset CommandInset citation
 LatexCommand citep
 key "Pernot2022c"
@@ -309,11 +324,11 @@ the sensitivity of the simulated reference curve to
 \end_inset
 
  depends on the error statistic used to build the confidence curve: the
- MAE-based simulated reference is very sensitive to 
+ MAE is very sensitive to 
 \begin_inset Formula $D$
 \end_inset
 
-, while the root mean-squared error (RMSE) based one is not;
+, while the root mean-squared error (RMSE) is not;
 \end_layout
 
 \begin_layout Itemize
@@ -327,7 +342,7 @@ for validation, a confidence band can be estimated for the simulated reference
 \begin_inset Formula $D$
 \end_inset
 
- is unknown.
+ is not constrained.
  
 \end_layout
 
@@ -371,24 +386,35 @@ reference "sec:Applications"
 \end_inset
 
  presents the application of these methods to an ensemble of datasets issued
- from the Machine Learning uncertainty quantification literature.
- The article concludes with a discussion of the main findings of these applicati
-ons (Sect.
+ from the ML-UQ literature.
+ The article proceeds with a discussion of the main findings (Sect.
 \begin_inset space \thinspace{}
 \end_inset
 
 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "sec:Discussion-and-conclusion"
+reference "sec:Discussion"
 
 \end_inset
 
-).
+) and a proposition of workflow dealing with the main issues of the approach.
+ The main conclusions are reported in Sect.
+\begin_inset space \thinspace{}
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Conclusion"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Section
-Validation methods for calibration statistics
+Validation scores for calibration and correlation statistics
 \begin_inset CommandInset label
 LatexCommand label
 name "sec:Validation-methods-for"
@@ -983,8 +1009,7 @@ The ZMS does not depend on a distribution hypothesis and its target value
 \end_layout
 
 \begin_layout Standard
-An derivative of the ZMS is the negative log likelihood (NLL) score defined
- by
+The negative log-likelihood (NLL) score is defined by
 \begin_inset CommandInset citation
 LatexCommand citep
 key "Busk2023"
@@ -1063,7 +1088,7 @@ key "Rasmussen2023"
  to the validation of the ZMS, with the additional constraint of a normal
  generative distribution.
  Only the ZMS, which presents less usage restrictions, will be considered
- in this study.
+ next.
 \end_layout
 
 \begin_layout Subsection
@@ -1079,7 +1104,14 @@ CC=\mathrm{cor}(|E|,u_{E})
 
 \end_inset
 
-is used to assess the strength of the link between these variables.
+is used to assess the strength of the link between these variables
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Tynes2021"
+
+\end_inset
+
+.
  One expects large absolute errors to be associated with large uncertainties
  and small uncertainties to be associated with small absolute errors.
  However, the link is not symmetric, as small absolute errors might be associate
@@ -1152,7 +1184,7 @@ key "DiCiccio1996"
 
 \end_inset
 
-, which is uses throughout this study.
+, which is used throughout this study.
  
 \end_layout
 
@@ -1208,7 +1240,7 @@ For a given dataset
 \end_layout
 
 \begin_layout Standard
-The most straightforward validation approach is to check that the target
+The most straightforward validation approach is then to check that the target
  value for the statistic, 
 \begin_inset Formula $\vartheta_{ref}$
 \end_inset
@@ -1225,8 +1257,8 @@ The most straightforward validation approach is to check that the target
 
 \end_inset
 
-To go beyond a binary result, it is interesting to have a more informative
- measure of agreement, and one defines a standardized score considering
+To go beyond a binary result, it is interesting to have a more continuous
+ measure of agreement, and one can define a standardized score considering
  the possible asymmetry of 
 \begin_inset Formula $I_{BS}$
 \end_inset
@@ -1296,7 +1328,7 @@ The compatibility of the statistic with its reference value can then be
 
 \end_inset
 
-which is equivalent to the interval test (Eq.
+which is strictly equivalent to the interval test (Eq.
 \begin_inset space \thinspace{}
 \end_inset
 
@@ -1308,12 +1340,27 @@ reference "eq:int-valid"
 \end_inset
 
 ).
- Moreover, the value of 
+ In addition, the value of 
 \begin_inset Formula $\zeta$
 \end_inset
 
  provides valuable information about the sign and amplitude of the mismatch
  between the statistic and its reference value.
+\end_layout
+
+\begin_layout Subsubsection
+Predefined 
+\begin_inset Formula $\vartheta_{ref}$
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "subsec:Predefined"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -1512,9 +1559,9 @@ using a confidence interval
 \end_layout
 
 \begin_layout Standard
-Note that validation tests based on the latter approach present two drawbacks
- when compared to the bootstrapping-based procedures: (1) they ignore uncertaint
-y on 
+It is important to acknowledge that validation tests based on the latter
+ approach present two drawbacks when compared to the bootstrapping-based
+ procedures: (1) they ignore uncertainty on 
 \begin_inset Formula $\vartheta_{est}$
 \end_inset
 
@@ -1568,8 +1615,8 @@ calibrated
  ML methods.
  The selection rejected small datasets and those presenting duplicated propertie
 s.
- Note that the uncertainties have been calibrated by a palette of methods
- with various levels of success.
+ Note that for all the datasets, the uncertainties have been calibrated
+ by a palette of methods with various levels of success.
  The datasets names, sizes and bibliographic references are gathered in
  Table
 \begin_inset space \thinspace{}
@@ -2192,7 +2239,7 @@ name "tab:data"
 
 \end_inset
 
-The nine datasets used in this study.
+The nine datasets used in this study: number, name, size and reference.
  
 \end_layout
 
@@ -3327,7 +3374,7 @@ z
 \end_inset
 
  is the number of degrees of freedom resulting from the fit of the data
- sample by a Student's-
+ by a Student's-
 \emph on
 t
 \emph default
@@ -3708,7 +3755,7 @@ This section focuses on the validation by standardized
 \end_inset
 
  for the simulated reference value (
-\begin_inset Formula $\zeta_{SimRasD}$
+\begin_inset Formula $\zeta_{Sim2D}$
 \end_inset
 
 ).
@@ -3749,7 +3796,7 @@ For the simulated reference values, two options for
 \end_inset
 
 , 
-\begin_inset Formula $\zeta_{SimRasN}$
+\begin_inset Formula $\zeta_{Sim2N}$
 \end_inset
 
 ) and unit-variance Student's-
@@ -3780,7 +3827,7 @@ reference "tab:data-summary"
 \end_inset
 
 , 
-\begin_inset Formula $\zeta_{SimRasT}$
+\begin_inset Formula $\zeta_{Sim2T}$
 \end_inset
 
 ).
@@ -3801,7 +3848,7 @@ reference "fig:z-Scores"
 \begin_inset Float figure
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \noindent
@@ -3902,7 +3949,32 @@ Let us first consider the results for the ZMS statistic.
 \end_inset
 
 .
- The same observations apply to the RCE statistic.
+ Sets 1-6 have been analyzed in an earlier study
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Pernot2023d"
+
+\end_inset
+
+, by using the 
+\begin_inset Formula $\mathrm{Var}(Z)$
+\end_inset
+
+ score and an approximate analytical estimation of confidence intervals
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Cho2005"
+
+\end_inset
+
+.
+ The validation results differ at the margin, as the approximate method
+ seems to provide slightly wider CIs.
+\end_layout
+
+\begin_layout Standard
+The same observations about the BS, SimD and Sim2D approaches apply to the
+ RCE statistic.
 \end_layout
 
 \begin_layout Standard
@@ -3945,10 +4017,11 @@ When comparing the
 \end_inset
 
 -scores for ZMS and RCE across the nine datasets, one sees that they often
- lead to different conclusions about average calibration, which is rather
- surprising, as they are both derived from the generative model.
+ lead to markedly different conclusions about average calibration, which
+ is rather surprising, as both statistics are derived from the generative
+ model.
  To better understand this discrepancy, a comparison of the rates of failure
- of the tests for both statistics was performed in Appendix.
+ of the tests for both statistics was performed in Appendix
 \begin_inset space \thinspace{}
 \end_inset
 
@@ -4009,7 +4082,7 @@ key "Pernot2023d"
 Discussion
 \begin_inset CommandInset label
 LatexCommand label
-name "sec:Discussion-and-conclusion"
+name "sec:Discussion"
 
 \end_inset
 
@@ -4447,6 +4520,13 @@ The best way to use simulated reference values for validation is finally
 
 \begin_layout Section
 Conclusion
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:Conclusion"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -4857,7 +4937,7 @@ Uncertainty distributions.
 \begin_inset Float table
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \noindent
@@ -5461,7 +5541,7 @@ name "tab:uEfit"
 \end_inset
 
 Parameter of the fit of the squared uncertainties by 
-\begin_inset Formula $IG(k\theta)$
+\begin_inset Formula $IG(k,\theta)$
 \end_inset
 
  distributions.
@@ -5559,7 +5639,7 @@ reference "tab:data-summary"
 
 .
  However, as only Sets 1, 6 and 9 are calibrated according to the ZMS score,
- more many examples of datasets validated for average calibration would
+ many more examples of datasets validated for average calibration would
  be necessary to conclude.
 \end_layout
 
@@ -6596,7 +6676,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
-\begin_inset Formula $I_{SimRas}$
+\begin_inset Formula $I_{Sim2}$
 \end_inset
 
 
@@ -6608,7 +6688,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
-\begin_inset Formula $\zeta_{SimRas}$
+\begin_inset Formula $\zeta_{Sim2}$
 \end_inset
 
 
@@ -6672,7 +6752,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
-\begin_inset Formula $I_{SimRas}$
+\begin_inset Formula $I_{Sim2}$
 \end_inset
 
 
@@ -6684,7 +6764,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
-\begin_inset Formula $\zeta_{SimRas}$
+\begin_inset Formula $\zeta_{Sim2}$
 \end_inset
 
 
@@ -8284,7 +8364,7 @@ ZMS statistics.
 \begin_inset Float table
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \noindent
@@ -8635,7 +8715,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
-\begin_inset Formula $I_{SimRas}$
+\begin_inset Formula $I_{Sim2}$
 \end_inset
 
 
@@ -8647,7 +8727,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
-\begin_inset Formula $\zeta_{SimRas}$
+\begin_inset Formula $\zeta_{Sim2}$
 \end_inset
 
 
@@ -8711,7 +8791,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
-\begin_inset Formula $I_{SimRas}$
+\begin_inset Formula $I_{Sim2}$
 \end_inset
 
 
@@ -8723,7 +8803,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
-\begin_inset Formula $\zeta_{SimRas}$
+\begin_inset Formula $\zeta_{Sim2}$
 \end_inset
 
 
@@ -10321,7 +10401,7 @@ RCE statistics.
 \begin_inset Float table
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \noindent
@@ -10672,7 +10752,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
-\begin_inset Formula $I_{SimRas}$
+\begin_inset Formula $I_{Sim2}$
 \end_inset
 
 
@@ -10684,7 +10764,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
-\begin_inset Formula $\zeta_{SimRas}$
+\begin_inset Formula $\zeta_{Sim2}$
 \end_inset
 
 
@@ -10748,7 +10828,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
-\begin_inset Formula $I_{SimRas}$
+\begin_inset Formula $I_{Sim2}$
 \end_inset
 
 
@@ -10760,7 +10840,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
-\begin_inset Formula $\zeta_{SimRas}$
+\begin_inset Formula $\zeta_{Sim2}$
 \end_inset
 
 
@@ -12610,7 +12690,7 @@ T a unit_variance Student's-
 t
 \emph default
  distribution 
-\begin_inset Formula $D=t(\nu_{eff})*\sqrt{\nu_{eff}/(\nu_{eff}-2)}$
+\begin_inset Formula $D=t(\nu_{eff})\sqrt{\nu_{eff}/(\nu_{eff}-2)}$
 \end_inset
 
  where the number of degrees of freedom 
@@ -12642,7 +12722,7 @@ One has thus five options for the estimation of standardized scores:
 \end_inset
 
 , 
-\begin_inset Formula $\zeta_{SimRasN}$
+\begin_inset Formula $\zeta_{Sim2N}$
 \end_inset
 
 , 
@@ -12650,7 +12730,7 @@ One has thus five options for the estimation of standardized scores:
 \end_inset
 
 , 
-\begin_inset Formula $\zeta_{SimRasT}$
+\begin_inset Formula $\zeta_{Sim2T}$
 \end_inset
 
 , which are reported in the results tables with intermediate results and

@@ -10,6 +10,37 @@ rt_ls <- function(n, df=1, mu=0, sigma=1)  rt(n,df)*sigma + mu
 rT4 = function(N, df = 4)
   rt(N, df = df) / sqrt(df/(df-2))
 
+calScoresBS2 = function(x, data, intrv) {
+  # Binning-dependent statistics with unknown targets
+  uE = data[x,2]
+  io = order(uE) # order for uE-binning
+  uE = uE[io]
+  E  = data[x,1][io]
+  Z  = E / uE
+
+  AE = MV = MSE = c()
+  # MV = MSE = c()
+  for(i in 1:intrv$nbr) {
+    sel    = intrv$lwindx[i]:intrv$upindx[i]
+    # AE[i]  = abs(log(mean(Z[sel]^2)))
+    AE[i]  = log(mean(Z[sel]^2))
+    MV[i]  = mean(uE[sel]^2)
+    MSE[i] = mean(E[sel]^2)
+  }
+  LZMSE = mean(AE^2)
+  ENCE  = mean( abs( sqrt(MV) - sqrt(MSE) ) / sqrt(MV) )
+  # ENCE2 = mean( ( (sqrt(MV) - sqrt(MSE)) / sqrt(MV) )^2 )
+
+  c(
+    CC    = cor(abs(E),uE, method = 'spearman'),
+    RCE   = abs( sqrt(mean(uE^2)) - sqrt(mean(E^2)) ) / sqrt(mean(uE^2)),
+    ZMS   = mean(Z^2),
+    ENCE  = ENCE,
+    # ENCE2  = ENCE2 #,
+    LZMSE = LZMSE
+  )
+}
+
 calScoresBS1 = function(x, data) {
   # Statistics to be bootstrapped
   E = data[x,1]; uE = data[x,2]

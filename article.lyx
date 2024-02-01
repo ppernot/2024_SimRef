@@ -841,14 +841,14 @@ where
 
 \begin_layout Standard
 The RCE is involved in the Expected Normalized Calibration Error (
-\begin_inset Formula $ENCE=\sum_{i}|RCE_{i}|$
+\begin_inset Formula $ENCE=\sum_{i=1}^{N}|RCE_{i}|/N$
 \end_inset
 
- where 
+, where 
 \begin_inset Formula $RCE_{i}$
 \end_inset
 
- is estimated over a bin 
+ is estimated over bin 
 \begin_inset Formula $i$
 \end_inset
 
@@ -3848,7 +3848,7 @@ reference "fig:z-Scores"
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \noindent
@@ -5903,6 +5903,177 @@ Considering the values of
 , it is not reliable to use CLT-based approximations for testing, even for
  large datasets, and it is better to rely on bootstrapping for the estimation
  of confidence intervals.
+\end_layout
+
+\begin_layout Section
+Sensitivity of simulated reference values to the uncertainties distributions
+ and to the generative distribution
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:Sensitivity-of-simulated"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The sensitivity of simulated reference values for the CC, RCE, ENCE, ZMS
+ and LZMSE statistics is explored in this section.
+ Two numerical experiments are performed:
+\end_layout
+
+\begin_layout Enumerate
+a standard normal generative distribution 
+\begin_inset Formula $D=N(0,1)$
+\end_inset
+
+ is used to generate the simulated reference value (Fig.
+\begin_inset space \thinspace{}
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:sensitivity-1"
+
+\end_inset
+
+).
+ For statistics with a known reference value (RCE, ZMS) one expects to recover
+ systematically this reference value, as all generated datasets are theoreticall
+y calibrated.
+ One can observe that this is the case for the ZMS (within Monte-Carlo two-sigma
+ tolerance), but not for the RCE for which the deviations are much larger
+ than the Monte Carlo fluctuations and depend strongly on the dataset.
+ For the other statistics, one can observe that the simulated reference
+ value depends on the dataset, as expected.
+ 
+\end_layout
+
+\begin_layout Enumerate
+scaled Student's-
+\emph on
+t
+\emph default
+ distributions 
+\begin_inset Formula $D=t(\nu)/sqrt(\nu/(\nu-2))$
+\end_inset
+
+ for a range of degrees of freedom (Fig.
+\begin_inset space \thinspace{}
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:sensitivity"
+
+\end_inset
+
+).
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename Figs/fig_sensitivity1.png
+	lyxscale 25
+	width 95text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:sensitivity-1"
+
+\end_inset
+
+Sensitivity of the simulated reference values of various statistics.
+ Calibrated datasets are generated from the actual uncertainties of Sets
+ 1-9, using 
+\begin_inset Formula $D=t(\nu)$
+\end_inset
+
+ with 
+\begin_inset Formula $\nu$
+\end_inset
+
+ degrees of freedom.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename Figs/fig_sensitivity.png
+	lyxscale 25
+	width 95text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:sensitivity"
+
+\end_inset
+
+Sensitivity of the simulated reference values of various statistics.
+ Calibrated datasets are generated from the actual uncertainties of Sets
+ 1-9, using 
+\begin_inset Formula $D=t(\nu)$
+\end_inset
+
+ with 
+\begin_inset Formula $\nu$
+\end_inset
+
+ degrees of freedom.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
@@ -8364,7 +8535,7 @@ ZMS statistics.
 \begin_inset Float table
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \noindent

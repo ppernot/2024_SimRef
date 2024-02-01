@@ -18,25 +18,22 @@ calScoresBS2 = function(x, data, intrv) {
   E  = data[x,1][io]
   Z  = E / uE
 
-  AE = MV = MSE = c()
+  AE = RMV = RMSE = c()
   # MV = MSE = c()
   for(i in 1:intrv$nbr) {
-    sel    = intrv$lwindx[i]:intrv$upindx[i]
-    # AE[i]  = abs(log(mean(Z[sel]^2)))
-    AE[i]  = log(mean(Z[sel]^2))
-    MV[i]  = mean(uE[sel]^2)
-    MSE[i] = mean(E[sel]^2)
+    sel     = intrv$lwindx[i]:intrv$upindx[i]
+    AE[i]   = abs(log(mean(Z[sel]^2)))
+    RMV[i]  = sqrt(mean(uE[sel]^2))
+    RMSE[i] = sqrt(mean(E[sel]^2))
   }
-  LZMSE = mean(AE^2)
-  ENCE  = mean( abs( sqrt(MV) - sqrt(MSE) ) / sqrt(MV) )
-  # ENCE2 = mean( ( (sqrt(MV) - sqrt(MSE)) / sqrt(MV) )^2 )
+  LZMSE = mean(AE)
+  ENCE  = mean( abs(RMV - RMSE) / RMV )
 
   c(
     CC    = cor(abs(E),uE, method = 'spearman'),
-    RCE   = abs( sqrt(mean(uE^2)) - sqrt(mean(E^2)) ) / sqrt(mean(uE^2)),
+    RCE   = (sqrt(mean(uE^2)) - sqrt(mean(E^2))) / sqrt(mean(uE^2)),
     ZMS   = mean(Z^2),
     ENCE  = ENCE,
-    # ENCE2  = ENCE2 #,
     LZMSE = LZMSE
   )
 }

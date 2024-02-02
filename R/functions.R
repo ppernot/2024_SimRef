@@ -26,15 +26,15 @@ calScoresBS2 = function(x, data, intrv) {
     RMV[i]  = sqrt(mean(uE[sel]^2))
     RMSE[i] = sqrt(mean(E[sel]^2))
   }
-  LZMSE = mean(AE)
-  ENCE  = mean( abs(RMV - RMSE) / RMV )
+  ZMSE = mean(AE)
+  ENCE = mean( abs(RMV - RMSE) / RMV )
 
   c(
-    CC    = cor(abs(E),uE, method = 'spearman'),
-    RCE   = (sqrt(mean(uE^2)) - sqrt(mean(E^2))) / sqrt(mean(uE^2)),
-    ZMS   = mean(Z^2),
-    ENCE  = ENCE,
-    LZMSE = LZMSE
+    CC   = cor(abs(E),uE, method = 'spearman'),
+    RCE  = (sqrt(mean(uE^2)) - sqrt(mean(E^2))) / sqrt(mean(uE^2)),
+    ZMS  = mean(Z^2),
+    ENCE = ENCE,
+    ZMSE = ZMSE
   )
 }
 

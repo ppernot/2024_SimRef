@@ -1,3 +1,5 @@
+setwd("~/Bureau/2024_SimRef/R")
+
 figDir = '../Figs'
 tabDir = '../Tabs'
 
@@ -82,9 +84,11 @@ for(stat in 1:length(stats)) {
     else
       df = cbind(df,zm)
   }
+  if(stats[stat] == 'RCE')
+    df = -df
   colnames(df) = methods
   rownames(df) = paste0('Set',1:nS)
-  ylim = 1.2*range(df, na.rm = TRUE)
+  ylim = c(-5,5) #1.2*range(df, na.rm = TRUE)
   barplot(t(df), beside=TRUE,
           ylim = ylim, ylab = expression(zeta - score),
           legend.text = stat == 1,

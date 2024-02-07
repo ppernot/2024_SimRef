@@ -1630,7 +1630,7 @@ key "Pernot2022c,Rasmussen2023"
  This scenario is implemented for comparison as 
 \begin_inset Formula 
 \begin{equation}
-\zeta_{Sim2D}==\zeta(\vartheta_{est},\tilde{\vartheta}_{D,ref},I_{D})
+\zeta_{Sim2D}=\zeta(\vartheta_{est},\tilde{\vartheta}_{D,ref},I_{D})
 \end{equation}
 
 \end_inset
@@ -2011,184 +2011,9 @@ name "sec:Sensitivity-analysis"
 \end_layout
 
 \begin_layout Standard
-The sensitivity of simulated reference values to the uncertainties distributions
- and to the generative distribution is explored for the statistics presented
- above.
- 
-\end_layout
-
-\begin_layout Subsection
-Sensitivity to 
-\begin_inset Formula $u_{E}$
-\end_inset
-
-.
- 
-\end_layout
-
-\begin_layout Standard
-Reference values are simulated from Eq.
-\begin_inset space \thinspace{}
-\end_inset
-
-
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "eq:probmod"
-
-\end_inset
-
- using the NIG model, 
-\begin_inset Formula $u_{E}\sim IG(\nu/2,\nu/2);\thinspace\nu\in[3-20]$
-\end_inset
-
- and 
-\begin_inset Formula $D=N(0,1)$
-\end_inset
-
-, and dataset size 
-\begin_inset Formula $M=10^{4}$
-\end_inset
-
-, number of equi-sized bins 
-\begin_inset Formula $N=100$
-\end_inset
-
- with bins based on 
-\begin_inset Formula $u_{E}$
-\end_inset
-
-, and 
-\begin_inset Formula $N_{MC}=10^{4}$
-\end_inset
-
-.
- For the 
-\begin_inset Formula $f_{v}$
-\end_inset
-
- statistic, no Monte Carlo sample is used.
- The results are presented in Fig.
-\begin_inset space \thinspace{}
-\end_inset
-
-
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "fig:sensSynthuE"
-
-\end_inset
-
-.
- 
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\noindent
-\align center
-\begin_inset Graphics
-	filename Figs/fig_sens_Synth_uE.png
-	lyxscale 20
-	width 95text%
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption Standard
-
-\begin_layout Plain Layout
-\begin_inset CommandInset label
-LatexCommand label
-name "fig:sensSynthuE"
-
-\end_inset
-
-Sensitivity of the simulated reference values of various statistics.
- Synthetic datasets are generated using Eq.
-\begin_inset space \thinspace{}
-\end_inset
-
-
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "eq:probmod"
-
-\end_inset
-
- with 
-\begin_inset Formula $u_{E}\sim IG(\nu/2,\nu/2)$
-\end_inset
-
- and 
-\begin_inset Formula $D=N(0,1)$
-\end_inset
-
-.
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-For statistics with a known reference value (RCE, ZMS, 
-\begin_inset Formula $f_{v}$
-\end_inset
-
-) one expects to recover systematically this reference value within the
- statistical uncertainty, as the generated datasets are calibrated by constructi
-on.
- One can observe that this is the case for the ZMS an the two versions of
- 
-\begin_inset Formula $f_{v}$
-\end_inset
-
- based on local RCE and ZMS statistics.
-
-\color red
- 
-\color inherit
-However, when estimated over the full dataset, the RCE presents outlying
- deviations at very small 
-\begin_inset Formula $\nu$
-\end_inset
-
-, that hint at a possible problem of adequacy of the RCE for such datasets.
- For CC, one observes that the simulated reference value depends on the
- dataset, as expected, while ENCE and ZMSE present very similar curves with
- points lying around their own mean value.
- The ENCE and ZMSE simulated reference values are not sensitive to the distribut
-ion of 
-\begin_inset Formula $u_{E}$
-\end_inset
-
-.
- 
-\end_layout
-
-\begin_layout Subsection
-Sensitivity to 
-\begin_inset Formula $D$
-\end_inset
-
-.
- 
-\end_layout
-
-\begin_layout Standard
-Reference values are simulated with 
+The sensitivity of simulated reference values to the generative distribution
+ is explored for the statistics presented above.
+ Reference values are simulated with 
 \begin_inset Formula $u_{E}\sim IG(2,2)$
 \end_inset
 
@@ -2196,7 +2021,7 @@ Reference values are simulated with
 \begin_inset Formula $D=t(\nu)/sqrt(\nu/(\nu-2))$
 \end_inset
 
- for a range of degrees of freedom (Fig.
+ for a range of degrees of freedom between 3 and 20 (Fig.
 \begin_inset space \thinspace{}
 \end_inset
 
@@ -2207,7 +2032,21 @@ reference "fig:sensSynthD"
 
 \end_inset
 
-), with the same technical parameters as in the previous section.
+).
+ The set's size is 
+\begin_inset Formula $M=10^{4}$
+\end_inset
+
+, the sampling size is 
+\begin_inset Formula $N_{MC}=10^{4}$
+\end_inset
+
+ and the uncertainties are sorted and parted into 100 bins to estimate the
+ ENCE, LZMSE and 
+\begin_inset Formula $f_{v,X}$
+\end_inset
+
+ statistics.
  The results are presented in Fig.
 \begin_inset space \thinspace{}
 \end_inset
@@ -2283,17 +2122,25 @@ reference "eq:probmod"
 \end_layout
 
 \begin_layout Standard
-There is clearly a problem for the RCE, as the simulated reference value
- differs significantly from the theoretical one for 
-\begin_inset Formula $\nu\le5$
+For the statistics with predefined reference values (RCE, ZMS, 
+\begin_inset Formula $f_{v,LRCE}$
 \end_inset
 
-.
+ and 
+\begin_inset Formula $f_{v,LZMS}$
+\end_inset
+
+) one expects to recover this value by simulation, whatever the chosen generativ
+e distribution.
+ There is clearly a problem for the RCE when 
+\begin_inset Formula $\nu<5$
+\end_inset
+
+, as the simulated reference value differs significantly from the theoretical
+ one.
  By contrast, deviations of the ZMS are within the statistical uncertainty
  bounds.
- 
-\color red
-The 
+ The 
 \begin_inset Formula $f_{v}$
 \end_inset
 
@@ -2301,10 +2148,29 @@ The
 \begin_inset Formula $\nu$
 \end_inset
 
- values
-\color inherit
+ values, more so for the RCE-based 
+\begin_inset Formula $f_{v,LRCE}$
+\end_inset
+
+, which fails to recover the expected frequency of 0.95 for 
+\begin_inset Formula $\nu<10$
+\end_inset
+
 .
- The CC, ENCE and ZMSE simulated reference values depend strongly on 
+ The problem is less critical for 
+\begin_inset Formula $f_{v,LZMS}$
+\end_inset
+
+ as the divergence occurs only for 
+\begin_inset Formula $\nu=3$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+The CC, ENCE and ZMSE simulated reference values depend strongly on 
 \begin_inset Formula $D$
 \end_inset
 
@@ -2328,11 +2194,13 @@ name "sec:Applications"
 \end_layout
 
 \begin_layout Standard
-The validation approach presented above is applied to three statistics (
-\color red
-ZMS, RCE and CC, ENCE, LZMSE
-\color inherit
-) for nine datasets extracted from the ML-UQ literature.
+The validation approach presented above is applied to nine datasets extracted
+ from the ML-UQ literature, with a focus on the shapes of the distributions
+ of the errors, uncertainties and 
+\emph on
+z
+\emph default
+-scores and their consequences for the validation process.
 \end_layout
 
 \begin_layout Subsection
@@ -3088,7 +2956,7 @@ reference "sec:Uncertainty-distributions"
 \begin_inset Float table
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \noindent
@@ -4466,26 +4334,37 @@ z
 Sensitivity analysis
 \end_layout
 
-\begin_layout Standard
-
-\color red
-The sensitivity of simulated reference values for the CC, RCE, ENCE, ZMS
- and LZMSE statistics is explored in this section.
- Two numerical experiments are performed:
-\end_layout
-
-\begin_layout Enumerate
-
-\color red
-scaled Student's-
-\emph on
-t
-\emph default
- distributions 
-\begin_inset Formula $D=t(\nu)/sqrt(\nu/(\nu-2))$
+\begin_layout Subsubsection
+Sensitivity of the simulated reference values to 
+\begin_inset Formula $D$
 \end_inset
 
- for a range of degrees of freedom (Fig.
+
+\end_layout
+
+\begin_layout Standard
+This section replicates the numerical experiment of Sect.
+\begin_inset space \thinspace{}
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Sensitivity-analysis"
+
+\end_inset
+
+, but with the actual uncertainties instead of synthetic ones.
+ More concretely, for each dataset, simulated error sets are generated by
+ using a generative
+\color red
+ 
+\color inherit
+
+\begin_inset Formula $D=t(\nu)/\sqrt{\nu/(\nu-2)}$
+\end_inset
+
+ for a range of degrees of freedom between 3 and 20 (Fig.
 \begin_inset space \thinspace{}
 \end_inset
 
@@ -4497,21 +4376,46 @@ reference "fig:sensitivity"
 \end_inset
 
 ).
- 
-\end_layout
+ The technical parameters are the same as in Sect.
+\begin_inset space \thinspace{}
+\end_inset
 
-\begin_layout Standard
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Sensitivity-analysis"
+
+\end_inset
+
+.
+ In order to compare the trends, all statistics have been taken relatively
+ to their value at 
+\begin_inset Formula $\nu=20$
+\end_inset
+
+, i.e.
+ 
+\begin_inset Formula $\tilde{S}(\nu)=S(\nu)/S(20)$
+\end_inset
+
+, except for the RCE which has a null reference value and is corrected as
+ 
+\begin_inset Formula $\tilde{S}(\nu)=S(\nu)-S(20)$
+\end_inset
+
+.
+ 
 \begin_inset Float figure
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \noindent
 \align center
 \begin_inset Graphics
 	filename Figs/fig_sens_Real_D.png
-	lyxscale 25
+	lyxscale 20
 	width 95text%
 
 \end_inset
@@ -4525,7 +4429,7 @@ status open
 \begin_layout Plain Layout
 \begin_inset CommandInset label
 LatexCommand label
-name "fig:sensitivity"
+name "fig:sensitivity-1"
 
 \end_inset
 
@@ -4540,6 +4444,7 @@ Sensitivity of the simulated reference values of various statistics.
 \end_inset
 
  degrees of freedom.
+ The symbols report the set number.
 \end_layout
 
 \end_inset
@@ -4550,52 +4455,40 @@ Sensitivity of the simulated reference values of various statistics.
 \end_inset
 
 
-\end_layout
-
-\begin_layout Subsection
-Validation
 \end_layout
 
 \begin_layout Standard
-This section focuses on the validation by standardized 
-\begin_inset Formula $\zeta$
+The trends observed for the synthetic datasets are recovered for all the
+ statistics.
+ Note that for clarity, only the results for 
+\begin_inset Formula $f_{v,LZMS}$
 \end_inset
 
--scores and compares the results for the benchmark method (
-\begin_inset Formula $\zeta_{BS}$
+ are presented.
+ In particular, the RCE displays deviations of the same order of magnitude
+ as in Fig.
+\begin_inset space \thinspace{}
 \end_inset
 
-) when the reference value is defined, with two versions of the simulated
- reference value method, using either the bootstrapping CI 
-\begin_inset Formula $I_{BS}$
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:sensSynthD"
+
 \end_inset
 
- for the statistic (
-\begin_inset Formula $\zeta_{SimD}$
+ (about 
+\begin_inset Formula $10^{-3})$
 \end_inset
 
-), or the Monte Carlo CI 
-\begin_inset Formula $I_{sim}$
+, except for Set 7, where it reaches 
+\begin_inset Formula $0.05$
 \end_inset
 
- for the simulated reference value (
-\begin_inset Formula $\zeta_{Sim2D}$
-\end_inset
-
-).
- The ZMS and RCE statistics have well defined target values (1 and 0, respective
-ly).
- It is therefore possible to estimate their 
-\begin_inset Formula $\zeta_{BS}$
-\end_inset
-
- and to compare to the other approaches.
- For the CC statistic, there is no predefined target, so that 
-\begin_inset Formula $\zeta_{BS}$
-\end_inset
-
- cannot be estimated.
- 
+.
+ This set seems also to be an outlier for the ENCE and LZMS statistics.
+ This motivates the next section, where the ZMS and RCE statistics are compared
+ in their sensitivity to the tails of the uncertainty distributions.
 \end_layout
 
 \begin_layout Subsubsection
@@ -4672,7 +4565,7 @@ reference "fig:z-Scores"
 \begin_inset Float figure
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \noindent
@@ -4735,6 +4628,7 @@ key "Rasmussen2023"
 ).
  In absence of a predefined reference value, the BS approach is not available
  for CC.
+ The sign of RCE has been changed to facilitate the comparison with ZMS.
 \end_layout
 
 \end_inset
@@ -4831,6 +4725,52 @@ For the CC statistic, it appears that the choice of
  are very similar.
 \end_layout
 
+\begin_layout Subsection
+Validation
+\end_layout
+
+\begin_layout Standard
+This section focuses on the validation by standardized 
+\begin_inset Formula $\zeta$
+\end_inset
+
+-scores and compares the results for the benchmark method (
+\begin_inset Formula $\zeta_{BS}$
+\end_inset
+
+) when the reference value is defined, with two versions of the simulated
+ reference value method, using either the bootstrapping CI 
+\begin_inset Formula $I_{BS}$
+\end_inset
+
+ for the statistic (
+\begin_inset Formula $\zeta_{SimD}$
+\end_inset
+
+), or the Monte Carlo CI 
+\begin_inset Formula $I_{sim}$
+\end_inset
+
+ for the simulated reference value (
+\begin_inset Formula $\zeta_{Sim2D}$
+\end_inset
+
+).
+ The ZMS and RCE statistics have well defined target values (1 and 0, respective
+ly).
+ It is therefore possible to estimate their 
+\begin_inset Formula $\zeta_{BS}$
+\end_inset
+
+ and to compare to the other approaches.
+ For the CC statistic, there is no predefined target, so that 
+\begin_inset Formula $\zeta_{BS}$
+\end_inset
+
+ cannot be estimated.
+ 
+\end_layout
+
 \begin_layout Subsubsection
 Consistency of the validation results
 \end_layout
@@ -4902,6 +4842,111 @@ key "Pernot2023d"
  
 \end_layout
 
+\begin_layout Subsubsection
+Sensitivity of RCE to the tails of 
+\begin_inset Formula $u_{E}$
+\end_inset
+
+ distributions
+\end_layout
+
+\begin_layout Standard
+The deviations of the ZMS and RCE scores from their value for the full dataset
+ are estimated for an iterative pruning of the datasets from their largest
+ uncertainties, as performed in confidence curves
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Pernot2022c"
+
+\end_inset
+
+.
+ The results for 0 to 10
+\begin_inset space \thinspace{}
+\end_inset
+
+% of data removed are shown in (Fig.
+\begin_inset space \thinspace{}
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:sensitivity"
+
+\end_inset
+
+), where one can assess the respective sensitivities of both statistics
+ to these values that might be outliers.
+ 
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename Figs/fig_stability0.png
+	lyxscale 15
+	width 95text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:sensitivity"
+
+\end_inset
+
+RCE and ZMS statistics according to the percentage of largest uncertainties
+ removed from the datasets.
+ The vertical colored bars represent 95
+\begin_inset space \thinspace{}
+\end_inset
+
+% confidence intervals on the statistics for the full datasets.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Zero-centered bootstrapped 95
+\begin_inset space \thinspace{}
+\end_inset
+
+% confidence intervals for both statistics are displayed as vertical bars
+ to help evaluate the amplitude of the deviations.
+ In all cases, the ZMS is less or as sensitive as the RCE and its curve
+ stays within the limits of the corresponding CI.
+ For the RCE, one can see cases where the RCE is more sensitive than the
+ ZMS but stays within the limits of the CI (Sets 2 and 6) and cases where
+ it strays beyond the limits of the CI (Sets 3, 4 and 7) Cases where the
+ RCE has larger deviations than the ZMS are also those where the calibration
+ diagnostics differ notably.
+ The latter are the cases where the RCE diagnostic differs the most from
+ the ZMS.
+ This demonstrates clearly that for the datasets studied here, the RCE is
+ very sensitive to a few extreme uncertainty values and therefore unreliable
+ as a calibration metric.
+\end_layout
+
 \begin_layout Section
 Discussion
 \begin_inset CommandInset label
@@ -4914,15 +4959,22 @@ name "sec:Discussion"
 \end_layout
 
 \begin_layout Standard
-This study focused on the validation of correlation and average calibration
- statistics by standardized 
+This study focused on the validation of correlation and calibration statistics
+ by standardized 
 \begin_inset Formula $\zeta$
 \end_inset
 
 -scores, for which one needs reference values and confidence interval estimates.
- Reference values are predefined for the calibration statistics (ZMS, RCE)
- but not for CC.
- In the latter case, it is possible to generate reference values by a Monte
+ Reference values are predefined for ZMS, RCE, 
+\begin_inset Formula $f_{v,LZMS}$
+\end_inset
+
+ and 
+\begin_inset Formula $f_{v,LRCE}$
+\end_inset
+
+ statistics, but not for CC, ENCE and LZMSE.
+ In the latter cases, it is possible to generate reference values by a Monte
  Carlo approach, which implies to sample simulated error sets from the actual
  uncertainties, using a generative distribution 
 \begin_inset Formula $D$
@@ -4998,7 +5050,7 @@ Assessing and reducing the sensitivity of
 \begin_inset Formula $\zeta$
 \end_inset
 
--scores of 
+-scores to 
 \begin_inset Formula $D$
 \end_inset
 
@@ -5006,8 +5058,6 @@ Assessing and reducing the sensitivity of
 \end_layout
 
 \begin_layout Standard
-
-\color red
 To circumvent these issues, it is suggested here to use the bootstrapping-based
  intervals independently of the existence of a reference value, and to character
 ize the simulated reference by its 
@@ -5030,8 +5080,6 @@ based uncertainty, which solves the problem of the dependence of the
 \end_layout
 
 \begin_layout Standard
-
-\color red
 Another and less manageable source of dependence of the 
 \begin_inset Formula $\zeta$
 \end_inset
@@ -5045,8 +5093,12 @@ Another and less manageable source of dependence of the
  of the simulated errors (e.g.
  absolute value, squared value...) is likely to be affected by the shape/width
  of the errors distribution.
- This is particularly visible for the CC statistic, but much less for the
- ZMS or RCE statistics.
+ This is particularly visible for the CC, ENCE and LZMSE statistics, but
+ much less for the ZMS, RCE of 
+\begin_inset Formula $f_{v,X}$
+\end_inset
+
+ statistics.
  For confidence curves, Pernot
 \begin_inset CommandInset citation
 LatexCommand citep
@@ -5061,6 +5113,10 @@ key "Pernot2022c"
 
 , which was not the case for the MAE.
  
+\end_layout
+
+\begin_layout Standard
+
 \emph on
 The sensitivity of a simulated reference value to the generative model has
  therefore to be directly assessed before using it for validation
@@ -5070,7 +5126,7 @@ The sensitivity of a simulated reference value to the generative model has
 \color orange
  
 \begin_inset Note Note
-status open
+status collapsed
 
 \begin_layout Plain Layout
 
@@ -5125,11 +5181,10 @@ z
 \end_inset
 
 
-\end_layout
+\color inherit
 
-\begin_layout Standard
 \begin_inset Note Note
-status open
+status collapsed
 
 \begin_layout Plain Layout
 Two factors can be affected by 
@@ -5209,6 +5264,33 @@ The best way to use simulated reference values for validation is finally
 
 \end_layout
 
+\begin_layout Subsubsection
+Sensitivity of RCE to outliers in the uncertainty distribution 
+\end_layout
+
+\begin_layout Standard
+
+\color orange
+The discrepancy of the results of both average calibration statistics has
+ shown the the RCE is much more sensitive than the ZMS to peculiarities
+ of the uncertainties distribution, and notably the presence of outliers
+ with large values.
+ It was shown on actual datasets that the RCE can vary strongly with the
+ addition or removal of a few points to the dataset.
+ A consequence is that average calibration statistics based on the comparison
+ of 
+\begin_inset Formula $MSE=<E^{2}>$
+\end_inset
+
+ to 
+\begin_inset Formula $MV=<u_{E}^{2}>$
+\end_inset
+
+ should not be relied upon for the kind of datasets found in ML-UQ regression
+ problems.
+ 
+\end_layout
+
 \begin_layout Section
 Conclusion
 \begin_inset CommandInset label
@@ -5222,13 +5304,15 @@ name "sec:Conclusion"
 
 \begin_layout Standard
 
-\color red
+\color orange
 This study sheds a critical look on the validation of average calibration
  statistics (ZMS, RCE), a correlation statistic (CC) and two conditional
  calibration statistics (ENCE, LZMSE).
  A benchmark method was defined for those statistics with a predefined reference
  value (ZMS, RCE) and compared to simulation approaches that could be used
- for statistics with no predefined reference value (CC).
+ for statistics with no predefined reference value (CC, ENCE and LZMSE).
+
+\color red
  
 \color inherit
 A robust validation workflow was proposed to deal with the main obstacles
@@ -5259,23 +5343,24 @@ Do not use the RCE statistic to validate average calibration
  discrepant calibration diagnostics, which led to the demonstration that
  the RCE statistic cannot be reliably used for the kind of datasets analyzed
  here.
- The main problem seems to be due to the very skewed and heavy-tailed distributi
+ The problem has been traced back to the very skewed and heavy-tailed distributi
 ons of uncertainties leading to unreliable estimation of 
 \begin_inset Formula $<u_{E}^{2}>$
 \end_inset
 
-.
- This is unfortunately a very common scenario for ML-UQ datasets, so that
- one can conclude that the RCE and its ECE relative, should not be used
- to test average calibration.
+, notably in presence of outlying values.
+ This is unfortunately a very common scenario for ML-UQ datasets in regression
+ tasks, so that one can conclude that the RCE and its ECE relative, should
+ not be used to test average calibration.
  Note that this also raises a doubt about calibration procedures based on
- the nullification of this type of calibration error.
+ the cancellation of this type of calibration error.
  In contrast, the ZMS statistic, which deals globally with the better-behaved
  distributions of scaled errors (
 \begin_inset Formula $Z$
 \end_inset
 
-) has no reliability issue, and is therefore recommended.
+) has no reliability issue, and is therefore highly recommended for validation
+ and calibration tasks.
  
 \end_layout
 
@@ -5638,7 +5723,7 @@ Uncertainty distributions.
 \begin_inset Float table
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \noindent
@@ -6506,7 +6591,7 @@ reference "fig:LUP"
 \begin_inset Float figure
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \noindent
@@ -6728,7 +6813,7 @@ reference "fig:validRCE"
 \begin_inset Float figure
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \noindent
@@ -6856,7 +6941,7 @@ reference "fig:invGammaMean"
 \begin_inset Float figure
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \noindent

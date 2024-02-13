@@ -10,7 +10,18 @@ rt_ls <- function(n, df=1, mu=0, sigma=1)  rt(n,df)*sigma + mu
 rT4 = function(N, df = 4)
   rt(N, df = df) / sqrt(df/(df-2))
 
-calScoresBS2 = function(x, data, intrv) {
+calScoresBS1 = function(x, data) {
+  # Statistics to be bootstrapped
+  E = data[x,1]; uE = data[x,2]
+  Z = E / uE
+  c(
+    ZMS = mean(Z^2),
+    CC  = cor(abs(E), uE, method="spearman")
+  )
+}
+
+calScoresBS2 = function(x, data, intrv, intrvJack) {
+
   # Binning-dependent statistics with unknown targets
   uE = data[x,2]
   io = order(uE) # order for uE-binning
@@ -18,10 +29,14 @@ calScoresBS2 = function(x, data, intrv) {
   E  = data[x,1][io]
   Z  = E / uE
 
+  int = intrv
+  if(length(uE) < NROW(data))
+    int = intrvJack
+
   AE = RMV = RMSE = c()
   # MV = MSE = c()
-  for(i in 1:intrv$nbr) {
-    sel     = intrv$lwindx[i]:intrv$upindx[i]
+  for(i in 1:int$nbr) {
+    sel     = int$lwindx[i]:int$upindx[i]
     AE[i]   = abs(log(mean(Z[sel]^2)))
     RMV[i]  = sqrt(mean(uE[sel]^2))
     RMSE[i] = sqrt(mean(E[sel]^2))
@@ -30,24 +45,10 @@ calScoresBS2 = function(x, data, intrv) {
   ENCE = mean( abs(RMV - RMSE) / RMV )
 
   c(
-    CC   = cor(abs(E),uE, method = 'spearman'),
-    RCE  = (sqrt(mean(uE^2)) - sqrt(mean(E^2))) / sqrt(mean(uE^2)),
     ZMS  = mean(Z^2),
+    CC   = cor(abs(E),uE, method = 'spearman'),
     ENCE = ENCE,
     ZMSE = ZMSE
-  )
-}
-
-calScoresBS1 = function(x, data) {
-  # Statistics to be bootstrapped
-  E = data[x,1]; uE = data[x,2]
-  Z = E / uE
-  RMV  = sqrt(mean(uE^2))
-  RMSE = sqrt(mean(E^2))
-  c(
-    ZMS = mean(Z^2),
-    RCE = (RMV - RMSE) / RMV,
-    CC  = cor(abs(E), uE, method="spearman")
   )
 }
 
@@ -61,7 +62,7 @@ fPredBS = function(X, statistic, cl = NULL, nBoot = 5000,
     statistic = statistic, R = nBoot,
     level = 0.95, method = method,
     parallel = TRUE, cl = cl,
-    boot.dist = TRUE, ...)
+    boot.dist = FALSE, ...)
   if(is.null(cl0))
     stopCluster(cl)
 

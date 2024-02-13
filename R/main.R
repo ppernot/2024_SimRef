@@ -9,7 +9,6 @@ library(parallel)
 library(MCMCpack)
 library(ErrViewLib)
 gPars = ErrViewLib::setgPars(type = 'publish')
-scalePoints = 0.2
 
 # Load functions ####
 source('functions.R')
@@ -24,6 +23,15 @@ nBoot =  5000
 
 ## Data summary and properties ####
 source("./datasetsProperties.R")
+
+## Sensitivity ####
+calcSens = FALSE
+if(calcScores) {
+  source("sensitivity.R")
+} else {
+  load("./sensitivity.Rda")
+}
+
 
 ## Scores ####
 calcScores = FALSE
@@ -63,10 +71,10 @@ for(i in seq_along(stats)) {
 png(
   file = file.path(figDir, 'fig_scores_linear.png'),
   width  = 1.5 * gPars$reso,
-  height = 2 * gPars$reso
+  height = 3 * gPars$reso
 )
 par(
-  mfrow = c(3, 1),
+  mfrow = c(4, 1),
   mar = gPars$mar,
   mgp = gPars$mgp,
   pty = 'm',
@@ -84,22 +92,21 @@ for(stat in 1:length(stats)) {
     else
       df = cbind(df,zm)
   }
-  if(stats[stat] == 'RCE')
-    df = -df
   colnames(df) = methods
   rownames(df) = paste0('Set',1:nS)
-  ylim = c(-5,5) #1.2*range(df, na.rm = TRUE)
+  ylim = 1.2*range(df, na.rm = TRUE)
   barplot(t(df), beside=TRUE,
           ylim = ylim, ylab = expression(zeta - score),
           legend.text = stat == 1,
           args.legend = list(
             x = 'topright',
+            ncol = 2,
             bty = 'n'
           ),
           xpd = FALSE,
           col = gPars$cols[1:length(methods)],
           main = stats[stat])
-  abline(h= -5:5, col = 'gray50', lty = 3)
+  abline(h= -15:15, col = 'gray50', lty = 3)
   abline(h=c(-1,0,1), col = gPars$cols[1], lty = c(2,1,2))
   barplot(t(df), beside=TRUE,
           xpd = FALSE,
@@ -116,62 +123,7 @@ dev.off()
 if(FALSE)
   source("testCLT.R")
 
-## Appendix C ####
-doCalc = FALSE
-if(doCalc) {
-  # Takes about 1/2 day to run...
-  source("testValidRCE.R")
-} else {
-  load('testValidRCE.Rda')
-}
 
-pro = cilo = ciup = matrix(NA,nrow=length(dfList),ncol = 2)
-for(j in seq_along(dfList)) {
-  nu = dfList[j]
-  zm = zList[[paste0(nu)]]
-  tm = tList[[paste0(nu)]]
-  print(colSums(zm == tm))
-  pro[j,]  = colMeans(tm)
-  success  = colMeans(tm) * nTry
-  trials   = c(nTry, nTry)
-  ci       = DescTools::BinomCI(success, trials, method = "wilsoncc")
-  cilo[j,] = ci[,2]
-  ciup[j,] = ci[,3]
-}
-
-png(
-  file = file.path(figDir, paste0('fig_validRCE.png')),
-  width  = gPars$reso,
-  height = gPars$reso
-)
-par(
-  mfrow = c(1, 1),
-  mar = gPars$mar,
-  mgp = gPars$mgp,
-  pty = 'm',
-  tcl = gPars$tcl,
-  cex = gPars$cex,
-  cex.main = 1,
-  lwd = gPars$lwd
-)
-matplot(dfList, pro, type = 'b',
-        pch=16:17, lty =1, col=gPars$cols[1:2],
-        log = 'x',
-        xlab = expression(nu),
-        ylab = expression(p[val]), ylim = c(0.70,1.0))
-grid(equilogs = FALSE)
-abline(h=0.95,lty=2)
-for(i in 1:2)
-  segments(dfList,cilo[,i],dfList,ciup[,i],col=i)
-box()
-legend(
-  'bottomright', bty = 'n',
-  legend = stats,
-  lty = 1,
-  pch = 16:17,
-  col = gPars$cols[1:2]
-)
-dev.off()
 
 
 

@@ -1,19 +1,22 @@
 cl <- makeCluster(detectCores())
-methods = c('BS','SimN','SimT','SimRasN','SimRasT')
+methods = c('BS','SimN','SimT','Sim2N','Sim2T')
 
-stats   = names(calScoresBS1(1:M,cbind(E,uE)))
+nBin  = 20
+intrv = ErrViewLib::genIntervals(1:100, nBin)
+stats   = names(calScoresBS2(1:M, cbind(E,uE), intrv = intrv))
 
-muBS    = c(1, 0, NA)
+muBS    = c(1, NA, NA, NA)
 
 smc     = matrix(NA, nrow = nMC, ncol = length(stats))
 
 scores = bias = zmatBS  = zmatSimN = zmatSimT =
   zmatSim2N = zmatSim2T = muSimN = seSimN = muSimT = seSimT =
-  ciScores = ciRasT = ciRasN =
+  ciScores = ci2T = ci2N =
   matrix(NA, nrow = length(setList), ncol = length(stats))
 
 colnames(zmatBS) = colnames(zmatSimN) = colnames(zmatSimT) =
   colnames(zmatSim2N) = colnames(zmatSim2T) =stats
+
 
 for(i in seq_along(setList)) {
   D2 = dataList[[paste0(setList[i],'_cal')]]; print(setList[i])
@@ -22,8 +25,12 @@ for(i in seq_along(setList)) {
   M  = length(uE)
   mu = mean(E)
 
+  intrv = ErrViewLib::genIntervals(1:M, nBin)
+  intrvJack = ErrViewLib::genIntervals(1:(M-1), nBin)
+
   # BS scores and CIs
-  bs = fPredBS(cbind(E,uE), calScoresBS1, cl = cl)
+  bs = fPredBS(cbind(E,uE), calScoresBS2, cl = cl,
+               intrv = intrv, intrvJack = intrvJack)
   scores[i,] = bs$t0
   bias[i,]   = bs$bias
   ciScores[i,] = paste0(
@@ -35,37 +42,40 @@ for(i in seq_along(setList)) {
 
   # Normal simulation of target
   for(j in 1:nMC)
-    smc[j,] = calScoresBS1(1:M, cbind(uE * rnorm(M), uE))
+    smc[j,] = calScoresBS2(1:M, cbind(uE * rnorm(M), uE),
+                           intrv = intrv, intrvJack = intrvJack)
   muSimN[i,] = apply(smc, 2, mean, na.rm = TRUE)
   seSimN[i,] = apply(smc, 2, sd, na.rm = TRUE)/sqrt(nMC)
   zmatSimN[i,] = fZetaBS(bs, muSimN[i,],Utarget = 2*seSimN[i,])
 
-  ciSim = apply(smc, 2, quantile, probs = c(0.025,0.975), na.rm = TRUE)
-  ciRasN[i,] = paste0(
+  ciSim = apply(smc, 2, quantile, probs = c(0.025,0.975),
+                na.rm = TRUE)
+  ci2N[i,] = paste0(
     '[', signif(ciSim[1,],3),', ',
     signif(ciSim[2,],3), ']')
   bsSim =  list()
   bsSim$t0 = muSimN[i,]
   bsSim$bias = 0
   bsSim$bca = ciSim
-  zmatSim2sN[i,] = -fZetaBS(bsSim, scores[i,])
+  zmatSim2N[i,] = -fZetaBS(bsSim, scores[i,])
 
   df = ZdistPars[i,"df"]
   for(j in 1:nMC)
-    smc[j,] = calScoresBS1(
+    smc[j,] = calScoresBS2(
       1:M,
       cbind(
         uE * rt_ls(M, df = df, mu = 0, sigma = 1) /
           sqrt(df/(df-2)),
         uE
-      )
+      ),
+      intrv = intrv, intrvJack = intrvJack
     )
   muSimT[i,] = apply(smc, 2, mean, na.rm = TRUE)
   seSimT[i,] = apply(smc, 2, sd, na.rm = TRUE)/sqrt(nMC)
   zmatSimT[i,] = fZetaBS(bs, muSimT[i,], Utarget = 2*seSimT[i,])
 
   ciSim = apply(smc, 2, quantile, probs = c(0.025,0.975), na.rm = TRUE)
-  ciRasT[i,] = paste0(
+  ci2T[i,] = paste0(
     '[', signif(ciSim[1,],3),', ',
     signif(ciSim[2,],3), ']')
   bsSim =  list()
@@ -77,10 +87,10 @@ for(i in seq_along(setList)) {
 }
 stopCluster(cl)
 
-save(
-  stats, methods, setList, scores, bias, ciScores, zmatBS,
-  muSimN, seSimN, zmatSimN, ci2N, zmatSim2N,
-  muSimT, seSimT, zmatSimT, ci2T, zmatSim2T,
-  file = 'zetaScores.Rda'
-)
+# save(
+#   stats, methods, setList, scores, bias, ciScores, zmatBS,
+#   muSimN, seSimN, zmatSimN, ci2N, zmatSim2N,
+#   muSimT, seSimT, zmatSimT, ci2T, zmatSim2T,
+#   file = 'zetaScores.Rda'
+# )
 

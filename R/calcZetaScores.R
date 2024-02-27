@@ -59,7 +59,7 @@ for(i in seq_along(setList)) {
   bsSim$bca = ciSim
   zmatSim2N[i,] = -fZetaBS(bsSim, scores[i,])
 
-  df = ZdistPars[i,"df"]
+  df = 6 #ZdistPars[i,"df"]
   for(j in 1:nMC)
     smc[j,] = calScoresBS2(
       1:M,
@@ -87,10 +87,10 @@ for(i in seq_along(setList)) {
 }
 stopCluster(cl)
 
-# save(
-#   stats, methods, setList, scores, bias, ciScores, zmatBS,
-#   muSimN, seSimN, zmatSimN, ci2N, zmatSim2N,
-#   muSimT, seSimT, zmatSimT, ci2T, zmatSim2T,
-#   file = 'zetaScores.Rda'
-# )
+save(
+  stats, methods, setList, scores, bias, ciScores, zmatBS,
+  muSimN, seSimN, zmatSimN, ci2N, zmatSim2N,
+  muSimT, seSimT, zmatSimT, ci2T, zmatSim2T,
+  file = 'zetaScores.Rda'
+)
 

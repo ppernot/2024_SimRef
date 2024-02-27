@@ -116,14 +116,15 @@ for(i in seq_along(setList)) {
   h1 = hist(E[sel], nclass = 25, plot = FALSE)
   ylim = c(0,1.35*max(h1$density))
   hist(
-    E[sel], freq = FALSE, col = gPars$cols_tr[1],
+    E[sel], freq = FALSE, col = NULL, nclass=25,
+    border = gPars$cols_tr2[1], yaxs = 'i',
     xlim = xlim, main = paste0('Set ',i),
     xlab = paste0('Error ',D2$unit), ylim = ylim
   )
   abline(v=0, lty = 2, col = 'gray25', lwd = 2* gPars$lwd)
   curve(
     dnorm(x,mean(E),sd(E)),
-    from = xlim[1], to = xlim[2], lwd = 3*gPars$lwd,
+    from = xlim[1], to = xlim[2], lwd = 2*gPars$lwd,
     n= 1000, col = gPars$cols[2], add=TRUE)
 
   curve(
@@ -131,19 +132,19 @@ for(i in seq_along(setList)) {
           df = EdistPars[i,"df"],
           mu = EdistPars[i,"mu"],
           sigma = EdistPars[i,"sigma"]),
-    from = xlim[1], to = xlim[2], lwd = 3*gPars$lwd,
+    from = xlim[1], to = xlim[2], lwd = 2*gPars$lwd,
     n= 1000, col = gPars$cols[6], add=TRUE)
 
   if(i==1)
     legend(
-      'topright', bty = 'n', cex=0.8,
+      'topright', bty = 'n', cex=0.75,
       legend = c('Data','Normal', 'Student'),
-      col = c(gPars$cols[c(1,2,6)]),
-      lty = c(0,1,1), lwd = 3 * gPars$lwd,
-      pch = c(22,NA,NA), pt.bg = 'gray',
+      col = gPars$cols[c(1,2,6)],
+      lty = c(0,1,1), lwd = 2 * gPars$lwd,
+      pch = c(22,NA,NA), pt.bg = 'white',
       pt.lwd = 2, pt.cex = 1.5
     )
-
+  box()
 }
 dev.off()
 
@@ -170,17 +171,18 @@ for(i in seq_along(setList)) {
   Z  = E / uE
   xlim = sd(Z) * c(-3,3)
   sel = abs(Z)/sd(Z) < xlim[2]
-  h = hist(Z[sel], plot = FALSE)
+  h = hist(Z[sel], nclass = 25, plot = FALSE)
   hist(
-    Z[sel], freq = FALSE, col = gPars$cols_tr[1],
-    xlim = xlim, main = paste0('Set ',i),
+    Z[sel], freq = FALSE, col = NULL, nclass = 25,
+    border = gPars$cols_tr2[1],
+    xlim = xlim, main = paste0('Set ',i), yaxs = 'i',
     xlab = 'Z', ylim = 1.35 * c(0,max(h$density))
   )
   abline(v=0, lty = 2, col = 'gray25', lwd = 2* gPars$lwd)
   # Normal fit
   curve(
     dnorm(x,mean(Z),sd(Z)),
-    from = xlim[1], to = xlim[2], lwd = 3*gPars$lwd,
+    from = xlim[1], to = xlim[2], lwd = 2*gPars$lwd,
     n= 1000, col = gPars$cols[2], add=TRUE)
   # Student's fit
   curve(
@@ -188,19 +190,19 @@ for(i in seq_along(setList)) {
           df = ZdistPars[i,"df"],
           mu = ZdistPars[i,"mu"],
           sigma = ZdistPars[i,"sigma"]),
-    from = xlim[1], to = xlim[2], lwd = 3*gPars$lwd,
+    from = xlim[1], to = xlim[2], lwd = 2*gPars$lwd,
     n= 1000, col = gPars$cols[6], add=TRUE)
 
   if(i==1)
     legend(
-      'topright', bty = 'n', cex=0.8,
+      'topright', bty = 'n', cex=0.75,
       legend = c('Data','Normal', 'Student'),
       col = c(gPars$cols[c(1,2,6)]),
       lty = c(0,1,1), lwd = 3 * gPars$lwd,
-      pch = c(22,NA,NA), pt.bg = 'gray',
+      pch = c(22,NA,NA), pt.bg = 'white',
       pt.lwd = 2, pt.cex = 1.5
     )
-
+  box()
 }
 dev.off()
 
@@ -230,42 +232,45 @@ for(i in seq_along(setList)) {
   h1 = hist(E[sel], nclass = 25, plot = FALSE)
   ylim = c(0,1.35*max(h1$density))
   hist(
-    E[sel], freq = FALSE, nclass = 25, col = gPars$cols_tr[1],
+    E[sel], freq = FALSE, nclass = 25, col = NULL,
+    border = gPars$cols_tr2[1],
     xlim = xlim, main = paste0('Set ',i),
     xlab = paste0('Error ',D2$unit),
-    ylim = ylim
+    ylim = ylim, yaxs = 'i'
   )
   abline(v=0, lty = 2, col = 'gray25', lwd = 2* gPars$lwd)
 
   df = ZdistPars[i,"df"]
-  if(df > 2) {
-    sample = as.vector(
-      replicate(
-        100,
-        uE * rt_ls(length(uE), df = df, mu = 0, sigma = 1)/
-          sqrt(df/(df-2))
-      )
+  if(df <= 2)
+    df = 2.1
+  sample = as.vector(
+    replicate(
+      100,
+      uE * rt_ls(length(uE), df = df, mu = 0, sigma = 1)/
+        sqrt(df/(df-2))
     )
-    sel = abs(sample) < xlim[2]
-    h2 = hist(sample[sel], nclass = 55, plot = FALSE)
-    lines(h2$mids, h2$density, lwd = 3* gPars$lwd, col = gPars$cols[6])
-  }
+  )
+  sel = abs(sample) < xlim[2]
+  h2 = hist(sample[sel], nclass = 55, plot = FALSE)
+  lines(h2$mids, h2$density, lwd = 2* gPars$lwd,
+        col = gPars$cols[6])
 
   sample = as.vector(replicate(100, uE * rnorm(length(uE))))
   sel = abs(sample) < xlim[2]
   h3 = hist(sample[sel], nclass = 55, plot = FALSE)
-  lines(h3$mids, h3$density, lwd = 3* gPars$lwd, col = gPars$cols[2])
+  lines(h3$mids, h3$density, lwd = 2* gPars$lwd,
+        col = gPars$cols[2])
 
   if(i==1)
     legend(
       'topright', bty = 'n', cex=0.8,
       legend = c('Data','Normal', 'Student'),
       col = c(gPars$cols[c(1,2,6)]),
-      lty = c(0,1,1), lwd = 3 * gPars$lwd,
-      pch = c(22,NA,NA), pt.bg = 'gray',
+      lty = c(0,1,1), lwd = 2 * gPars$lwd,
+      pch = c(22,NA,NA), pt.bg = 'white',
       pt.lwd = 2, pt.cex = 1.5
     )
-
+  box()
 }
 dev.off()
 
@@ -289,6 +294,8 @@ par(
 parstab = matrix(NA, nrow = length(setList), ncol = 2)
 colnames(parstab) = c("shape","scale")
 
+gi = bgm = c()
+
 for(i in seq_along(setList)) {
   D2 = dataList[[paste0(setList[i],'_cal')]]
   uE = D2$uE
@@ -301,26 +308,50 @@ for(i in seq_along(setList)) {
   shape = pars["shape"]
   scale = pars["scale"]
 
-  sel = uE^2 < quantile(uE^2,probs = 0.99)
-  X = uE[sel]^2
+  # sel = uE^2 < quantile(uE^2,probs = 0.99)
+  # X = uE[sel]^2
+  X = log(uE^2)
+  lMeaV = log(mean(uE^2))
+  lMedV = log(median(uE^2))
   h1 = hist(X, nclass = 33, plot = FALSE)
-  ylim = c(0,1.35*max(h1$density))
+  ylim = c(0,1.1*max(h1$density))
   hist(
-    X, freq = FALSE, col = gPars$cols_tr[1],
+    X, freq = FALSE, col = NULL,
+    border = gPars$cols_tr2[1],
     main = paste0('Set ',i), nclass = 33,
-    xlab = 'uE^2'
+    ylim = ylim, yaxs = 'i',
+    xlab = 'log(uE^2)'
   )
   curve(
-    MCMCpack::dinvgamma(x,shape = shape, scale = 1/scale),
-    from = min(X), to = max(X), lwd = 3*gPars$lwd,
+    MCMCpack::dinvgamma(exp(x),
+                        shape = shape,
+                        scale = 1/scale)*exp(x),
+    from = min(X), to = max(X), lwd = 2*gPars$lwd,
     n= 1000, col = gPars$cols[6], add=TRUE)
+
+  abline(v = lMeaV, lwd = 2*gPars$lwd,
+         col = gPars$cols[2], lty = 1)
+  abline(v = lMedV, lwd = 2*gPars$lwd,
+         col = gPars$cols[3], lty = 1)
+  if(i==3)
+    legend(
+      'topright', bty = 'n',
+      legend = c('IG fit','MV', 'MedV'),
+      pch = NA, lwd = 2*gPars$lwd,
+      lty = c(1,1,1),
+      col = gPars$cols[c(6,2,3)]
+    )
+  box()
+
 
   parstab[i,]=c(shape, 1/scale)
 
+  gi[i] = ErrViewLib::gimc(uE)
+  bgm[i] = ErrViewLib::skewgm(uE)
 }
 
 dev.off()
-
+parstab = cbind(gi, bgm, parstab)
 sink(file =  file.path(tabDir,'tabParsFituE.tex'))
 print(knitr::kable(signif(parstab,3), 'latex'))
 sink()

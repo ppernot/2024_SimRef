@@ -20,7 +20,7 @@ calScoresBS1 = function(x, data) {
   )
 }
 
-calScoresBS2 = function(x, data, intrv, intrvJack) {
+calScoresBS2 = function(x, data, intrv, intrvJack = intrv) {
 
   # Binning-dependent statistics with unknown targets
   uE = data[x,2]
@@ -34,7 +34,6 @@ calScoresBS2 = function(x, data, intrv, intrvJack) {
     int = intrvJack
 
   AE = RMV = RMSE = c()
-  # MV = MSE = c()
   for(i in 1:int$nbr) {
     sel     = int$lwindx[i]:int$upindx[i]
     AE[i]   = abs(log(mean(Z[sel]^2)))
@@ -81,5 +80,46 @@ fZetaBS = function(bs, target, Utarget=0, method = 'bca') {
   width = sqrt((score - lim)^2 + Utarget^2)
   return(
     delta/width
+  )
+}
+
+Sconf0 = function( X, stat, pcVec = 0:99) {
+  M = NROW(X)
+  S0 = stat(X)
+  vstat = rep(0.0, length(pcVec))
+  vstat[1] = S0
+  for (i in 2:length(pcVec)) {
+    k = pcVec[i]
+    sel = 1:floor(k * M / 100)
+    if (length(sel) == 0) {
+      vstat[i] = NA
+    } else {
+      vstat[i] = stat(X[-sel,])
+    }
+  }
+  return(vstat)
+}
+
+varBinSize = function(E, uE, aux = 1:length(E), popMin = 20) {
+
+  nBins = seq(10,150,by=10)
+  sel = (length(E) / nBins) > popMin
+  nBins = nBins[sel]
+  M = length(uE)
+
+  etab = ztab = c()
+  for(i in seq_along(nBins)) {
+    nBin = nBins[i] #; cat(nBin,'/ ')
+    intrvt = ErrViewLib::genIntervals(1:M, nBin, popMin = popMin)
+    etab[i] = ENCEfun(1:M, cbind(E,uE), intrvt)
+    ztab[i] = ZMSEfun(1:M, cbind(E,uE), intrvt)
+  }
+  # cat('\n')
+  return(
+    list(
+      nBins = nBins,
+      ENCE  = etab,
+      ZMSE  = ztab
+    )
   )
 }

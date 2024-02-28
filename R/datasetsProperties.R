@@ -6,7 +6,7 @@ EdistPars = ZdistPars = matrix(NA,ncol=3,nrow=length(setList))
 colnames(EdistPars) = colnames(ZdistPars) = c("df","mu","sigma")
 
 for(i in seq_along(setList)) {
-  D2 = dataList[[paste0(setList[i],'_cal')]]
+  D2 = dataList[[paste0(setList[i],'_cal')]]; print(setList[i])
   E  = D2$E
   uE = D2$uE
   Z  = E / uE
@@ -27,7 +27,7 @@ for(i in seq_along(setList)) {
   biasE[i] = abs(mu/mus)
 
   ## Fit by Stutent's t to get effective df
-  fit.t<-fitdistrplus::fitdist(
+  fit.t = fitdistrplus::fitdist(
     E, "t_ls", start = list(df=20,mu=mean(E),sigma=sd(E)),
     keepdata = FALSE)
   pars = summary(fit.t)$estimate

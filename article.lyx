@@ -137,7 +137,6 @@ Université Paris-Saclay, 91405 Orsay, France
 \end_layout
 
 \begin_layout Author Email
-
 pascal.pernot@cnrs.fr
 \end_layout
 
@@ -145,24 +144,23 @@ pascal.pernot@cnrs.fr
 \noindent
 Some popular Machine Learning Uncertainty Quantification (ML-UQ) calibration
  statistics do not have predefined reference values and are mostly used
- for comparative studies.
+ in comparative studies.
  In consequence, calibration is almost never validated and the diagnostic
- is often left to the appreciation of the reader.
- Simulated reference values, based on the probabilistic generation of errors
+ is left to the appreciation of the reader.
+ Simulated reference values, based on synthetic calibrated datasets derived
  from actual uncertainties, have been proposed to palliate this problem.
- As the generative probability distribution for the simulation of errors
- is often not constrained, the sensitivity of simulated reference values
- to its choice might be problematic, shedding a doubt on the calibration
+ As the generative probability distribution for the simulation of synthetic
+ errors is often not constrained, the sensitivity of simulated reference
+ values to its choice might be problematic, shedding a doubt on the calibration
  diagnostic.
- A robust validation workflow to deal with simulated reference values is
- proposed.
  This study explores various facets of this problem, and shows that some
  statistics are excessively sensitive to the choice of generative distribution
  to be used for validation when the generative distribution is unknown.
- This is the case of the correlation coefficient between absolute errors
- and uncertainties (CC) and of the expected normalized calibration error
- (ENCE).
- 
+ This is the case, for instance, of the correlation coefficient between
+ absolute errors and uncertainties (CC) and of the expected normalized calibrati
+on error (ENCE).
+ A robust validation workflow to deal with simulated reference values is
+ proposed.
 \end_layout
 
 \begin_layout Section
@@ -196,7 +194,7 @@ key "Levi2022"
 
 \end_inset
 
-, which value depends moreover on the chosen binning scheme
+, which value depends moreover on the binning scheme
 \begin_inset CommandInset citation
 LatexCommand citep
 key "Pernot2023a_arXiv"
@@ -231,9 +229,9 @@ key "Rasmussen2023"
 
  reference values has been recently proposed to palliate the absence of
  reference values for a calibration statistic.
- A simulated reference value is estimated by applying the statistic to the
- actual uncertainties and simulated errors, generated from the uncertainties
- using a model generative distribution 
+ A simulated reference value is estimated by applying the statistic to datasets
+ containing the actual uncertainties and simulated errors generated from
+ the uncertainties using a model generative distribution 
 \begin_inset Formula $D$
 \end_inset
 
@@ -258,7 +256,8 @@ key "Tran2020"
 
 \end_inset
 
-, negative log-likelihood (NLL), fixing the choice of 
+, negative log-likelihood (NLL)...
+ This scenario fixes the choice of 
 \begin_inset Formula $D$
 \end_inset
 
@@ -295,14 +294,25 @@ key "Pernot2022c"
 
 \end_inset
 
- enables to underline the main topics of the present study.
+ enables to underline the main targets of the present study.
  A confidence curve is obtained by estimating an error statistic (e.g.
  the mean absolute error, MAE) for a dataset iteratively pruned from its
  largest uncertainties.
- Plotted against the percentage of pruning, the confidence curve tests how
- the largest errors are associated with the largest uncertainties.
+ Plotted against the percentage of pruned data, the confidence curve tests
+ how the largest errors are associated with the largest uncertainties.
  Ideally, a confidence curve should be monotonously decreasing, but there
- is no predefined reference curve to assess its quality.
+ is no predefined reference curve to assess its quality (the so-called 
+\emph on
+oracle
+\emph default
+ is unreachable in ML regression tasks
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Pernot2022c"
+
+\end_inset
+
+).
  In this context, a confidence curve can inform us on the quality of the
  link between errors and uncertainties, but not on calibration.
  Using a simulated reference curve can solve this problem, at the cost of
@@ -334,8 +344,8 @@ the sensitivity of the simulated reference curve to
 \end_layout
 
 \begin_layout Itemize
-for validation, a confidence band can be estimated for the simulated reference
- curve.
+for validation, a confidence band can be estimated from simulated reference
+ curves.
  For all error statistics, the width of the confidence band depends on 
 \begin_inset Formula $D$
 \end_inset
@@ -354,33 +364,22 @@ The present study considers these two points for other calibration statistics.
 on statistics are sensitive to the choice of a generative distribution,
  how this impacts the validation procedure, and whether the uncertainty
  on the simulated reference value is a good choice of metric for validation.
- The focus is limited to statistics linked to ML regression problems: the
- correlation coefficient between absolute errors and uncertainties (CC),
- an average calibration statistic (the mean squared 
+ The focus is limited to statistics linked to ML regression tasks: the correlati
+on coefficient between absolute errors and uncertainties (CC), an average
+ calibration statistic (the mean squared 
 \emph on
 z
 \emph default
--scores, ZMS), and three conditional calibration statistics (the ENCE, its
- ZMS-derived analog (LZMSE) and the recently introduce fraction of valid
- bins (
-\begin_inset Formula $f_{v}$
-\end_inset
-
-)
-\begin_inset CommandInset citation
-LatexCommand citep
-key "Pernot2023d"
-
-\end_inset
-
-).
+-scores, ZMS), and two conditional calibration statistics (the ENCE, its
+ ZMS-derived analog ZMSE).
 
 \color red
  
 \end_layout
 
 \begin_layout Standard
-The next section defines the calibration statistics and the validation approach.
+The next section defines the calibration statistics, the validation approach,
+ and a proposes of workflow dealing with the main issues of the approach.
  Sect.
 \begin_inset space \thinspace{}
 \end_inset
@@ -392,8 +391,8 @@ reference "sec:Applications"
 
 \end_inset
 
- presents the application of these methods to an ensemble of datasets issued
- from the ML-UQ literature.
+ presents the application of these methods to an ensemble of nine datasets
+ issued from the ML-UQ literature.
  The article proceeds with a discussion of the main findings (Sect.
 \begin_inset space \thinspace{}
 \end_inset
@@ -405,8 +404,7 @@ reference "sec:Discussion"
 
 \end_inset
 
-) and a proposition of workflow dealing with the main issues of the approach.
- The main conclusions are reported in Sect.
+), and the conclusions are reported in Sect.
 \begin_inset space \thinspace{}
 \end_inset
 
@@ -433,8 +431,15 @@ name "sec:Validation-methods-for"
 
 \begin_layout Standard
 This section presents the simulation method for the estimation of calibration
- statistics references and commonly used correlation and average calibration
- statistics in order to define adequate methods for their validation.
+ statistics references and commonly used correlation, 
+\emph on
+average
+\emph default
+ calibration and 
+\emph on
+conditional
+\emph default
+ calibration statistics in order to define adequate methods for their validation.
  
 \end_layout
 
@@ -461,8 +466,19 @@ paired
  to be tested for calibration.
  A few variance-based UQ validation statistics and methods, based on the
  correlation between the absolute errors and uncertainties (rank correlation
- coefficient and confidence curve), avoid the need of a probabilistic model
- linking those variables
+ coefficient (Sect.
+\begin_inset space \thinspace{}
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:Some-calibration-statistics"
+
+\end_inset
+
+) and confidence curve), avoid the need of a probabilistic model linking
+ those variables
 \begin_inset CommandInset citation
 LatexCommand citep
 key "Pernot2022b"
@@ -470,8 +486,8 @@ key "Pernot2022b"
 \end_inset
 
 .
- In contrast, most of the variance-based UQ validation statistics are built
- on a probabilistic model
+ In contrast, most of the variance-based UQ calibration statistics are built
+ implicitly on a probabilistic model
 \begin_inset Formula 
 \begin{equation}
 E_{i}\sim u_{E_{i}}D(0,1)\label{eq:probmod}
@@ -515,7 +531,7 @@ Except in some instances where
 \begin_inset Formula $D$
 \end_inset
 
- is defined by the method used to generate the dataset (gaussian process,
+ is constrained by the method used to generate the dataset (gaussian process,
  normal likelihood models...), the shape of 
 \begin_inset Formula $D$
 \end_inset
@@ -663,10 +679,7 @@ The generative model described above is at the basis of two families of
 
 \begin_layout Subsubsection
 \noindent
-\begin_inset Formula $RCE$
-\end_inset
-
- and related statistics.
+The calibration error and related statistics.
 \begin_inset CommandInset label
 LatexCommand label
 name "par:RCE"
@@ -690,7 +703,8 @@ law of total variance
 
 \end_inset
 
-The first term of the RHS is the mean squared uncertainty 
+where the first term of the RHS has been identified as the mean squared
+ uncertainty 
 \begin_inset Formula $<u_{E}^{2}>$
 \end_inset
 
@@ -719,15 +733,7 @@ For an unbiased error distribution, one gets
 
 \end_inset
 
-on which some popular calibration statistics (e.g., the Expected Calibration
- Error) are based
-\begin_inset CommandInset citation
-LatexCommand citep
-key "Levi2022"
-
-\end_inset
-
-.
+on which some popular calibration statistics are based.
  
 \begin_inset VSpace medskip
 \end_inset
@@ -786,7 +792,6 @@ reference "eq:RMS=RMV"
 \end_inset
 
  is fulfilled.
- 
 \begin_inset space \hfill{}
 \end_inset
 
@@ -819,7 +824,7 @@ reference "eq:RMS=RMV"
 , the Relative Calibration Error is defined as
 \begin_inset Formula 
 \begin{equation}
-RCE=\frac{RMV-RMSE}{RMV}
+RCE=\frac{RMV-RMSE}{RMV}\label{eq:RCE}
 \end{equation}
 
 \end_inset
@@ -842,13 +847,17 @@ where
 
 ).
  The RCE has been shown to be very sensitive to the upper tail of the uncertaint
-y distribution and to become unreliable for some datasets
-\color red
- REF???.
+y distribution and to become unreliable for a large portion of the studied
+ ML-UQ datasets
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Pernot2024_arXiv"
 
-\color inherit
- It is therefore not considered here.
- It is however involved in a bin-based statistic of 
+\end_inset
+
+.
+ It is therefore not considered directly here, but it is used in a bin-based
+ statistic of 
 \emph on
 conditional
 \emph default
@@ -871,13 +880,41 @@ where
 \begin_inset Formula $RCE_{i}$
 \end_inset
 
- is estimated over the data in bin 
+ is estimated over the data within bin 
 \begin_inset Formula $i$
 \end_inset
 
 .
- According to the variable chosen to design the bins, the ENCE might be
- used to test 
+ 
+\end_layout
+
+\begin_layout Standard
+Pernot
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Pernot2023a_arXiv"
+
+\end_inset
+
+ has shown that the ENCE reference value is not zero, and that it depends
+ on the binning scheme.
+ As demonstrated in Appendix
+\begin_inset space \thinspace{}
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Reference-values-for"
+
+\end_inset
+
+, the ENCE depends on the dataset size and number of bins and does not have
+ predefined reference values.
+\end_layout
+
+\begin_layout Standard
+According to the binning variable, the ENCE might be used to test 
 \emph on
 consistency
 \emph default
@@ -896,23 +933,13 @@ key "Pernot2023d"
 
 \end_inset
 
- The ENCE has no predefined reference value (it depends on the dataset and
- the binning scheme).
-\begin_inset CommandInset citation
-LatexCommand citep
-key "Pernot2023a_arXiv"
-
-\end_inset
-
- It is not expected to suffer from the same problem as the RCE when the
- binning variable is the uncertainty.
+ Because of the limited range of each bin, the ENCE is not expected to suffer
+ from the same problem as the RCE when the binning variable is the uncertainty.
+ 
 \end_layout
 
 \begin_layout Subsubsection
-\begin_inset Formula $ZMS$
-\end_inset
-
- and related statistics.
+The ZMS and related statistics.
 \begin_inset CommandInset label
 LatexCommand label
 name "par:ZMS"
@@ -1015,7 +1042,7 @@ key "Pernot2023d"
 
 \end_inset
 
- is defined by
+ is defined as
 \begin_inset Formula 
 \begin{equation}
 ZMS=<Z^{2}>
@@ -1039,7 +1066,7 @@ key "Busk2023"
 
 \begin_inset Formula 
 \begin{align}
-NLL & =\frac{1}{2}\left(<Z^{2}>+<\ln u_{E}^{2}>+\ln2\pi\right)
+NLL & =\frac{1}{2}\left(<Z^{2}>+<\ln u_{E}^{2}>+\ln2\pi\right)\label{eq:NLLdef}
 \end{align}
 
 \end_inset
@@ -1104,9 +1131,21 @@ key "Rasmussen2023"
 
  threat the NLL as if it had no predefined reference value and needed a
  simulated reference.
- However, for a given set of uncertainties, validation of the NLL is equivalent
- to the validation of the ZMS, with the additional constraint of a normal
- generative distribution.
+ This is note the case when the NLL is defined by Eq.
+\begin_inset space \thinspace{}
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:NLLdef"
+
+\end_inset
+
+, but it might be for other likelihood definitions.
+ In the present case, for a given set of uncertainties, validation of the
+ NLL is equivalent to the validation of the ZMS, with the additional constraint
+ of a normal generative distribution.
  
 \end_layout
 
@@ -1143,20 +1182,23 @@ where
 \end_inset
 
 .
- The logarithm accounts for the fact that we are considering a scale statistic
- (a ZMS of 2 entails a correction of the same amplitude as a ZMS of 0.5).
- The ZMSE has no predefined reference value (it depends on the dataset and
- the binning scheme).
- 
-\end_layout
-
-\begin_layout Subsubsection
-
-\color red
-\begin_inset Formula $f_{v}$
+ The logarithm accounts for the fact that ZMS is a scale statistic (a ZMS
+ of 2 entails a correction of the same amplitude as a ZMS of 0.5).
+ As for the ENCE, the ZMSE measures conditional calibration, i.e.
+ consistency if the binning variable is the uncertainty or adaptivity if
+ it is an input feature.
+ Also, the ZMSE depends on the dataset size and bin number (Appendix
+\begin_inset space \thinspace{}
 \end_inset
 
- ???
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Reference-values-for"
+
+\end_inset
+
+), and doe not have a predefined reference value.
 \end_layout
 
 \begin_layout Subsection
@@ -1184,7 +1226,8 @@ key "Tynes2021"
  and small uncertainties to be associated with small absolute errors.
  However, the link is not symmetric, as small absolute errors might be associate
 d with large uncertainties.
- To account for a non-linear link, 
+ To account for possible non-linearities and to reduce the sensitivity to
+ outliers, 
 \emph on
 Spearman's
 \emph default
@@ -1192,21 +1235,21 @@ Spearman's
 \emph on
 rank correlation coefficient
 \emph default
- is preferred to estimate CC.
+ is used to estimate CC.
  
 \end_layout
 
 \begin_layout Standard
 A positive value of CC is desirable, but, considering the probabilistic
- link between errors and uncertainties, its reference value cannot be 1,
+ link between errors and uncertainties, its reference value cannot be 1.
 \begin_inset CommandInset citation
 LatexCommand citep
 key "Pernot2022b"
 
 \end_inset
 
- and CC does not have a predefined reference value, which is a problem for
- its validation.
+ In absence of a specified target value, the CC cannot be used in comparative
+ studies, nor for validation.
  
 \end_layout
 
@@ -1222,7 +1265,16 @@ name "subsec:Validation-approaches-for"
 \end_layout
 
 \begin_layout Standard
-For a given dataset 
+The validation protocol has been presented in Ref
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Pernot2024_arXiv"
+
+\end_inset
+
+.
+ The main points are summarized here.
+ For a given dataset 
 \begin_inset Formula $(E,u_{E})$
 \end_inset
 
@@ -1234,14 +1286,6 @@ For a given dataset
 \begin_inset Formula $\vartheta_{est}$
 \end_inset
 
-, the bias of the bootstrapped distribution 
-\begin_inset Formula $b_{BS}$
-\end_inset
-
-, the standard deviation 
-\begin_inset Formula $\sigma_{BS}$
-\end_inset
-
  and a 95
 \begin_inset space \thinspace{}
 \end_inset
@@ -1250,31 +1294,19 @@ For a given dataset
 \begin_inset Formula $I_{BS}=\left[I_{BS}^{-},I_{BS}^{+}\right]$
 \end_inset
 
+ by bootstrapping using the Bias Corrected Accelerated (BC
+\begin_inset Formula $_{a}$
+\end_inset
+
+) method
+\begin_inset CommandInset citation
+LatexCommand citep
+key "DiCiccio1996"
+
+\end_inset
+
 .
- 
-\begin_inset Formula $b_{BS}$
-\end_inset
-
- and 
-\begin_inset Formula $\sigma_{BS}$
-\end_inset
-
- are used for control.
- Note that it is generally not recommended to correct 
-\begin_inset Formula $\vartheta_{est}$
-\end_inset
-
- from the bootstrapping bias 
-\begin_inset Formula $b_{BS}$
-\end_inset
-
-, but it is important to check that the bias is negligible.
- 
-\end_layout
-
-\begin_layout Standard
-The most straightforward validation approach is then to check that the target
- value for the statistic, 
+ One can then test that the target value for the statistic, 
 \begin_inset Formula $\vartheta_{ref}$
 \end_inset
 
@@ -1290,93 +1322,11 @@ The most straightforward validation approach is then to check that the target
 
 \end_inset
 
-Considering that errors and uncertainties have generally non-normal distribution
-s, and that it is not reliable to invoke the Central Limit Theorem to use
- normality-based testing approaches (see Pernot
-\begin_inset CommandInset citation
-LatexCommand citep
-key "Pernot2022a"
-
-\end_inset
-
- and Appendix
-\begin_inset space \thinspace{}
-\end_inset
-
-
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sec:Errors-and-z-scores"
-
-\end_inset
-
-), one has to infer confidence intervals on the statistics by bootstrapping
- (BS).
- The most reliable approach in these conditions is considered to be the
- Bias Corrected Accelerated BS method
-\begin_inset CommandInset citation
-LatexCommand citep
-key "DiCiccio1996"
-
-\end_inset
-
-, which is used throughout this study.
- 
-\end_layout
-
-\begin_layout Standard
-To go beyond a binary result, it is interesting to have a more continuous
- measure of agreement, and one can define a standardized score considering
- the possible asymmetry of 
-\begin_inset Formula $I_{BS}$
-\end_inset
-
- around 
-\begin_inset Formula $\vartheta_{est}$
-\end_inset
-
-.
- 
-\end_layout
-
-\begin_layout Subsubsection
-Standardized scores
-\begin_inset CommandInset label
-LatexCommand label
-name "par:Standardized-scores"
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-The standardized score 
+For a non-binary agreement measure, a standardized score 
 \begin_inset Formula $\zeta$
 \end_inset
 
- is defined as the ratio of the signed distance of the estimated value 
-\begin_inset Formula $\vartheta_{est}$
-\end_inset
-
- to its reference 
-\begin_inset Formula $\vartheta_{ref}$
-\end_inset
-
-, over the absolute value of the distance between the 
-\begin_inset Formula $\vartheta_{est}$
-\end_inset
-
- and the limit of the confidence interval 
-\begin_inset Formula $I=[I^{-},I^{+}]$
-\end_inset
-
- closest to 
-\begin_inset Formula $\vartheta_{ref}$
-\end_inset
-
-.
- More concretely
+ is defined as
 \begin_inset Formula 
 \begin{equation}
 \zeta(\vartheta_{est},\vartheta_{ref},I)=\begin{cases}
@@ -1387,8 +1337,7 @@ The standardized score
 
 \end_inset
 
-The compatibility of the statistic with its reference value can then be
- tested by
+that can be tested by
 \begin_inset Formula 
 \begin{equation}
 |\zeta|\le1\label{eq:zeta-valid}
@@ -1408,12 +1357,20 @@ reference "eq:int-valid"
 \end_inset
 
 ).
- In addition, the value of 
+ In addition, 
 \begin_inset Formula $\zeta$
 \end_inset
 
- provides valuable information about the sign and amplitude of the mismatch
+ provides valuable information about the sign and amplitude of the agreement
  between the statistic and its reference value.
+\end_layout
+
+\begin_layout Standard
+The validation procedure depends then on the availability of 
+\begin_inset Formula $\vartheta_{ref}$
+\end_inset
+
+, as shown next.
 \end_layout
 
 \begin_layout Subsubsection
@@ -1643,118 +1600,25 @@ It is important to acknowledge that validation tests based on the latter
 \begin_inset Formula $D$
 \end_inset
 
-
+,
 \begin_inset CommandInset citation
 LatexCommand citep
 key "Pernot2022c"
 
 \end_inset
 
-, as will be illustrated in the next section.
-\end_layout
-
-\begin_layout Subsubsection
-Alternative validation of binned statistics
-\begin_inset CommandInset label
-LatexCommand label
-name "subsec:The-fraction-of"
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-For the conditional calibration statistics (ENCE, ZMSE) there is no predefined
- reference value.
- However, they are based on statistics for which reference values are well
- defined.
- An alternative validation metric can therefore be defined as the 
-\emph on
-fraction of valid bins
-\emph default
-
-\begin_inset CommandInset citation
-LatexCommand citep
-key "Pernot2023c_arXiv"
-
-\end_inset
-
-
-\begin_inset Formula 
-\begin{equation}
-f_{v}=\frac{1}{N}\sum_{i=1}^{N}\boldsymbol{1}(\vartheta_{ref}\in I_{BS,i})
-\end{equation}
-
-\end_inset
-
-where 
-\begin_inset Formula $\boldsymbol{1}(x)$
-\end_inset
-
- is the indicator function with values 0 when 
-\begin_inset Formula $x$
-\end_inset
-
- is false, and 1 when 
-\begin_inset Formula $x$
-\end_inset
-
- is true.
- 
-\end_layout
-
-\begin_layout Standard
-For a perfectly calibrated dataset, the fraction of binned statistics with
- a confidence interval containing the reference value should be close to
- the coverage probability of the CIs (typically 95
+ as will be illustrated in Sect.
 \begin_inset space \thinspace{}
 \end_inset
 
-%).
- In practice, one should not expect to recover exactly 
-\begin_inset Formula $f_{v}=0.95$
-\end_inset
 
-, and a CI for 
-\begin_inset Formula $f_{v}$
-\end_inset
-
- can be estimated from the binomial distribution to account for the limited
- number of bins
-\begin_inset CommandInset citation
-LatexCommand citep
-key "Pernot2022a"
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Applications"
 
 \end_inset
 
 .
- 
-\end_layout
-
-\begin_layout Standard
-For a correct estimation of 
-\begin_inset Formula $f_{v}$
-\end_inset
-
-, it is important to ensure a good balance between the bin size and the
- number of bins.
- Using a bin size of 
-\begin_inset Formula $M^{1/2}$
-\end_inset
-
- seems to be a rational choice
-\begin_inset CommandInset citation
-LatexCommand citep
-key "Watts2022"
-
-\end_inset
-
-, which might limit the use of 
-\begin_inset Formula $f_{v}$
-\end_inset
-
- to large datasets.
 \end_layout
 
 \begin_layout Subsubsection
@@ -1784,12 +1648,18 @@ reference "fig:Flowchart-for-the"
 
  should be first confirmed as being fit to the purpose of the study, notably
  for datasets with highly skewed and heavy-tailed uncertainty distributions
- (see below).
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Pernot2024_arXiv"
+
+\end_inset
+
+.
  
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \align center
@@ -1904,8 +1774,8 @@ If
 \begin_inset Formula $D$
 \end_inset
 
- is well defined, one may proceed to the estimation of the simulated reference
- value 
+ is well constrained, one may proceed to the estimation of the simulated
+ reference value 
 \begin_inset Formula $\tilde{\vartheta}_{D,ref}$
 \end_inset
 
@@ -2652,8 +2522,88 @@ The nine datasets used in this study: number, name, size and reference.
  
 \end_layout
 
+\begin_layout Standard
+Those same datasets were tested by Pernot
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Pernot2024_arXiv"
+
+\end_inset
+
+ for average calibration by the ZMS statistic and the result is reported
+ in the first column of Table
+\begin_inset space \thinspace{}
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:uEfit"
+
+\end_inset
+
+.
+ Only four of the nine sets passed the test for average calibration (Sets
+ 1, 6, 7 and 9).
+ In the same study, it was shown that using the RCE statistic (Eq.
+\begin_inset space \thinspace{}
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:RCE"
+
+\end_inset
+
+) for average calibration testing was problematic, and notably that this
+ statistic was unreliable for the sets marked as 
+\begin_inset Quotes eld
+\end_inset
+
+Failed RCE
+\begin_inset Quotes erd
+\end_inset
+
+ in Table
+\begin_inset space \thinspace{}
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:uEfit"
+
+\end_inset
+
+ (Sets 2, 3, 4, 6 and 7).
+ This issue was traced back to the high sensitivity of the mean variance
+ (MV) involved in the RCE expression to the upper tail of the uncertainty
+ distribution.
+ 
+\end_layout
+
+\begin_layout Standard
+In order to have a clear view of the distributions involved in the generative
+ model for the estimation of simulated references, the distributions of
+ 
+\begin_inset Formula $u_{E,}$
+\end_inset
+
+, 
+\begin_inset Formula $E$
+\end_inset
+
+ and 
+\begin_inset Formula $Z$
+\end_inset
+
+ for the nine datasets are characterized in the next sections.
+ 
+\end_layout
+
 \begin_layout Subsubsection
-Uncertainty distributions
+Distributions of uncertainties 
 \begin_inset CommandInset label
 LatexCommand label
 name "sec:Uncertainty-distributions"
@@ -2675,20 +2625,8 @@ reference "fig:Unc-dist"
 
 \end_inset
 
- presents histograms of the squared uncertainties from the datasets used
- in the application section (cf.
- Table
-\begin_inset space \thinspace{}
-\end_inset
-
-
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "tab:data"
-
-\end_inset
-
-).
+ presents histograms of the logarithm of squared uncertainties for the nine
+ datasets.
  
 \begin_inset Formula $u_{E}^{2}$
 \end_inset
@@ -2698,8 +2636,19 @@ reference "tab:data"
 \end_inset
 
 , to assess the pertinence of the NIG model.
- The fit curves are overlaid on the histograms and show a reasonable agreement,
- except for Set 6.
+ The best fit curves are compared to the data histograms and show a reasonable
+ agreement, except for Sets 1, 2 and 6.
+ Uncertainties of Sets 1 appear to be bimodal, which cannot be modeled by
+ the 
+\begin_inset Formula $IG$
+\end_inset
+
+ distribution, while for Set 2, the 
+\begin_inset Formula $IG$
+\end_inset
+
+ model is defeated by a long tail of small uncertainties.
+ Set 6 presents a combination of both features.
  The parameters of the fitted 
 \begin_inset Formula $IG(k,\theta$
 \end_inset
@@ -2716,12 +2665,27 @@ reference "tab:uEfit"
 \end_inset
 
 .
+ One sees that if one excludes the problematic datasets, the shape parameter
+ covers a large range, from 1.57 to 23.4, corresponding to skewness values
+ varying from infinity to about 1 (skewness of the
+\emph on
+ 
+\begin_inset Formula $IG$
+\end_inset
+
+
+\emph default
+ distribution is not defined for 
+\begin_inset Formula $k\le3$
+\end_inset
+
+).
  
 \begin_inset Float figure
 placement h
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \noindent
@@ -2747,6 +2711,33 @@ name "fig:Unc-dist"
 \end_inset
 
 Uncertainty distributions.
+ The histograms of 
+\begin_inset Formula $log(u_{E}^{2})$
+\end_inset
+
+ are compared to the fit of 
+\begin_inset Formula $u_{E}^{2}$
+\end_inset
+
+ by an Inverse-Gamma distribution (blue line).
+ The mean variance (
+\begin_inset Formula $MV=<u_{E}^{2}>$
+\end_inset
+
+) is marked by a red line and the median variance (
+\emph on
+MedV
+\emph default
+) by an orange line.
+ The distance between 
+\begin_inset Formula $MV$
+\end_inset
+
+ and 
+\begin_inset Formula $MedV$
+\end_inset
+
+ characterizes the skewness of the distribution of squared uncertainties.
 \end_layout
 
 \end_inset
@@ -2760,14 +2751,19 @@ Uncertainty distributions.
 \begin_inset Float table
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \noindent
 \align center
 \begin_inset Tabular
-<lyxtabular version="3" rows="10" columns="6">
+<lyxtabular version="3" rows="10" columns="11">
 <features tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
 <column alignment="center" valignment="top">
 <column alignment="decimal" decimal_point="." valignment="top">
 <column alignment="decimal" decimal_point="." valignment="top">
@@ -2780,6 +2776,54 @@ status collapsed
 
 \begin_layout Plain Layout
 Set # 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Calibrated
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Failed RCE
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\beta_{GM}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
 \end_layout
 
 \end_inset
@@ -2847,7 +2891,57 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
-1 
+1
+\series bold
+ 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\checkmark$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.172 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
 \end_layout
 
 \end_inset
@@ -2856,7 +2950,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
-1.60
+-
 \end_layout
 
 \end_inset
@@ -2865,7 +2959,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
-1.15E-01
+-
 \end_layout
 
 \end_inset
@@ -2883,7 +2977,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
-3.2
+-
 \end_layout
 
 \end_inset
@@ -2892,7 +2986,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
-3.0
+-
 \end_layout
 
 \end_inset
@@ -2908,11 +3002,59 @@ Set #
 
 \end_inset
 </cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\checkmark$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.419 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
 <cell alignment="decimal" valignment="top" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
-0.33 
+-
 \end_layout
 
 \end_inset
@@ -2921,7 +3063,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
-2.46E-03
+-
 \end_layout
 
 \end_inset
@@ -2939,7 +3081,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
-0.66 
+-
 \end_layout
 
 \end_inset
@@ -2948,7 +3090,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
-1.4
+-
 \end_layout
 
 \end_inset
@@ -2960,6 +3102,54 @@ Set #
 
 \begin_layout Plain Layout
 3 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\checkmark$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.485 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
 \end_layout
 
 \end_inset
@@ -3020,6 +3210,54 @@ Set #
 
 \end_inset
 </cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\checkmark$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.438 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
 <cell alignment="decimal" valignment="top" usebox="none">
 \begin_inset Text
 
@@ -3076,6 +3314,51 @@ Set #
 
 \end_inset
 </cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.113 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
 <cell alignment="decimal" valignment="top" usebox="none">
 \begin_inset Text
 
@@ -3127,7 +3410,60 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
-6 
+6
+\series bold
+ 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\checkmark$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\checkmark$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.195 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
 \end_layout
 
 \end_inset
@@ -3136,7 +3472,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
-0.20 
+-
 \end_layout
 
 \end_inset
@@ -3145,7 +3481,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
-3.12E-04
+-
 \end_layout
 
 \end_inset
@@ -3163,7 +3499,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
-0.40 
+-
 \end_layout
 
 \end_inset
@@ -3172,7 +3508,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
-1.3
+-
 \end_layout
 
 \end_inset
@@ -3183,7 +3519,62 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
-7 
+7
+\series bold
+ 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\checkmark$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\checkmark$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.524
+\color orange
+ 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
 \end_layout
 
 \end_inset
@@ -3244,6 +3635,51 @@ Set #
 
 \end_inset
 </cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.231 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
 <cell alignment="decimal" valignment="top" usebox="none">
 \begin_inset Text
 
@@ -3295,7 +3731,57 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
-9 
+9
+\series bold
+ 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\checkmark$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.223 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
 \end_layout
 
 \end_inset
@@ -3363,7 +3849,12 @@ name "tab:uEfit"
 
 \end_inset
 
-Parameter of the fit of the squared uncertainties by 
+Tailedness of the uncertainty distributions: 
+\begin_inset Formula $\beta_{GM}$
+\end_inset
+
+ skewness statistic and parameters of the fit of the squared uncertainties
+ by 
 \begin_inset Formula $IG(k,\theta)$
 \end_inset
 
@@ -3410,6 +3901,12 @@ reference "tab:data-summary"
 \end_inset
 
 .
+ The missing values mark the sets with a bad fit by the 
+\begin_inset Formula $IG$
+\end_inset
+
+ model.
+ 
 \end_layout
 
 \end_inset
@@ -3423,51 +3920,82 @@ reference "tab:data-summary"
 \end_layout
 
 \begin_layout Standard
-In the hypothesis that the generative distribution 
-\begin_inset Formula $D$
-\end_inset
-
- is standard normal, one should have approximately 
-\begin_inset Formula $\nu_{eff}\simeq\nu$
-\end_inset
-
-, where 
-\begin_inset Formula $\nu_{eff}$
-\end_inset
-
- was estimated for the error distributions (Table
+The mean variance and median variance were marked in Fig.
 \begin_inset space \thinspace{}
 \end_inset
 
 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "tab:data-summary"
+reference "fig:Unc-dist"
 
-\end_inset
-
-).
- This is the case for Sets 1 and 4, and to a lesser extent for Sets 2, 3,
- 6 and 7.
- On the contrary, Sets 5, 8 and 9 have very large shape parameters which
- contrast strongly with the small values of 
-\begin_inset Formula $\nu_{eff}$
 \end_inset
 
 .
- In the hypothesis of calibrated datasets, this would hint to a rather general
- non-normality of the generative distribution 
-\begin_inset Formula $D$
+ The distance between those values is an estimator of the skewness of the
+ 
+\begin_inset Formula $u_{E}^{2}$
+\end_inset
+
+ distribution.
+ To be more quantitative and focus on the uncertainties instead of their
+ square, skewness of the uncertainty distributions was quantified by 
+\begin_inset Formula $\beta_{GM}$
+\end_inset
+
+, a skewness statistic robust to outliers based on the scaled difference
+ between the mean and median 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Groeneveld1984,Pernot2021"
+
 \end_inset
 
 .
- However, as only Sets 1, 6 and 9 are calibrated according to the ZMS score,
- many more examples of datasets validated for average calibration would
- be necessary to conclude.
+ 
+\begin_inset Formula $\beta_{GM}$
+\end_inset
+
+ varies between -1 and 1 and is null for symmetric distributions.
+ One can see in Table
+\begin_inset space \thinspace{}
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:uEfit"
+
+\end_inset
+
+ that all the datasets that challenge the RCE statistic have the largest
+ 
+\begin_inset Formula $\beta_{GM}$
+\end_inset
+
+ values (above 0.4), except for Set 6.
+ One can see for the sets with a successful 
+\emph on
+
+\begin_inset Formula $IG$
+\end_inset
+
+
+\emph default
+ fit that 
+\begin_inset Formula $\beta_{GM}$
+\end_inset
+
+ is correctly anti-correlated to 
+\begin_inset Formula $k$
+\end_inset
+
+.
+ 
 \end_layout
 
 \begin_layout Subsubsection
-Distribution of the errors and z-scores
+Distributions of errors and z-scores
 \begin_inset CommandInset label
 LatexCommand label
 name "sec:Errors-and-z-scores"
@@ -3555,7 +4083,7 @@ t
 \begin_inset Float table
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \noindent
@@ -3611,7 +4139,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
-\begin_inset Formula $\beta_{E}$
+\begin_inset Formula $b_{E}$
 \end_inset
 
 
@@ -3672,7 +4200,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
-\begin_inset Formula $\beta_{Z}$
+\begin_inset Formula $b_{Z}$
 \end_inset
 
 
@@ -4567,7 +5095,7 @@ z
 \end_inset
 
  its standard deviation, 
-\begin_inset Formula $\beta_{X}=(\mu_{X}-0)/\sigma_{X}$
+\begin_inset Formula $b_{X}=100(\mu_{X}-0)/\sigma_{X}$
 \end_inset
 
  measures relative bias and 
@@ -4593,7 +5121,7 @@ t
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \noindent
@@ -4641,7 +5169,7 @@ t
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \noindent
@@ -4707,15 +5235,15 @@ key "Pernot2020b,Pernot2021"
 
 \end_inset
 
-, and is consistent with the generative model and the wide distributions
- of uncertainties in these datasets (Appendix
+, and is consistent with the generative model and the uncertainty distributions
+ of these datasets (Table
 \begin_inset space \thinspace{}
 \end_inset
 
 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "sec:Uncertainty-distributions"
+reference "tab:uEfit"
 
 \end_inset
 
@@ -4738,15 +5266,7 @@ reference "sec:Uncertainty-distributions"
 \emph on
 t 
 \emph default
-distributions with infinite variance, which contrasts with the moderate
- values of the standard deviations reported above.
- The Student's-
-\emph on
-t
-\emph default
- distributions are not meant here to provide a perfect fit of the data (although
- the fits can be seen as rather good in the area covered by the histograms),
- but only to illustrate and characterize their departure from normality.
+distributions with infinite variance.
 \end_layout
 
 \begin_layout Standard
@@ -4766,12 +5286,104 @@ z
 \end_inset
 
 .
- Overall, one has still very small 
+ Overall, one has still relatively small 
 \begin_inset Formula $\nu_{eff}$
 \end_inset
 
- values.
+ values, rejecting the normality of 
+\emph on
+z
+\emph default
+-scores for 8 out of nine datasets.
  
+\end_layout
+
+\begin_layout Subsection
+Analysis of the generative model
+\end_layout
+
+\begin_layout Standard
+Having characterized the uncertainty and error distributions, one can put
+ the generative model to the test and try to characterize the generative
+ distribution 
+\begin_inset Formula $D$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Paragraph*
+Non-normality of 
+\begin_inset Formula $D.$
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+In the hypothesis that the generative distribution 
+\begin_inset Formula $D$
+\end_inset
+
+ is standard normal, one should have approximately 
+\begin_inset Formula $\nu_{eff}\simeq2k$
+\end_inset
+
+, where 
+\begin_inset Formula $\nu_{eff}$
+\end_inset
+
+ was estimated for the error distributions (Table
+\begin_inset space \thinspace{}
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:data-summary"
+
+\end_inset
+
+).
+ This is the case for Set 4, and to a lesser extent for Sets 7.
+ On the contrary, Sets 5, 8 and 9 have very large shape parameters which
+ contrast strongly with the small values of 
+\begin_inset Formula $\nu_{eff}$
+\end_inset
+
+.
+ Reasoning on the single calibrated dataset for which 
+\begin_inset Formula $k$
+\end_inset
+
+ and 
+\begin_inset Formula $\nu_{eff}$
+\end_inset
+
+ are available, i.e.
+ Set 9, on should conclude on the non-normality of the generative distribution
+ 
+\begin_inset Formula $D$
+\end_inset
+
+, or at least that the normality of 
+\begin_inset Formula $D$
+\end_inset
+
+ cannot be considered as a general hypothesis.
+ 
+\end_layout
+
+\begin_layout Paragraph*
+Using 
+\begin_inset Formula $Z$
+\end_inset
+
+ distribution as a proxy for 
+\begin_inset Formula $D.$
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -4781,7 +5393,7 @@ z
 \emph default
 -scores 
 \emph on
-for calibrated dataset
+for a calibrated dataset
 \emph default
  should be identical to 
 \begin_inset Formula $D$
@@ -4802,7 +5414,11 @@ ions: a standard Normal distribution
 \emph on
 t
 \emph default
- distribution with the degrees of freedom for 
+ distribution 
+\begin_inset Formula $t_{s}(\nu_{eff,Z})$
+\end_inset
+
+ with the degrees of freedom estimated for 
 \begin_inset Formula $Z$
 \end_inset
 
@@ -4818,6 +5434,18 @@ reference "tab:data-summary"
 \end_inset
 
 ).
+ The unit-variance Student's-
+\emph on
+t
+\emph default
+ distribution is defined as
+\begin_inset Formula 
+\begin{equation}
+t_{s}(\nu)=t(\nu)/\sqrt{\nu/(\nu-2)}
+\end{equation}
+
+\end_inset
+
  The results are shown in Fig.
 \begin_inset space \thinspace{}
 \end_inset
@@ -4884,7 +5512,11 @@ reference "tab:data-summary"
 t
 \emph default
  model cannot be generated because of the infinite variance for 
-\begin_inset Formula $\nu_{eff}<2$
+\begin_inset Formula $\nu_{eff,Z}<2$
+\end_inset
+
+ and it was replaced by 
+\begin_inset Formula $\nu_{eff,Z}=2.1$
 \end_inset
 
 .
@@ -4902,21 +5534,34 @@ t
 
 \begin_layout Standard
 The Student's-based model offers a better fit to the errors histogram for
- Sets 2, 5, 7, 8 and 9 (considering that Set 9 is affected by a notable
+ Sets 2, 5, 6, 7, 8 and 9 (considering that Set 9 is affected by a notable
  bias of the errors).
  For the other sets, it is on par with the normal model.
- Note that this model cannot be used for Set 6 because of the infinite variance
- of Student's distribution with 
-\begin_inset Formula $\nu\le2$
+ Note that for Set 6 the value of 
+\begin_inset Formula $\nu_{eff,Z}$
+\end_inset
+
+ has been fixed to 2.1 to avoid the infinite variance caused by 
+\begin_inset Formula $\nu_{eff,Z}\le2$
 \end_inset
 
 .
+ 
+\end_layout
+
+\begin_layout Standard
+It is thus clear that a normal generative distribution 
+\begin_inset Formula $D=N(0,1)$
+\end_inset
+
+ is not likely to provide simulated error distributions with properties
+ close to the actual errors, except for a few datasets.
  A Student's-
 \emph on
 t
 \emph default
  model for the generative distribution 
-\begin_inset Formula $D$
+\begin_inset Formula $D=t_{s}(\nu_{eff,Z})$
 \end_inset
 
 , based on the distribution of 
@@ -4924,8 +5569,12 @@ t
 z
 \emph default
 -scores might thus offer an interesting alternative to the normal distribution
- for the generation of simulated error sets (except when it becomes singular),
- and it might help to test the sensitivity of simulated statistics to D.
+ for the generation of simulated error sets, and it might also be useful
+ to test the sensitivity of simulated statistics to 
+\begin_inset Formula $D$
+\end_inset
+
+.
  
 \end_layout
 
@@ -4934,6 +5583,29 @@ Sensitivity analysis
 \end_layout
 
 \begin_layout Standard
+In the previous section, we have seen that if there is a best choice for
+ the generative distribution 
+\begin_inset Formula $D$
+\end_inset
+
+, it is rarely the normal distribution, which leaves the question of its
+ choice.
+ In absence of strong constraints to guide this choice, it is important
+ to assess the sensitivity to 
+\begin_inset Formula $D$
+\end_inset
+
+ of the simulated reference values for the candidate calibration statistics,
+ and more globally the sensitivity of the validation 
+\begin_inset Formula $\zeta$
+\end_inset
+
+-scores.
+ 
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
 The sensitivity of simulated reference values to the generative distribution
  is explored for the statistics presented above.
  Reference values are simulated with 
@@ -5044,7 +5716,7 @@ reference "eq:probmod"
 
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 For the statistics with predefined reference values (ZMS, 
 \begin_inset Formula $f_{v,LRCE}$
 \end_inset
@@ -5081,7 +5753,7 @@ The
  
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 The CC, ENCE and ZMSE simulated reference values depend strongly on 
 \begin_inset Formula $D$
 \end_inset
@@ -5094,68 +5766,54 @@ The CC, ENCE and ZMSE simulated reference values depend strongly on
  is unknown.
 \end_layout
 
-\begin_layout Subsubsection
-Sensitivity of the simulated reference values to 
-\begin_inset Formula $D$
 \end_inset
 
 
 \end_layout
 
+\begin_layout Subsubsection
+Sensitivity of 
+\begin_inset Formula $\tilde{\vartheta}_{D,ref}$
+\end_inset
+
+ to the dataset
+\end_layout
+
 \begin_layout Standard
-This section replicates the numerical experiment of Sect.
+A first point is the confirmation of the dependence of the simulated reference
+ values on the datasets.
+ For this, a normal generative distribution is chosen [
+\begin_inset Formula $D=N(0,1)$
+\end_inset
+
+], and 
+\begin_inset Formula $\tilde{\vartheta}_{D,ref}$
+\end_inset
+
+ and 
+\begin_inset Formula $u(\tilde{\vartheta}_{D,ref})$
+\end_inset
+
+ are estimated for each statistic and dataset.
+ The sampling size is 
+\begin_inset Formula $N_{MC}=10^{4}$
+\end_inset
+
+ and 
+\begin_inset Formula $u_{E}$
+\end_inset
+
+ is sorted and parted into 50 equal-size bins to estimate the ENCE and ZMSE
+ statistics.
+ The results are presented in Fig.
 \begin_inset space \thinspace{}
 \end_inset
 
 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "sec:Sensitivity-analysis"
+reference "fig:sensitivity-1-1"
 
-\end_inset
-
-, but with the actual uncertainties instead of synthetic ones.
- More concretely, for each dataset, simulated error sets are generated by
- using a generative
-\color red
- 
-\color inherit
-
-\begin_inset Formula $D=t(\nu)/\sqrt{\nu/(\nu-2)}$
-\end_inset
-
- for a range of degrees of freedom between 3 and 20 (Fig.
-\begin_inset space \thinspace{}
-\end_inset
-
-
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "fig:sensitivity"
-
-\end_inset
-
-).
- The technical parameters are the same as in Sect.
-\begin_inset space \thinspace{}
-\end_inset
-
-
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sec:Sensitivity-analysis"
-
-\end_inset
-
-.
- In order to compare the trends, all statistics have been taken relatively
- to their value at 
-\begin_inset Formula $\nu=20$
-\end_inset
-
-, i.e.
- 
-\begin_inset Formula $\tilde{S}(\nu)=S(\nu)/S(20)$
 \end_inset
 
 .
@@ -5169,9 +5827,216 @@ status open
 \noindent
 \align center
 \begin_inset Graphics
-	filename Figs/fig_sens_Real_D.png
+	filename Figs/fig_sensData_s.png
 	lyxscale 20
-	width 95text%
+	width 75text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:sensitivity-1-1"
+
+\end_inset
+
+Sensitivity of 
+\begin_inset Formula $\tilde{\vartheta}_{D,ref}$
+\end_inset
+
+ to the dataset for the ZMS (a), CC (b), ENCE (c, d) and ZMSE (e, f) statistics.
+ The generative distribution is standard normal, 
+\begin_inset Formula $D=N(0,1)$
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+For ZMS [Fig.
+\begin_inset space \thinspace{}
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:sensitivity-1-1"
+
+\end_inset
+
+(a)], the simulation recovers correctly the predefined reference values.
+ For CC [Fig.
+\begin_inset space \thinspace{}
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:sensitivity-1-1"
+
+\end_inset
+
+(b)], 
+\begin_inset Formula $\tilde{\vartheta}_{D,ref}$
+\end_inset
+
+ follows a random-looking pattern confirming the absence of a common reference
+ value for these datasets.
+ The ENCE [Fig.
+\begin_inset space \thinspace{}
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:sensitivity-1-1"
+
+\end_inset
+
+(c)] and ZMSE [Fig.
+\begin_inset space \thinspace{}
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:sensitivity-1-1"
+
+\end_inset
+
+(e)] follow a similar pattern, which is mostly due to the sensitivity of
+ these variables to 
+\begin_inset Formula $M$
+\end_inset
+
+ (Appendix
+\begin_inset space \thinspace{}
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Reference-values-for"
+
+\end_inset
+
+).
+ The correction of this trend by multiplying by 
+\begin_inset Formula $M^{1/2}$
+\end_inset
+
+ [Fig.
+\begin_inset space \thinspace{}
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:sensitivity-1-1"
+
+\end_inset
+
+(d,f)] shows that this common pattern disappears and that each uncertainty
+ set leads to its own reference value, even if a few CIs overlap.
+ 
+\end_layout
+
+\begin_layout Standard
+Apart from the ZMS, on needs thus to estimate a simulated reference value
+ for each set and statistic.
+ 
+\end_layout
+
+\begin_layout Subsubsection
+Sensitivity of 
+\begin_inset Formula $\tilde{\vartheta}_{D,ref}$
+\end_inset
+
+ to 
+\begin_inset Formula $D$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The simulated reference values are generated for Sets 7 and 8 (as representative
+ of the largest sets with markedly different uncertainty distributions)
+ from their actual uncertainties by using a scaled Student's-
+\emph on
+t
+\emph default
+ generative distribution 
+\begin_inset Formula $D=t_{s}(\nu)$
+\end_inset
+
+ for a range of degrees of freedom between 3 and 20, covering the range
+ of values observed for 
+\begin_inset Formula $\nu_{eff,Z}$
+\end_inset
+
+ (Table
+\begin_inset space \thinspace{}
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:data-summary"
+
+\end_inset
+
+).
+ The sampling size is 
+\begin_inset Formula $N_{MC}=10^{4}$
+\end_inset
+
+ and 
+\begin_inset Formula $u_{E}$
+\end_inset
+
+ is sorted and parted into 50 equal-size bins to estimate the ENCE, ZMSE.
+ The results are presented in Fig.
+\begin_inset space \thinspace{}
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:sensitivity-1"
+
+\end_inset
+
+.
+ 
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename Figs/fig_sensitivity78.png
+	lyxscale 20
+	width 75text%
 
 \end_inset
 
@@ -5188,10 +6053,10 @@ name "fig:sensitivity-1"
 
 \end_inset
 
-Sensitivity of the simulated reference values of various statistics.
+Sensitivity of the simulated reference values to the generative distribution.
  Calibrated datasets are generated from the actual uncertainties of Sets
- 1-9, using 
-\begin_inset Formula $D=t(\nu)$
+ 7 and 8, using a generative distribution 
+\begin_inset Formula $D=t_{s}(\nu)$
 \end_inset
 
  with 
@@ -5199,7 +6064,7 @@ Sensitivity of the simulated reference values of various statistics.
 \end_inset
 
  degrees of freedom.
- The symbols report the set number.
+ 
 \end_layout
 
 \end_inset
@@ -5213,15 +6078,104 @@ Sensitivity of the simulated reference values of various statistics.
 \end_layout
 
 \begin_layout Standard
-The trends observed for the synthetic datasets are recovered for all the
- statistics.
- Note that for clarity, only the results for 
-\begin_inset Formula $f_{v,LZMS}$
+For ZMS [Fig.
+\begin_inset space \thinspace{}
 \end_inset
 
- are presented.
- Set 7 seems to be an outlier for the ENCE and LZMS statistics.
- 
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:sensitivity-1"
+
+\end_inset
+
+(a)], one expects to observe the conformity of the simulated reference value
+ with the known reference value (
+\begin_inset Formula $\tilde{\vartheta}_{\nu,ref}\simeq\vartheta_{ref}$
+\end_inset
+
+), whatever the chosen generative distribution.
+ This is the case, albeit with a notable increase of Monte Carlo sampling
+ uncertainty as 
+\begin_inset Formula $v$
+\end_inset
+
+ decreases.
+ For CC [Fig.
+\begin_inset space \thinspace{}
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:sensitivity-1"
+
+\end_inset
+
+(b)], the sensibility to 
+\begin_inset Formula $\nu$
+\end_inset
+
+ depends on the value of the statistic, and it is less marked for low CC
+ values (Set 8) than for larger ones (Set 7).
+ One is therefore more likely to have a reliable validation for datasets
+ with poor CC values and vice versa, which is not a satisfactory situation.
+ For the ENCE [Fig.
+\begin_inset space \thinspace{}
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:sensitivity-1"
+
+\end_inset
+
+(c)] and ZMSE [Fig.
+\begin_inset space \thinspace{}
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:sensitivity-1"
+
+\end_inset
+
+(d)] statistics, there is no ambiguity, as the simulated reference values
+ depend strongly on 
+\begin_inset Formula $\nu$
+\end_inset
+
+, with a similar behavior for both statistics and datasets.
+\end_layout
+
+\begin_layout Standard
+This sensitivity analysis is based on a worst case scenario where the lower
+ values of 
+\begin_inset Formula $\nu$
+\end_inset
+
+ generate amounts of outliers that can disturb the reliability of conditional
+ calibration statistics.
+ It suggests that using too extreme generative distributions 
+\begin_inset Formula $D$
+\end_inset
+
+ for the sensitivity analysis of those statistics without reference values
+ might be counterproductive.
+ For instance, a Student's-t distribution with defined skewness and kurtosis
+ requires 
+\begin_inset Formula $\nu\ge5$
+\end_inset
+
+.
+ It shows nevertheless that the CC, ENCE and ZMSE statistics can hardly
+ be useful in a validation context when the generative distribution 
+\begin_inset Formula $D$
+\end_inset
+
+ is unknown.
 \end_layout
 
 \begin_layout Subsubsection
@@ -5237,7 +6191,20 @@ Sensitivity of
 \end_layout
 
 \begin_layout Standard
-For the simulated reference values, two options for 
+We now consider how the sensitivity of 
+\begin_inset Formula $\tilde{\vartheta}_{D,ref}$
+\end_inset
+
+ to 
+\begin_inset Formula $D$
+\end_inset
+
+ propagates to the 
+\begin_inset Formula $\zeta$
+\end_inset
+
+-scores.
+ For the simulated reference values, two options for 
 \begin_inset Formula $D$
 \end_inset
 
@@ -5253,23 +6220,8 @@ For the simulated reference values, two options for
 \emph on
 t
 \emph default
- distribution 
-\begin_inset Formula $t_{\nu_{eff}}$
-\end_inset
-
- with 
-\begin_inset Formula $\nu_{eff}$
-\end_inset
-
- taken from Table
-\begin_inset space \thinspace{}
-\end_inset
-
-
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "tab:data-summary"
-
+ distribution with 6 degrees of freedom 
+\begin_inset Formula $t_{s}(\nu=6)$
 \end_inset
 
  (
@@ -5281,8 +6233,13 @@ reference "tab:data-summary"
 \end_inset
 
 ).
- The results for the three statistics and five scenarios are reported in
- Fig.
+ This value has been chosen to avoid the perturbation of the statistics
+ by extreme values as observed in the previous section.
+\end_layout
+
+\begin_layout Standard
+The results for the ZMS, CC, ENCE and ZMSE statistics and the pertinent
+ simulation scenarios are reported in Figs.
 \begin_inset space \thinspace{}
 \end_inset
 
@@ -5290,6 +6247,25 @@ reference "tab:data-summary"
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:z-Scores"
+
+\end_inset
+
+-
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:z-Scores-1"
+
+\end_inset
+
+.
+ The values for the statistics are reported in Appendix
+\begin_inset space \thinspace{}
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Results-tables-for"
 
 \end_inset
 
@@ -5304,7 +6280,7 @@ status open
 \noindent
 \align center
 \begin_inset Graphics
-	filename Figs/fig_scores_linear.png
+	filename Figs/fig_scores_linear1.png
 	lyxscale 25
 	width 87text%
 
@@ -5334,7 +6310,7 @@ Validation of an average calibration statistics (ZMS) and the correlation
 \end_inset
 
  : Normal (SimN) and 
-\begin_inset Formula $t_{\nu_{eff}}$
+\begin_inset Formula $t_{s}(\nu=6)$
 \end_inset
 
  (SimT), compared to the Monte Carlo approach of Rasmussen 
@@ -5349,19 +6325,9 @@ key "Rasmussen2023"
 \end_inset
 
  (Sim2N and Sim2T).
- The 
-\begin_inset Formula $t_{\nu_{eff}}$
-\end_inset
-
--based models cannot be used for Set 6 because it leads to an infinite variance
- generative distribution (
-\begin_inset Formula $\nu_{eff}<2$
-\end_inset
-
-).
  In absence of a predefined reference value, the BS approach is not available
  for CC.
- The sign of RCE has been changed to facilitate the comparison with ZMS.
+ 
 \end_layout
 
 \end_inset
@@ -5371,7 +6337,7 @@ key "Rasmussen2023"
 
 \end_inset
 
-
+ 
 \end_layout
 
 \begin_layout Standard
@@ -5384,14 +6350,8 @@ Let us first consider the results for the ZMS statistic.
 \end_inset
 
 .
- It has to be noted that the SimT and Sim2T models cannot be used for Set
- 6 because it leads to an infinite variance Student's distribution (
-\begin_inset Formula $\nu_{eff,Z}<2$
-\end_inset
-
-).
- It is also clear that the Sim2N and Sim2T scores differ notably from the
- other scores and between them, confirming a high sensitivity of 
+ It is also clear that the Sim2N and Sim2T scores can differ notably from
+ the other scores and between them, confirming a high sensitivity of 
 \begin_inset Formula $I_{D}$
 \end_inset
 
@@ -5420,7 +6380,8 @@ key "Cho2005"
 
 .
  The validation results differ at the margin, as the approximate method
- seems to provide slightly wider CIs.
+ used previously seems to provide slightly wider CIs than the bootstrapped
+ ones used here.
 \end_layout
 
 \begin_layout Standard
@@ -5428,7 +6389,7 @@ For the CC statistic, it appears that the choice of
 \begin_inset Formula $D$
 \end_inset
 
- has always a sizable effect, comparable for both simulation methods.
+ has always a sizable effect, even for the Sim protocol.
  In consequence, and unless one trusts more one of the two options for 
 \begin_inset Formula $D$
 \end_inset
@@ -5440,8 +6401,8 @@ For the CC statistic, it appears that the choice of
 
 -induced discrepancies, all the CC validation statistics for a given dataset
  agree on the binary validation diagnostic.
- One might be tempted to conclude that only Sets 3 and 4 have CCs compatible
- with their simulated reference values.
+ One might be then tempted to conclude that only Sets 3 and 4 have CCs compatibl
+e with their simulated reference values.
  Note that in this case, the bootstrapped and simulated 
 \begin_inset Formula $\zeta$
 \end_inset
@@ -5451,73 +6412,103 @@ For the CC statistic, it appears that the choice of
 \end_inset
 
  are very similar.
+ 
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename Figs/fig_scores_linear2.png
+	lyxscale 25
+	width 87text%
+
+\end_inset
+
+
 \end_layout
 
-\begin_layout Subsection
-Validation
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:z-Scores-1"
+
+\end_inset
+
+Same as Fig.
+\begin_inset space \thinspace{}
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:z-Scores"
+
+\end_inset
+
+ for the ENCE and ZMSE consistency scores.
+ In absence of a predefined reference value, the BS approach is not available
+ for these statistics.
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-This section focuses on the validation by standardized 
+The 
 \begin_inset Formula $\zeta$
 \end_inset
 
--scores and compares the results for the benchmark method (
-\begin_inset Formula $\zeta_{BS}$
+ -scores for the ENCE and ZMSE statistics have been estimated for 
+\begin_inset Formula $N=20$
 \end_inset
 
-) when the reference value is defined, with two versions of the simulated
- reference value method, using either the bootstrapping CI 
-\begin_inset Formula $I_{BS}$
+ bins and present very similar features (Fig.
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:z-Scores-1"
+
 \end_inset
 
- for the statistic (
-\begin_inset Formula $\zeta_{SimD}$
+): a strong sensitivity to 
+\begin_inset Formula $D$
 \end_inset
 
-), or the Monte Carlo CI 
-\begin_inset Formula $I_{sim}$
-\end_inset
-
- for the simulated reference value (
-\begin_inset Formula $\zeta_{Sim2D}$
-\end_inset
-
-).
- The ZMS and RCE statistics have well defined target values (1 and 0, respective
-ly).
- It is therefore possible to estimate their 
-\begin_inset Formula $\zeta_{BS}$
-\end_inset
-
- and to compare to the other approaches.
- For the CC statistic, there is no predefined target, so that 
-\begin_inset Formula $\zeta_{BS}$
-\end_inset
-
- cannot be estimated.
+ and a large difference between the Sim and Sim2 protocols.
+ This confirms that one should not use the Monte Carlo CIs to estimate the
  
-\end_layout
+\begin_inset Formula $\zeta$
+\end_inset
 
-\begin_layout Standard
-Comparing the ZMS and CC validation statistics, one sees that none of the
- datasets is at the same time average calibrated and having a good correlation
- between absolute errors and uncertainties.
- A consequence is that we should not expect much success when testing 
-\emph on
-conditional
-\emph default
- calibration
-\begin_inset CommandInset citation
-LatexCommand citep
-key "Pernot2023d"
+-scores.
+ Focusing one the SimN and SimT results, it appears that they globally agree
+ to reject consistency, except for Set 3 where consistency would be validated
+ by SimT, as observed in Appendix
+\begin_inset space \thinspace{}
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Reference-values-for"
 
 \end_inset
 
-,
-\color red
- but this is out of the scope of the present article.
- 
+.
 \end_layout
 
 \begin_layout Section
@@ -5538,26 +6529,26 @@ This study focused on the validation of correlation and calibration statistics
 \end_inset
 
 -scores, for which one needs reference values and confidence interval estimates.
- Reference values are predefined for ZMS, RCE, 
-\begin_inset Formula $f_{v,LZMS}$
+ Reference values are predefined for the ZMS, 
+\begin_inset Formula $f_{v,ZMS}$
 \end_inset
 
  and 
-\begin_inset Formula $f_{v,LRCE}$
+\begin_inset Formula $f_{v,RCE}$
 \end_inset
 
- statistics, but not for CC, ENCE and LZMSE.
+ statistics, but not for CC, ENCE and ZMSE.
  In the latter cases, it is possible to generate reference values by a Monte
- Carlo approach, which implies to sample simulated error sets from the actual
- uncertainties, using a generative distribution 
+ Carlo approach, which implies to generate simulated error sets from the
+ actual uncertainties, using a generative distribution 
 \begin_inset Formula $D$
 \end_inset
 
 .
  A reference value and its CI can be obtained by repeating this random sampling.
- The choice of interval-based validation results from the often marked non-norma
-lity of the error and uncertainty datasets, which prevents the use of more
- standard 
+ The choice of an interval-based validation method results from the often
+ marked non-normality of the error and uncertainty datasets, which prevents
+ the use of more standard 
 \begin_inset Formula $z$
 \end_inset
 
@@ -5566,8 +6557,9 @@ lity of the error and uncertainty datasets, which prevents the use of more
 \end_inset
 
 -scores.
- CIs are estimated by bootstrapping for all statistics, by taking care that
- the bootstrap distributions can be non-normal and asymmetric.
+ CIs are therefore estimated by bootstrapping for all statistics, by taking
+ care that the bootstrap distributions can be non-normal and asymmetric.
+ 
 \end_layout
 
 \begin_layout Standard
@@ -5592,9 +6584,9 @@ key "Rasmussen2023"
  proposed to use the standard deviation or CI of the simulated reference
  value as a metric to compare the estimated statistic to its reference value.
  This study shows unambiguously that several disadvantages come with this
- approach: (i) it introduces an asymmetry between the statistics with known
- and unknown reference values, using bootstrapping-based uncertainties for
- the former and simulation-based uncertainties for the latter
+ approach: (i) it introduces an asymmetry of treatment between the statistics
+ with known and unknown reference values, using bootstrapping-based uncertaintie
+s for the former and simulation-based uncertainties for the latter
 \begin_inset CommandInset citation
 LatexCommand citep
 key "Rasmussen2023"
@@ -5618,22 +6610,16 @@ ad hoc
  
 \end_layout
 
-\begin_layout Subsubsection
-Assessing and reducing the sensitivity of 
-\begin_inset Formula $\zeta$
-\end_inset
-
--scores to 
-\begin_inset Formula $D$
-\end_inset
-
-
-\end_layout
-
 \begin_layout Standard
-To circumvent these issues, it is suggested here to use the bootstrapping-based
- intervals independently of the existence of a reference value, and to character
-ize the simulated reference by its 
+To circumvent these issues, it is suggested here to 
+\emph on
+use the bootstrapping-based intervals
+\emph default
+ independently of the existence of a reference value, and to 
+\emph on
+characterize the simulated reference by its
+\emph default
+ 
 \emph on
 standard error
 \emph default
@@ -5650,24 +6636,45 @@ based uncertainty, which solves the problem of the dependence of the
 \end_inset
 
 -scores on the simulated reference uncertainty.
-\end_layout
+ The impact of this approach has been shown by comparing SimN to SimT and
+ Sim2N to Sim2T (Figs.
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:z-Scores"
 
-\begin_layout Standard
-Another and less manageable source of dependence of the 
-\begin_inset Formula $\zeta$
 \end_inset
 
--scores on 
+-
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:z-Scores-1"
+
+\end_inset
+
+): in all cases the proposed approach reduces the sensitivity to 
 \begin_inset Formula $D$
 \end_inset
 
- comes through the simulated reference value itself.
+, except for CC where it is about identical.
+ 
+\end_layout
+
+\begin_layout Standard
+Another and less manageable source of sensitivity of the 
+\begin_inset Formula $\zeta$
+\end_inset
+
+-scores to 
+\begin_inset Formula $D$
+\end_inset
+
+ comes with the simulated reference value itself.
  For instance, the mean value of any statistic that involves a sign loss
  of the simulated errors (e.g.
  absolute value, squared value...) is likely to be affected by the shape/width
  of the errors distribution.
- This is particularly visible for the CC, ENCE and LZMSE statistics, but
- much less for the ZMS, RCE of 
+ This is particularly visible for the CC, ENCE and ZMSE statistics, but
+ much less for the ZMS, and 
 \begin_inset Formula $f_{v,X}$
 \end_inset
 
@@ -5686,10 +6693,6 @@ key "Pernot2022c"
 
 , which was not the case for the MAE.
  
-\end_layout
-
-\begin_layout Standard
-
 \emph on
 The sensitivity of a simulated reference value to the generative model has
  therefore to be directly assessed before using it for validation
@@ -5849,16 +6852,14 @@ name "sec:Conclusion"
 \end_layout
 
 \begin_layout Standard
-
-\color orange
-This study sheds a critical look on the validation of an average calibration
+This study sheds a critical look at the validation of an average calibration
  statistics (ZMS), a correlation statistic (CC) and four conditional calibration
- statistics (ENCE, LZMSE, 
-\begin_inset Formula $f_{v,ENCE}$
+ statistics (ENCE, ZMSE, 
+\begin_inset Formula $f_{v,RCE}$
 \end_inset
 
  and 
-\begin_inset Formula $f_{v,LZMSE}$
+\begin_inset Formula $f_{v,ZMS}$
 \end_inset
 
 ).
@@ -5867,14 +6868,10 @@ This study sheds a critical look on the validation of an average calibration
 \begin_inset Formula $f_{v,X}$
 \end_inset
 
-) and compared to simulation approaches that could be used for statistics
- with no predefined reference value (CC, ENCE and LZMSE).
-
-\color red
- 
-\color inherit
-A robust validation workflow was proposed to deal with the main obstacles
- of this validation approach (Fig.
+) and compared to simulation approaches for statistics with no predefined
+ reference value (CC, ENCE and ZMSE).
+ A robust validation workflow was proposed to deal with the main obstacles
+ of the simulation approach (Fig.
 \begin_inset space \thinspace{}
 \end_inset
 
@@ -5885,29 +6882,91 @@ reference "fig:Flowchart-for-the"
 
 \end_inset
 
-).
- Moreover, some important conclusions about the studied statistics has been
- obtained by studying a series of ML-UQ datasets from the literature:
+) and notably with the sensitivity of simulated reference values to the
+ generative distribution 
+\begin_inset Formula $D$
+\end_inset
+
+ used to generate ideal synthetic errors from actual uncertainties.
+\end_layout
+
+\begin_layout Standard
+Important conclusions about the studied statistics has been obtained from
+ a series of ML-UQ datasets from the literature.
 \end_layout
 
 \begin_layout Itemize
 
 \emph on
-Do not use CC as a validation statistic
+The generative distribution 
+\begin_inset Formula $D$
+\end_inset
+
+ is not normal
 \emph default
 .
- It was shown that the simulation of reference values for the correlation
- coefficient between absolute errors and uncertainties is highly sensitive
- to the choice of generative distribution.
+ The error distributions obtained by the generative model with a normal
+ distribution 
+\begin_inset Formula $D$
+\end_inset
+
+ (Eq.
+\begin_inset space \thinspace{}
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:probmod"
+
+\end_inset
+
+) rarely agree with the actual error distributions.
+ Better fits are often obtained by using the distribution of scaled errors
+ (
+\emph on
+z
+\emph default
+-scores) as a proxy.
+ In some instances, e.g.
+ Bayesian Neural Networks or Gaussian Processes, the generative distributions
+ is prescribed, but this is not generally the case.
+ Thus, before using an hypothetical generative distribution to simulate
+ unknown reference values, one should test its pertinence for the dataset(s)
+ under scrutiny.
+ 
+\end_layout
+
+\begin_layout Itemize
+
+\emph on
+The use of simulated reference values for the CC, ENCE and ZMSE statistics
+ is not reliable
+\emph default
+ 
+\emph on
+if 
+\begin_inset Formula $D$
+\end_inset
+
+ is unknown
+\emph default
+.
+ It has been shown that the simulated reference values for these statistics
+ are highly sensitive to the choice of generative distribution 
+\begin_inset Formula $D$
+\end_inset
+
+.
  If 
 \begin_inset Formula $D$
 \end_inset
 
- is unknown, it is recommended to avoid CC to draw any conclusion about
- the proper relationship between errors and uncertainties.
- Checking that the CC value is positive is the best that can be done.
- A much more powerful and reliable substitute to CC is the plotting of RMSE-base
-d 
+ is unknown, one cannot estimate a reliable reference value for their validation.
+ For CC, checking that it is positive is the best that can be done and there
+ is no sens in comparing CC values of different datasets.
+ A much more powerful and reliable substitute is the plotting of RMSE-based
+ 
 \emph on
 confidence curves
 \emph default
@@ -5919,79 +6978,30 @@ key "Pernot2022c"
 \end_inset
 
 .
+ Similarly, the simulated reference values for measures of conditional calibrati
+on such as the ENCE and ZMSE are very sensitive to the choice of 
+\begin_inset Formula $D$
+\end_inset
+
+ and therefore cannot generally be used for validation.
+ Instead, the fraction of valid bins, based on binwise testing of the RCE
+ or the ZMS statistic, has a predefined reference value and can be used
+ without limitations, as long as the datasets are large enough to ensure
+ testing power.
+ 
 \end_layout
 
-\begin_layout Itemize
-
-\emph on
-\color red
-What about conditional calibration ?
-\emph default
- Another level of complexity is introduced by statistics for 
-\emph on
-conditional
-\emph default
- calibration (consistency and adaptivity
-\begin_inset CommandInset citation
-LatexCommand citep
-key "Pernot2023d"
-
-\end_inset
-
-), such as the ENCE, which depend on the choice of a binning scheme.
- Testing the applicability of the current validation setup to such statistics
- is the subject of a forthcoming article, but from the present study, it
- is already possible to reach several conclusions regarding the ENCE: it
- is the mean value of absolute bin-wise RCE values
-\begin_inset CommandInset citation
-LatexCommand citep
-key "Levi2022"
-
-\end_inset
-
-, and in consequence it will not be reliable in conditions where the bins
- present a distribution of uncertainties that disrupt the estimation of
- RCE.
- This will be the case when testing 
-\emph on
-adaptivity
-\emph default
-
-\begin_inset CommandInset citation
-LatexCommand citep
-key "Pernot2023d"
-
+\begin_layout Standard
+Finally, the only case where the use of simulated reference values seems
+ adapted is for confidence curves, as the RMSE-based reference curve does
+ not depend on 
+\begin_inset Formula $D$
 \end_inset
 
 .
- On the contrary, testing 
-\emph on
-consistency
-\emph default
-
-\begin_inset CommandInset citation
-LatexCommand citep
-key "Pernot2023d"
-
-\end_inset
-
- involves the binning of the uncertainties, which is likely to solve the
- RCE problem.
- However, as the ENCE, and its counterpart based on ZMS have no predefined
- reference values
-\begin_inset CommandInset citation
-LatexCommand citep
-key "Pernot2023a_arXiv"
-
-\end_inset
-
-, it will be important to test their sensitivity to the choice of generative
- distribution and binning scheme.
- + 
-\begin_inset Formula $f_{v}$
-\end_inset
-
-
+ However, there are probably other calibration statistics for which this
+ concept might be useful, and the proposed workflow should enable to validate
+ them with confidence.
 \end_layout
 
 \begin_layout Section*
@@ -6141,18 +7151,15 @@ beginappendix
 
 \end_layout
 
-\begin_layout Section
+\begin_layout Standard
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
 Applicability of the Central Limit Theorem
-\begin_inset CommandInset label
-LatexCommand label
-name "sec:Applicability-of-the"
-
-\end_inset
-
-
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 This study shows that the estimation of statistics for error or 
 \emph on
 z
@@ -6172,7 +7179,7 @@ z
  
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 As an illustration, let us consider the ZMS.
  When it is the mean of a large dataset, it is customary to invoke the CLT
  and assume that it is a random variate with a normal distribution and an
@@ -6239,7 +7246,7 @@ The coverage
 % risk of test errors.
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 Let us consider for 
 \begin_inset Formula $Z$
 \end_inset
@@ -6303,7 +7310,7 @@ reference "fig:LUP"
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \noindent
@@ -6363,7 +7370,7 @@ Estimated coverage of a 95
  
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 For a normal distribution of 
 \begin_inset Formula $Z$
 \end_inset
@@ -6385,7 +7392,7 @@ For a normal distribution of
  distribution, even much larger datasets would be required.
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 Considering the values of 
 \begin_inset Formula $\nu_{eff}$
 \end_inset
@@ -6403,8 +7410,20 @@ Considering the values of
  of confidence intervals.
 \end_layout
 
+\end_inset
+
+
+\end_layout
+
 \begin_layout Section
 Results tables for standardized scores
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:Results-tables-for"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -6443,7 +7462,7 @@ reference "tab:CC"
 \begin_inset Float table
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \noindent
@@ -6932,7 +7951,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
--7.4e-04
+5.3e-04
 \end_layout
 
 \end_inset
@@ -6941,7 +7960,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
-[0.87, 1.10]
+[0.87, 1.12]
 \end_layout
 
 \end_inset
@@ -6950,7 +7969,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
--0.27 
+-0.25
 \end_layout
 
 \end_inset
@@ -6986,7 +8005,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
--0.27
+-0.25 
 \end_layout
 
 \end_inset
@@ -7004,7 +8023,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
--0.66 
+-0.66
 \end_layout
 
 \end_inset
@@ -7031,7 +8050,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
-4.9e-04 
+5.0e-04
 \end_layout
 
 \end_inset
@@ -7040,7 +8059,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
--0.27 
+-0.26
 \end_layout
 
 \end_inset
@@ -7058,7 +8077,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
--0.44
+-0.45
 \end_layout
 
 \end_inset
@@ -7105,7 +8124,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
-9.4e-04
+2.6e-04
 \end_layout
 
 \end_inset
@@ -7114,7 +8133,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
-[0.80, 1.00[
+[0.80, 0.99]
 \end_layout
 
 \end_inset
@@ -7123,7 +8142,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
--1.07 
+-1.09
 \end_layout
 
 \end_inset
@@ -7159,7 +8178,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
--1.07
+-1.09 
 \end_layout
 
 \end_inset
@@ -7168,7 +8187,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
-[0.96, 1.05]
+[0.96, 1.04]
 \end_layout
 
 \end_inset
@@ -7177,7 +8196,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
--2.62 
+-2.65
 \end_layout
 
 \end_inset
@@ -7204,7 +8223,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
-7.1e-03 
+3.7e-04
 \end_layout
 
 \end_inset
@@ -7213,7 +8232,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
--1.11 
+-1.09
 \end_layout
 
 \end_inset
@@ -7222,7 +8241,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
-[0.85, 1.30]
+[0.93, 1.07]
 \end_layout
 
 \end_inset
@@ -7231,7 +8250,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
--0.78
+-1.72
 \end_layout
 
 \end_inset
@@ -7278,7 +8297,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
-1.2e-03
+6.5e-04
 \end_layout
 
 \end_inset
@@ -7296,7 +8315,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
-1.71 
+1.66
 \end_layout
 
 \end_inset
@@ -7323,7 +8342,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
-3.1e-04
+3.2e-04
 \end_layout
 
 \end_inset
@@ -7332,7 +8351,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
-1.71
+1.66 
 \end_layout
 
 \end_inset
@@ -7350,7 +8369,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
-1.90 
+1.89
 \end_layout
 
 \end_inset
@@ -7377,7 +8396,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
-3.4e-04 
+4.9e-04
 \end_layout
 
 \end_inset
@@ -7386,7 +8405,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
-1.70 
+1.67
 \end_layout
 
 \end_inset
@@ -7395,7 +8414,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
-[0.93, 1.07]
+[0.91, 1.10]
 \end_layout
 
 \end_inset
@@ -7404,7 +8423,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
-1.72
+1.17
 \end_layout
 
 \end_inset
@@ -7451,7 +8470,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
-3.6e-04
+-2.6e-04
 \end_layout
 
 \end_inset
@@ -7469,7 +8488,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
-3.43 
+3.53
 \end_layout
 
 \end_inset
@@ -7505,7 +8524,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
-3.43
+3.54 
 \end_layout
 
 \end_inset
@@ -7514,7 +8533,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
-[0.96, 1.05]
+[0.96, 1.04]
 \end_layout
 
 \end_inset
@@ -7523,7 +8542,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
-4.94 
+5.01
 \end_layout
 
 \end_inset
@@ -7550,7 +8569,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
-2.9e-04 
+3.6e-04
 \end_layout
 
 \end_inset
@@ -7559,7 +8578,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
-3.43 
+3.53
 \end_layout
 
 \end_inset
@@ -7568,7 +8587,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
-[0.95, 1.06]
+[0.94, 1.08]
 \end_layout
 
 \end_inset
@@ -7577,7 +8596,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
-3.87
+3.00
 \end_layout
 
 \end_inset
@@ -7624,7 +8643,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
--2.4e-04
+5.8e-04
 \end_layout
 
 \end_inset
@@ -7633,7 +8652,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
-[0.78, 0.93]
+[0.78, 0.92]
 \end_layout
 
 \end_inset
@@ -7642,7 +8661,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
--1.81 
+-1.99
 \end_layout
 
 \end_inset
@@ -7678,7 +8697,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
--1.81
+-1.99 
 \end_layout
 
 \end_inset
@@ -7696,7 +8715,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
--2.58 
+-2.54
 \end_layout
 
 \end_inset
@@ -7723,7 +8742,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
-1.4e-03 
+4.9e-04
 \end_layout
 
 \end_inset
@@ -7732,7 +8751,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
--1.81 
+-1.98
 \end_layout
 
 \end_inset
@@ -7741,7 +8760,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
-[0.87, 1.20]
+[0.91, 1.10]
 \end_layout
 
 \end_inset
@@ -7750,7 +8769,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
--1.15
+-1.73
 \end_layout
 
 \end_inset
@@ -7797,7 +8816,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
--5.9e-04
+-9.1e-04
 \end_layout
 
 \end_inset
@@ -7806,7 +8825,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
-[0.85, 1.15]
+[0.86, 1.15]
 \end_layout
 
 \end_inset
@@ -7815,7 +8834,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
--0.10 
+-0.10
 \end_layout
 
 \end_inset
@@ -7851,6 +8870,60 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
+-0.09 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+[0.95, 1.04]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.35
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.00
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3.6e-04
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
 -0.10
 \end_layout
 
@@ -7860,7 +8933,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
-[0.97, 1.06]
+[0.94, 1.07]
 \end_layout
 
 \end_inset
@@ -7869,61 +8942,7 @@ Set #
 \begin_inset Text
 
 \begin_layout Plain Layout
--0.37 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="decimal" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-n/a
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="decimal" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-n/a
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="decimal" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-n/a 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-n/a
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-n/a
+-0.25
 \end_layout
 
 \end_inset
@@ -7970,7 +8989,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-1.5e-04
+4.9e-04
 \end_layout
 
 \end_inset
@@ -7988,7 +9007,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
--0.70 
+-0.71
 \end_layout
 
 \end_inset
@@ -8024,7 +9043,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
--0.70
+-0.71 
 \end_layout
 
 \end_inset
@@ -8033,7 +9052,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-[1.00, 1.04]
+[0.98, 1.02]
 \end_layout
 
 \end_inset
@@ -8042,7 +9061,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
--1.20 
+-1.23
 \end_layout
 
 \end_inset
@@ -8069,7 +9088,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-3.1e-04 
+1.9e-04
 \end_layout
 
 \end_inset
@@ -8078,7 +9097,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
--0.69 
+-0.72
 \end_layout
 
 \end_inset
@@ -8087,7 +9106,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-[0.97, 1.08]
+[0.96, 1.04]
 \end_layout
 
 \end_inset
@@ -8096,7 +9115,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
--0.55
+-0.78
 \end_layout
 
 \end_inset
@@ -8143,7 +9162,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
--1.2e-04
+-2.9e-04
 \end_layout
 
 \end_inset
@@ -8161,7 +9180,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
--1.16 
+-1.16
 \end_layout
 
 \end_inset
@@ -8197,7 +9216,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
--1.16
+-1.16 
 \end_layout
 
 \end_inset
@@ -8215,7 +9234,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
--1.89 
+-1.92
 \end_layout
 
 \end_inset
@@ -8242,7 +9261,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-7.6e-04 
+3.1e-04
 \end_layout
 
 \end_inset
@@ -8251,7 +9270,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
--1.17 
+-1.15
 \end_layout
 
 \end_inset
@@ -8260,7 +9279,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-[0.91, 1.13]
+[0.94, 1.06]
 \end_layout
 
 \end_inset
@@ -8269,7 +9288,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
--0.82
+-1.27
 \end_layout
 
 \end_inset
@@ -8316,7 +9335,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-6.8e-05
+1.5e-03
 \end_layout
 
 \end_inset
@@ -8334,7 +9353,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
--0.25 
+-0.27
 \end_layout
 
 \end_inset
@@ -8361,7 +9380,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-2.1e-04
+2.0e-04
 \end_layout
 
 \end_inset
@@ -8370,7 +9389,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
--0.26
+-0.27 
 \end_layout
 
 \end_inset
@@ -8379,7 +9398,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-[1.04, 1.12]
+[0.96, 1.04]
 \end_layout
 
 \end_inset
@@ -8388,7 +9407,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
--0.75 
+-0.74
 \end_layout
 
 \end_inset
@@ -8415,7 +9434,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-3.9e-03 
+3.2e-04
 \end_layout
 
 \end_inset
@@ -8424,7 +9443,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
--0.25 
+-0.27
 \end_layout
 
 \end_inset
@@ -8433,7 +9452,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-[0.92, 1.39]
+[0.94, 1.06]
 \end_layout
 
 \end_inset
@@ -8442,7 +9461,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
--0.19
+-0.50
 \end_layout
 
 \end_inset
@@ -8482,7 +9501,7 @@ ZMS statistics.
 \begin_inset Float table
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \noindent
@@ -8971,7 +9990,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-2.3e-04 
+-3.1e-05
 \end_layout
 
 \end_inset
@@ -8980,7 +9999,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-[0.469, 0.537] 
+[0.467, 0.536]
 \end_layout
 
 \end_inset
@@ -9007,7 +10026,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-0.40 
+0.40
 \end_layout
 
 \end_inset
@@ -9025,7 +10044,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-2.63 
+2.76 
 \end_layout
 
 \end_inset
@@ -9034,7 +10053,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-[0.37, 0.44] 
+[0.38, 0.44]
 \end_layout
 
 \end_inset
@@ -9043,7 +10062,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-2.79 
+2.67 
 \end_layout
 
 \end_inset
@@ -9079,7 +10098,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-3.24 
+3.39 
 \end_layout
 
 \end_inset
@@ -9097,7 +10116,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-3.28
+3.35
 \end_layout
 
 \end_inset
@@ -9144,7 +10163,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
--1.4e-04 
+-1.2e-04
 \end_layout
 
 \end_inset
@@ -9153,7 +10172,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-[0.598, 0.641] 
+[0.598, 0.641]
 \end_layout
 
 \end_inset
@@ -9180,7 +10199,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-0.57 
+0.57
 \end_layout
 
 \end_inset
@@ -9198,7 +10217,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-2.25 
+2.40 
 \end_layout
 
 \end_inset
@@ -9207,7 +10226,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-[0.55, 0.59] 
+[0.55, 0.59]
 \end_layout
 
 \end_inset
@@ -9216,7 +10235,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-2.42 
+2.38 
 \end_layout
 
 \end_inset
@@ -9234,7 +10253,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-0.53
+0.55
 \end_layout
 
 \end_inset
@@ -9243,7 +10262,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-1.2e-04 
+1.1e-04 
 \end_layout
 
 \end_inset
@@ -9252,7 +10271,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-4.15 
+3.44 
 \end_layout
 
 \end_inset
@@ -9261,7 +10280,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-[0.50, 0.55] 
+[0.52, 0.57]
 \end_layout
 
 \end_inset
@@ -9270,7 +10289,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-4.11
+3.37
 \end_layout
 
 \end_inset
@@ -9317,7 +10336,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-4.9e-05 
+-1.8e-04
 \end_layout
 
 \end_inset
@@ -9326,7 +10345,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-[0.216, 0.298] 
+[0.216, 0.300]
 \end_layout
 
 \end_inset
@@ -9353,7 +10372,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-0.25 
+0.25
 \end_layout
 
 \end_inset
@@ -9380,7 +10399,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-[0.21, 0.29] 
+[0.21, 0.29]
 \end_layout
 
 \end_inset
@@ -9407,7 +10426,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-0.24
+0.23
 \end_layout
 
 \end_inset
@@ -9425,7 +10444,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-0.33 
+0.61 
 \end_layout
 
 \end_inset
@@ -9434,7 +10453,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-[0.20, 0.29] 
+[0.19, 0.27]
 \end_layout
 
 \end_inset
@@ -9443,7 +10462,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-0.33
+0.60
 \end_layout
 
 \end_inset
@@ -9490,7 +10509,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-2.4e-04 
+6.6e-05
 \end_layout
 
 \end_inset
@@ -9499,7 +10518,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-[0.373, 0.429] 
+[0.372, 0.428]
 \end_layout
 
 \end_inset
@@ -9526,7 +10545,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-0.42 
+0.42
 \end_layout
 
 \end_inset
@@ -9544,7 +10563,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
--0.76 
+-0.77 
 \end_layout
 
 \end_inset
@@ -9553,7 +10572,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-[0.40, 0.45] 
+[0.40, 0.45]
 \end_layout
 
 \end_inset
@@ -9562,7 +10581,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
--0.80 
+-0.78 
 \end_layout
 
 \end_inset
@@ -9580,7 +10599,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-0.41
+0.40
 \end_layout
 
 \end_inset
@@ -9598,7 +10617,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
--0.24 
+0.05 
 \end_layout
 
 \end_inset
@@ -9607,7 +10626,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-[0.38, 0.43] 
+[0.37, 0.43]
 \end_layout
 
 \end_inset
@@ -9616,7 +10635,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
--0.25
+0.05
 \end_layout
 
 \end_inset
@@ -9663,7 +10682,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-1.6e-04 
+-1.5e-04
 \end_layout
 
 \end_inset
@@ -9672,7 +10691,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-[-0.006, 0.081] 
+[-0.004, 0.081]
 \end_layout
 
 \end_inset
@@ -9699,7 +10718,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-0.11 
+0.11
 \end_layout
 
 \end_inset
@@ -9717,7 +10736,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
--1.68 
+-1.63 
 \end_layout
 
 \end_inset
@@ -9726,7 +10745,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-[0.07, 0.15] 
+[0.07, 0.15]
 \end_layout
 
 \end_inset
@@ -9735,7 +10754,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
--1.66 
+-1.65 
 \end_layout
 
 \end_inset
@@ -9771,7 +10790,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
--1.39 
+-1.45 
 \end_layout
 
 \end_inset
@@ -9780,7 +10799,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-[0.05, 0.14] 
+[0.06, 0.14]
 \end_layout
 
 \end_inset
@@ -9789,7 +10808,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
--1.37
+-1.47
 \end_layout
 
 \end_inset
@@ -9836,7 +10855,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
--5.4e-04 
+-1.4e-04
 \end_layout
 
 \end_inset
@@ -9845,7 +10864,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-[0.374, 0.433] 
+[0.373, 0.433]
 \end_layout
 
 \end_inset
@@ -9872,7 +10891,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-0.50 
+0.50
 \end_layout
 
 \end_inset
@@ -9890,7 +10909,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
--3.35 
+-3.27 
 \end_layout
 
 \end_inset
@@ -9899,7 +10918,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-[0.48, 0.52] 
+[0.48, 0.52]
 \end_layout
 
 \end_inset
@@ -9908,7 +10927,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
--4.11 
+-4.10 
 \end_layout
 
 \end_inset
@@ -9926,7 +10945,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-n/a
+0.48
 \end_layout
 
 \end_inset
@@ -9935,7 +10954,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-n/a
+1.2e-04 
 \end_layout
 
 \end_inset
@@ -9944,7 +10963,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-n/a 
+-2.57 
 \end_layout
 
 \end_inset
@@ -9953,7 +10972,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-n/a
+[0.46, 0.50]
 \end_layout
 
 \end_inset
@@ -9962,7 +10981,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-n/a
+-3.26
 \end_layout
 
 \end_inset
@@ -10009,7 +11028,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-3.2e-05 
+7.9e-06
 \end_layout
 
 \end_inset
@@ -10018,7 +11037,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-[0.297, 0.328] 
+[0.297, 0.328]
 \end_layout
 
 \end_inset
@@ -10045,7 +11064,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-0.37 
+0.37
 \end_layout
 
 \end_inset
@@ -10054,7 +11073,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-7.3e-05 
+7.2e-05 
 \end_layout
 
 \end_inset
@@ -10063,7 +11082,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
--3.89 
+-3.86 
 \end_layout
 
 \end_inset
@@ -10072,7 +11091,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-[0.35, 0.38] 
+[0.36, 0.39]
 \end_layout
 
 \end_inset
@@ -10081,7 +11100,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
--4.20 
+-4.27 
 \end_layout
 
 \end_inset
@@ -10099,7 +11118,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-0.34
+0.35
 \end_layout
 
 \end_inset
@@ -10117,7 +11136,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
--2.03 
+-2.54 
 \end_layout
 
 \end_inset
@@ -10126,7 +11145,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-[0.32, 0.35] 
+[0.34, 0.37]
 \end_layout
 
 \end_inset
@@ -10135,7 +11154,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
--2.19
+-2.67
 \end_layout
 
 \end_inset
@@ -10182,7 +11201,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-7.0e-05 
+-1.2e-05
 \end_layout
 
 \end_inset
@@ -10191,7 +11210,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-[-0.053, 0.003] 
+[-0.052, 0.003]
 \end_layout
 
 \end_inset
@@ -10218,7 +11237,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-0.11 
+0.11
 \end_layout
 
 \end_inset
@@ -10236,7 +11255,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
--4.82 
+-4.92 
 \end_layout
 
 \end_inset
@@ -10245,7 +11264,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-[0.08, 0.14] 
+[0.08, 0.14]
 \end_layout
 
 \end_inset
@@ -10254,7 +11273,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
--5.03 
+-5.06 
 \end_layout
 
 \end_inset
@@ -10272,7 +11291,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-0.10 
+0.10
 \end_layout
 
 \end_inset
@@ -10290,7 +11309,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
--4.36 
+-4.61 
 \end_layout
 
 \end_inset
@@ -10299,7 +11318,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-[0.07, 0.13] 
+[0.08, 0.13]
 \end_layout
 
 \end_inset
@@ -10308,7 +11327,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
--4.47
+-4.62
 \end_layout
 
 \end_inset
@@ -10355,7 +11374,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
--2.2e-04 
+-1.0e-04
 \end_layout
 
 \end_inset
@@ -10364,7 +11383,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-[0.207, 0.259] 
+[0.207, 0.258]
 \end_layout
 
 \end_inset
@@ -10391,7 +11410,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-0.13 
+0.13
 \end_layout
 
 \end_inset
@@ -10409,7 +11428,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-3.94 
+3.82 
 \end_layout
 
 \end_inset
@@ -10418,7 +11437,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-[0.09, 0.15] 
+[0.10, 0.16]
 \end_layout
 
 \end_inset
@@ -10427,7 +11446,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-3.64 
+3.77 
 \end_layout
 
 \end_inset
@@ -10445,7 +11464,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-0.11
+0.12
 \end_layout
 
 \end_inset
@@ -10463,7 +11482,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-4.64 
+4.19 
 \end_layout
 
 \end_inset
@@ -10472,7 +11491,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-[0.07, 0.12] 
+[0.09, 0.15]
 \end_layout
 
 \end_inset
@@ -10481,7 +11500,7 @@ n/a
 \begin_inset Text
 
 \begin_layout Plain Layout
-4.46
+4.17
 \end_layout
 
 \end_inset
@@ -10505,6 +11524,4088 @@ name "tab:CC"
 \end_inset
 
 CC statistics.
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+\begin_inset Float table
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+
+\size footnotesize
+\begin_inset Tabular
+<lyxtabular version="3" rows="11" columns="19">
+<features rotate="90" tabularvalignment="middle">
+<column alignment="decimal" decimal_point="." valignment="top" width="0pt">
+<column alignment="decimal" decimal_point="." valignment="top">
+<column alignment="decimal" decimal_point="." valignment="top">
+<column alignment="decimal" decimal_point="." valignment="top">
+<column alignment="decimal" decimal_point="." valignment="top">
+<column alignment="decimal" decimal_point="." valignment="top">
+<column alignment="decimal" decimal_point="." valignment="top">
+<column alignment="decimal" decimal_point="." valignment="top">
+<column alignment="decimal" decimal_point="." valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="decimal" decimal_point="." valignment="top">
+<column alignment="decimal" decimal_point="." valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="decimal" decimal_point="." valignment="top">
+<column alignment="decimal" decimal_point="." valignment="top">
+<column alignment="decimal" decimal_point="." valignment="top">
+<column alignment="decimal" decimal_point="." valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="decimal" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\vartheta=ENCE$
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="1" alignment="decimal" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+BS
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="2" alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="2" alignment="decimal" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="2" alignment="decimal" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="1" alignment="decimal" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+SimN, Sim2N
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="2" alignment="decimal" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="2" alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="2" alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="2" alignment="decimal" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="1" alignment="decimal" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+SimT, Sim2T
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="2" alignment="decimal" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="2" alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="2" alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="2" alignment="decimal" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Set # 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\vartheta$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\vartheta_{ref}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $b_{BS}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $I_{BS}$
+\end_inset
+
+ 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\zeta_{BS}$
+\end_inset
+
+ 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\tilde{\vartheta}_{ref}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $u(\tilde{\vartheta}_{ref})$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\zeta_{Sim}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $I_{Sim2}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\zeta_{Sim2}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\tilde{\vartheta}_{ref}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $u(\tilde{\vartheta}_{ref})$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\zeta_{Sim}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $I_{Sim2}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\zeta_{Sim2}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.125 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+n/a
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.016 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+[0.084, 0.153] 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+n/a
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.056
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+9.5e-05 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.66 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+[0.038, 0.076]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3.52 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.082 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.5e-04 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.04 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+[0.055, 0.114]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.36
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.126 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+n/a
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.033 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+[0.096, 0.130] 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+n/a
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.041
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+7.0e-05 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2.78 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+[0.028, 0.056]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+5.98 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.061 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.1e-04 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2.13 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+[0.041, 0.085]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2.80
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.097 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+n/a
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.024 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+[0.074, 0.101] 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+n/a
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.058
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+9.8e-05 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.70 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+[0.040, 0.077]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.98 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.083 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.5e-04 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.59 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+[0.056, 0.115]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.44
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+4 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.135 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+n/a
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.007 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+[0.103, 0.157] 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+n/a
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.043
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+7.4e-05 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2.94 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+[0.029, 0.058]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+5.88 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.063 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.2e-04 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2.30 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+[0.043, 0.088]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2.88
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+5 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.131 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+n/a
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.023 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+[0.101, 0.139] 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+n/a
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.056
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+9.4e-05 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2.52 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+[0.039, 0.075]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3.88 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.082 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.5e-04 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.66 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+[0.055, 0.114]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.52
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+6 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.244 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+n/a
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.044 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+[0.156, 0.276] 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+n/a
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.045
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+8.1e-05 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2.26 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+[0.030, 0.062]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+11.7 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.066 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.3e-04 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2.02 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+[0.044, 0.095]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+6.21
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+7 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.066 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+n/a
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.006 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+[0.045, 0.085] 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+n/a
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.026
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+5.3e-05 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.93 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+[0.017, 0.037]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3.58 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.038 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+8.3e-05 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.33 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+[0.025, 0.056]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.55
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+8 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.108 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+n/a
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.015 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+[0.077, 0.118] 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+n/a
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.036
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+6.0e-05 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2.28 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+[0.025, 0.048]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+5.77 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.053 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+9.7e-05 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.72 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+[0.036, 0.074]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2.65
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="decimal" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+9 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.120 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+n/a
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.013 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+[0.082, 0.140] 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+n/a
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.036
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+6.0e-05 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2.21 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+[0.025, 0.048]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+6.95 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.054 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+9.7e-05 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.74 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+[0.036, 0.074]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3.25
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "tab:ENCE"
+
+\end_inset
+
+ENCE statistics.
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+\begin_inset Float table
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+
+\size footnotesize
+\begin_inset Tabular
+<lyxtabular version="3" rows="11" columns="19">
+<features rotate="90" tabularvalignment="middle">
+<column alignment="decimal" decimal_point="." valignment="top" width="0pt">
+<column alignment="decimal" decimal_point="." valignment="top">
+<column alignment="decimal" decimal_point="." valignment="top">
+<column alignment="decimal" decimal_point="." valignment="top">
+<column alignment="decimal" decimal_point="." valignment="top">
+<column alignment="decimal" decimal_point="." valignment="top">
+<column alignment="decimal" decimal_point="." valignment="top">
+<column alignment="decimal" decimal_point="." valignment="top">
+<column alignment="decimal" decimal_point="." valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="decimal" decimal_point="." valignment="top">
+<column alignment="decimal" decimal_point="." valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="decimal" decimal_point="." valignment="top">
+<column alignment="decimal" decimal_point="." valignment="top">
+<column alignment="decimal" decimal_point="." valignment="top">
+<column alignment="decimal" decimal_point="." valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="decimal" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\vartheta=ZMSE$
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="1" alignment="decimal" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+BS
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="2" alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="2" alignment="decimal" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="2" alignment="decimal" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="1" alignment="decimal" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+SimN, Sim2N
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="2" alignment="decimal" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="2" alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="2" alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="2" alignment="decimal" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="1" alignment="decimal" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+SimT, Sim2T
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="2" alignment="decimal" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="2" alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="2" alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="2" alignment="decimal" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Set # 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\vartheta$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\vartheta_{ref}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $b_{BS}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $I_{BS}$
+\end_inset
+
+ 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\zeta_{BS}$
+\end_inset
+
+ 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\tilde{\vartheta}_{ref}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $u(\tilde{\vartheta}_{ref})$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\zeta_{Sim}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $I_{Sim2}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\zeta_{Sim2}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\tilde{\vartheta}_{ref}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $u(\tilde{\vartheta}_{ref})$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\zeta_{Sim}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $I_{Sim2}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\zeta_{Sim2}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.255
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+n/a
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.034
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+[0.172, 0.299]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+n/a
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.112
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.9e-04
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.71
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+[0.077, 0.152]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3.63
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.164
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2.9e-04
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.09
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+[0.111, 0.223]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.54
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.273
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+n/a
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.072
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+[0.207, 0.283]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+n/a
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.082
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.4e-04
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2.91
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+[0.056, 0.111]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+6.62
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.121
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2.1e-04
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2.31
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+[0.083, 0.165]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3.46
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.173
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+n/a
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.048
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+[0.136, 0.180]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+n/a
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.112
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.9e-04
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.64
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+[0.077, 0.151]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.57
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.163
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2.8e-04
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.26
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+[0.110, 0.223]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.16
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+4 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.247
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+n/a
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.011
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+[0.191, 0.287]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+n/a
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.082
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.4e-04
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2.97
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+[0.056, 0.110]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+5.81
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.121
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2.1e-04
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2.26
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+[0.083, 0.165]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2.87
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+5 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.283
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+n/a
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.052
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+[0.221, 0.304]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+n/a
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.112
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.9e-04
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2.77
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+[0.077, 0.151]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+4.42
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.163
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2.9e-04
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.94
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+[0.111, 0.224]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.96
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+6 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.356
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+n/a
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.270
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+[0.240, 0.357]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+n/a
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.082
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.4e-04
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2.37
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+[0.056, 0.111]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+9.53
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.121
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2.2e-04
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2.02
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+[0.082, 0.168]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+5.06
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+7 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.118
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+n/a
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.018
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+[0.078, 0.131]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+n/a
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.043
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+7.2e-05
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.87
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+[0.029, 0.058]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+5.07
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.066
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.2e-04
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.31
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+[0.045, 0.089]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2.20
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+8 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.225
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+n/a
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.033
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+[0.162, 0.246]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+n/a
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.071
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.2e-04
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2.43
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+[0.049, 0.097]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+6.08
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.107
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.9e-04
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.87
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+[0.072, 0.147]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2.96
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="decimal" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+9 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.250
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+n/a
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.025
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+[0.171, 0.287]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+n/a
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.071
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.2e-04
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2.27
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+[0.049, 0.096]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+7.32
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.107
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.9e-04
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.81
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+[0.073, 0.147]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3.62
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "tab:ZMSE"
+
+\end_inset
+
+ZMSE statistics.
  
 \end_layout
 
@@ -10771,26 +15872,10 @@ T a unit_variance Student's-
 t
 \emph default
  distribution 
-\begin_inset Formula $D=t(\nu_{eff})\sqrt{\nu_{eff}/(\nu_{eff}-2)}$
-\end_inset
-
- where the number of degrees of freedom 
-\begin_inset Formula $\nu_{eff}$
-\end_inset
-
- is dependent on the dataset and issued from the distribution of z-scores
- (Table
-\begin_inset space \thinspace{}
+\begin_inset Formula $D=t_{s}(6)$
 \end_inset
 
 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "tab:data-summary"
-
-\end_inset
-
-).
 \end_layout
 
 \begin_layout Standard
@@ -10827,6 +15912,418 @@ reference "fig:z-Scores"
 \end_inset
 
 .
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage clearpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Reference values for the ENCE and ZMSE statistic
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:Reference-values-for"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The ENCE and ZMSE statistics have been shown previously to depend on the
+ binning scheme
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Pernot2023a_arXiv"
+
+\end_inset
+
+.
+ We consider here other sources of influence, such as the dataset size,
+ and uncertainty distribution shape.
+ This study is performed on synthetic datasets, and the dependence on the
+ generative model is also assessed.
+\end_layout
+
+\begin_layout Standard
+Simulated reference values 
+\begin_inset Formula $\tilde{\vartheta}_{D,ref}$
+\end_inset
+
+ for the ENCE and ZMSE statistics have been estimated from 
+\begin_inset Formula $N_{MC}=5000$
+\end_inset
+
+ synthetic calibrated datasets generated by the NIG model
+\begin_inset Formula 
+\begin{align}
+E & \sim u_{E}\times N(0,1)\\
+u_{E}^{2} & \sim IG(\nu/2,\nu/2)
+\end{align}
+
+\end_inset
+
+with three varying parameters: the dataset size 
+\begin_inset Formula $M$
+\end_inset
+
+, the number of equal-size bins 
+\begin_inset Formula $N$
+\end_inset
+
+ and the shape of the uncertainty distribution 
+\begin_inset Formula $\nu$
+\end_inset
+
+.
+ The relative uncertainties on the reported mean reference values are around
+ 
+\begin_inset Formula $1.5\thinspace10^{-3}$
+\end_inset
+
+.
+ The results are shown in Fig.
+\begin_inset space \thinspace{}
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:ENCE-ZMSE"
+
+\end_inset
+
+.
+ 
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename Figs/fig_ENCE_ZMSE.png
+	lyxscale 20
+	width 75text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:ENCE-ZMSE"
+
+\end_inset
+
+Sensitivity of simulated ENCE and ZMSE values to the dataset size (
+\begin_inset Formula $M$
+\end_inset
+
+), number of bins (
+\begin_inset Formula $N$
+\end_inset
+
+) and shape of the uncertainty distribution (
+\begin_inset Formula $\nu$
+\end_inset
+
+), for calibrated datasets generated from the 
+\emph on
+NIG
+\emph default
+ model.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The dependence of the ENCE on the number of bins was shown in a previous
+ study to be in 
+\begin_inset Formula $N^{1/2}$
+\end_inset
+
+.
+ The log-log plot in Fig.
+\begin_inset space \thinspace{}
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:ENCE-ZMSE"
+
+\end_inset
+
+(left) reveals that the ENCE depends also on 
+\begin_inset Formula $M$
+\end_inset
+
+ as a power law.
+ One has thus 
+\begin_inset Formula $ENCE=\alpha M^{\beta}N^{1/2}$
+\end_inset
+
+ with 
+\begin_inset Formula $\beta\simeq-1/2$
+\end_inset
+
+.
+ The same data are then plot on a linear scale as a function of 
+\begin_inset Formula $(N/M)^{1/2}$
+\end_inset
+
+, from which one can see a perfect linear fit by 
+\begin_inset Formula $\tilde{\vartheta}_{N,ref}=\alpha\times(N/M)^{1/2}$
+\end_inset
+
+ with 
+\begin_inset Formula $\alpha\simeq0.56$
+\end_inset
+
+.
+ The ZMSE presents features very similar to the ENCE, with a different slope,
+ 
+\begin_inset Formula $\tilde{\vartheta}_{N,ref}\simeq1.14\times(N/M)^{1/2}$
+\end_inset
+
+.
+ In both cases, the impact of the uncertainty distribution is minor and
+ negligible for the validation process.
+ 
+\end_layout
+
+\begin_layout Standard
+It seems therefore that, for a normal generative model and a chosen binning
+ scheme, it is possible to define a reference value for the ENCE and ZMSE
+ statistics for each dataset.
+ The availability of a predefined reference value would considerably simplify
+ the validation approach, when compared to the extrapolation-based one proposed
+ by Pernot
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Pernot2023a_arXiv"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Let us now check the sensitivity of this approach to the generative distribution.
+ The same protocol as above is followed for another choice of generative
+ model (denoted T6IG)
+\begin_inset Formula 
+\begin{align}
+E & \sim u_{E}\times t_{s}(6)\\
+u_{E}^{2} & \sim IG(\nu/2,\nu/2)
+\end{align}
+
+\end_inset
+
+and the results are shown in Fig.
+\begin_inset space \thinspace{}
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:ENCE-ZMSE-1"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename Figs/fig_ENCE_ZMSE_T6.png
+	lyxscale 20
+	width 75text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:ENCE-ZMSE-1"
+
+\end_inset
+
+Sensitivity of simulated ENCE and ZMSE values to the dataset size (
+\begin_inset Formula $M$
+\end_inset
+
+), number of bins (
+\begin_inset Formula $N$
+\end_inset
+
+) and shape of the uncertainty distribution (
+\begin_inset Formula $\nu$
+\end_inset
+
+), for calibrated datasets generated from the T6IG model.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The same linear relationship as for the normal generative distribution is
+ observed, but, in each case, with a different slope and a small intercept.
+ Besides, a very small deviation from linearity can be perceived.
+ For ENCE, one gets then 
+\begin_inset Formula $\tilde{\vartheta}_{T,ref}\simeq0.004+0.779\times(N/M)^{1/2}$
+\end_inset
+
+ and for ZMSE 
+\begin_inset Formula $\tilde{\vartheta}_{T,ref}\simeq0.006+1.577\times(N/M)^{1/2}$
+\end_inset
+
+.
+ One is therefore facing the same problem as for the CC statistic, i.e.
+ the absence of reference value if the generative distribution is unknown.
+ The extrapolation to 
+\begin_inset Formula $N=0$
+\end_inset
+
+ method proposed by Pernot
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Pernot2023a_arXiv"
+
+\end_inset
+
+ is presently the only validation alternative.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage clearpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Validation of ZMSE for the application datasets
+\end_layout
+
+\begin_layout Standard
+For each of the nine datasets, one establishes a ZMSE validation diagnostic
+ by a method which is independent on a generative distribution hypothesis.
+ For this, the ZMSE is estimated for a series of bin numbers and fitted
+ by a linear model as a function of 
+\begin_inset Formula $(N/M)^{1/2}$
+\end_inset
+
+.
+ The intercept of the regression line is then compared to zero.
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Pernot2023a_arXiv"
+
+\end_inset
+
+ The reference lines for the NIG and T6IG models are also plotted for comparison.
+ 
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename Figs/fig_ZMSEval.png
+	lyxscale 20
+	width 95text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "figZMSEval"
+
+\end_inset
+
+ Validation of ZMSE by the extrapolation method: ZMSE are estimated for
+ a sequence of bin numbers and plotted as function of 
+\begin_inset Formula $(N/M)^{1/2}$
+\end_inset
+
+ (blue dots); this sequence (for 
+\begin_inset Formula $N>20$
+\end_inset
+
+) is fitted by a linear model (solid red line); reference lines are plotted
+ for the NIG (dashed line) and T6IG (dotted line) models.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+All the datasets are failing this consistency test, as none of the red intervals
+ is containing zero.
+ Note however that for some datasets (e.g.
+ Sets 3 and 4), it is possible to choose a number of bins such that the
+ ZMSE is compatible with the T6IG reference (dotted line).
+ This shows the danger of using a reference value from an unconstrained
+ generative model.
 \end_layout
 
 \end_body

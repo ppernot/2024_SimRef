@@ -3,7 +3,6 @@ dataList = list()
 setList = c()
 isl = 0
 
-
 ## PAL2022 ####
 
 unit = '[eV]'
@@ -105,4 +104,5 @@ for (i in seq_along(sets)) {
     )
 }
 
-save(setList, dataList, file = 'data.Rda')
+save(setList, dataList,
+     file = file.path(tmpDir,"data.Rda"))

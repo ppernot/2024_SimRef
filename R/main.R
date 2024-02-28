@@ -333,7 +333,12 @@ dev.off()
 
 ## Sensitivity of theta_ref to uE ####
 
-source("sensitivityData.R")
+calcSens = FALSE
+if(calcSens) {
+  source("sensitivityData.R")
+} else {
+  load(file = file.path(tmpDir,"sensData.Rda"))
+}
 
 ### Fig. 6 ####
 png(
@@ -482,7 +487,7 @@ for(stat in stats) {
 }
 dev.off()
 
-## Sensitivity of Scores to D ####
+## Sensitivity of zeta-scores to D ####
 calcScores = FALSE
 if(calcScores) {
   source("calcZetaScores.R")

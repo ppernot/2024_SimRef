@@ -1,3 +1,5 @@
+# Sensitivity to D
+
 set.seed(123)
 
 nMC  = 10000
@@ -7,9 +9,7 @@ nBin = 50
 intrvt = ErrViewLib::genIntervals(1:10, nBin)
 statst = names(calScoresBS2(1:10,cbind(1:10,1:10),intrvt))
 
-# Real datasets ####
 
-## Sensitivity to D ####
 smct    = matrix(NA, nrow = nMC, ncol = length(statst))
 scorest = uscorest =
   matrix(NA, nrow = length(setList), ncol = length(statst))
@@ -32,4 +32,4 @@ for(i in seq_along(setList)) {
 
 
 save(nBin, setList, statst, scorest, uscorest,
-     file = 'sensData_s.Rda')
+     file = file.path(tmpDir,"sensData.Rda"))

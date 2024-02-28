@@ -11,6 +11,12 @@ library(MCMCpack)
 library(ErrViewLib)
 gPars = ErrViewLib::setgPars(type = 'publish')
 
+# Redo lengthy calculations ?
+calcSens1  = FALSE
+calcSens2  = FALSE
+calcScores = FALSE
+calcAppB   = FALSE
+
 # Load functions ####
 source('functions.R')
 
@@ -332,9 +338,7 @@ dev.off()
 
 
 ## Sensitivity of theta_ref to uE ####
-
-calcSens = FALSE
-if(calcSens) {
+if(calcSens1) {
   source("sensitivityData.R")
 } else {
   load(file = file.path(tmpDir,"sensData.Rda"))
@@ -420,9 +424,7 @@ dev.off()
 
 
 ## Sensitivity of theta_ref to D ####
-
-calcSens = FALSE
-if(calcSens) {
+if(calcSens2) {
   # Runtime about 1 hour
   source("sensitivity.R")
 } else {
@@ -488,7 +490,6 @@ for(stat in stats) {
 dev.off()
 
 ## Sensitivity of zeta-scores to D ####
-calcScores = FALSE
 if(calcScores) {
   source("calcZetaScores.R")
 } else {
@@ -624,8 +625,6 @@ dev.off()
 
 # Appendices ####
 ## Appendix B ####
-
-calcAppB = FALSE
 if(calcAppB)
   source('testENCE.R')
 

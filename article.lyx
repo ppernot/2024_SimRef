@@ -108,7 +108,7 @@ fix-cm
 \begin_layout Title
 
 \size larger
-How hard can it be to validate a calibration metric ? 
+How difficult can it be to validate a calibration metric ? 
 \end_layout
 
 \begin_layout Author
@@ -137,6 +137,7 @@ Université Paris-Saclay, 91405 Orsay, France
 \end_layout
 
 \begin_layout Author Email
+
 pascal.pernot@cnrs.fr
 \end_layout
 
@@ -151,8 +152,8 @@ Some popular Machine Learning Uncertainty Quantification (ML-UQ) calibration
  from actual uncertainties, have been proposed to palliate this problem.
  As the generative probability distribution for the simulation of synthetic
  errors is often not constrained, the sensitivity of simulated reference
- values to its choice might be problematic, shedding a doubt on the calibration
- diagnostic.
+ values to the choice of generative distribution might be problematic, shedding
+ a doubt on the calibration diagnostic.
  This study explores various facets of this problem, and shows that some
  statistics are excessively sensitive to the choice of generative distribution
  to be used for validation when the generative distribution is unknown.
@@ -168,7 +169,7 @@ Introduction
 \end_layout
 
 \begin_layout Standard
-Most calibration statistics are used to compare methods or datasets but
+Most calibration statistics are used to compare UQ methods or datasets but
  are missing a reference value for validation.
  For instance, the correlation coefficient between absolute errors and uncertain
 ties
@@ -186,8 +187,8 @@ key "Pernot2022b"
 \end_inset
 
 .
- This is also the case for some local calibration statistics, such as the
- expected normalized calibration error (ENCE)
+ This is also the case for some conditional calibration statistics, such
+ as the expected normalized calibration error (ENCE)
 \begin_inset CommandInset citation
 LatexCommand citep
 key "Levi2022"
@@ -228,10 +229,10 @@ key "Rasmussen2023"
 \end_inset
 
  reference values has been recently proposed to palliate the absence of
- reference values for a calibration statistic.
- A simulated reference value is estimated by applying the statistic to datasets
- containing the actual uncertainties and simulated errors generated from
- the uncertainties using a model generative distribution 
+ reference value for a calibration statistic.
+ A simulated reference value is estimated by applying the statistic to synthetic
+ datasets containing the actual uncertainties and simulated errors generated
+ from the uncertainties using a model generative distribution 
 \begin_inset Formula $D$
 \end_inset
 
@@ -240,7 +241,7 @@ key "Rasmussen2023"
 \end_layout
 
 \begin_layout Standard
-The main problem with simulated references is the choice of 
+The main issue with simulated references is the choice of 
 \begin_inset Formula $D$
 \end_inset
 
@@ -379,7 +380,7 @@ z
 
 \begin_layout Standard
 The next section defines the calibration statistics, the validation approach,
- and a proposes of workflow dealing with the main issues of the approach.
+ and proposes a workflow dealing with the main issues of simulated references.
  Sect.
 \begin_inset space \thinspace{}
 \end_inset
@@ -431,7 +432,7 @@ name "sec:Validation-methods-for"
 
 \begin_layout Standard
 This section presents the simulation method for the estimation of calibration
- statistics references and commonly used correlation, 
+ statistics references for commonly used correlation, 
 \emph on
 average
 \emph default
@@ -490,24 +491,29 @@ key "Pernot2022b"
  implicitly on a probabilistic model
 \begin_inset Formula 
 \begin{equation}
-E_{i}\sim u_{E_{i}}D(0,1)\label{eq:probmod}
+E_{i}\sim D(\mu=0,\sigma=u_{E_{i}})\label{eq:probmod}
+\end{equation}
+
+\end_inset
+
+or, equivalently,
+\begin_inset Formula 
+\begin{equation}
+E_{i}=u_{E_{i}}\varepsilon_{i}\label{eq:probmod-1}
 \end{equation}
 
 \end_inset
 
 linking errors to uncertainties, where 
-\begin_inset Formula $D(0,1)$
+\begin_inset Formula $\varepsilon_{i}$
 \end_inset
 
- is a probability density function with mean 
-\begin_inset Formula $\mu=0$
+ is a random number with zero-centered and unit-variance probability density
+ function [
+\begin_inset Formula $\varepsilon\sim D(\mu=0,\sigma=1)$
 \end_inset
 
- and standard deviation 
-\begin_inset Formula $\sigma=1$
-\end_inset
-
-.
+].
  This model states that errors should be unbiased (
 \begin_inset Formula $\mu=0$
 \end_inset
@@ -537,11 +543,11 @@ Except in some instances where
 \end_inset
 
  is unknown.
- This is notably the case when uncertainties are 
+ This is notably the case when uncertainties are obtained
 \emph on
-post-hoc calibrated
+ by post-hoc 
 \emph default
-
+calibration
 \begin_inset CommandInset citation
 LatexCommand citep
 key "Levi2022,Busk2022"
@@ -637,7 +643,7 @@ t
 \begin_inset Formula $\nu$
 \end_inset
 
- degrees of freedom 
+ degrees of freedom, noted 
 \begin_inset Formula $t(\nu)$
 \end_inset
 
@@ -673,8 +679,8 @@ name "subsec:Some-calibration-statistics"
 \end_layout
 
 \begin_layout Standard
-The generative model described above is at the basis of two families of
- calibration statistics.
+The generative model described above can be used to derive two families
+ of calibration statistics.
 \end_layout
 
 \begin_layout Subsubsection
@@ -697,7 +703,7 @@ law of total variance
 , i.e.
 \begin_inset Formula 
 \begin{align}
-\mathrm{Var}(E) & =\left\langle \mathrm{Var}_{D}(E|\sigma)\right\rangle _{G}+\mathrm{Var}_{G}\left(\left\langle E|\sigma\right\rangle _{D}\right)\label{eq:totalVar-1}\\
+\mathrm{Var}_{H}(E) & =\left\langle \mathrm{Var}_{D}(E|\sigma)\right\rangle _{G}+\mathrm{Var}_{G}\left(\left\langle E|\sigma\right\rangle _{D}\right)\label{eq:totalVar-1}\\
  & =<u_{E}^{2}>+\mathrm{Var}_{G}\left(\left\langle E|\sigma\right\rangle _{D}\right)
 \end{align}
 
@@ -909,8 +915,8 @@ reference "sec:Reference-values-for"
 
 \end_inset
 
-, the ENCE depends on the dataset size and number of bins and does not have
- predefined reference values.
+, the ENCE depends on both the dataset size and the number of bins and does
+ not have a predefined reference value.
 \end_layout
 
 \begin_layout Standard
@@ -1014,7 +1020,7 @@ key "Pernot2022a,Pernot2022b"
  For biased errors, the calibration equation becomes
 \begin_inset Formula 
 \begin{equation}
-<Z^{2}>=1\label{eq:ZMS}
+ZMS=<Z^{2}>=1\label{eq:ZMS}
 \end{equation}
 
 \end_inset
@@ -1026,37 +1032,20 @@ key "Pernot2023d"
 
 \end_inset
 
-.
- 
-\end_layout
-
-\begin_layout Standard
-The 
+ (ZMS stands for 
 \emph on
 z
 \emph default
--score's mean squares
-\begin_inset CommandInset citation
-LatexCommand citep
-key "Pernot2023d"
-
-\end_inset
-
- is defined as
-\begin_inset Formula 
-\begin{equation}
-ZMS=<Z^{2}>
-\end{equation}
-
-\end_inset
-
-The ZMS does not depend on a distribution hypothesis and its target value
+-score's mean squares).
+ This choice is motivated by the use of the ZMS for binned data, where,
+ even for an unbiased dataset, one should not expect every bin to be unbiased.
+ The ZMS does not depend on a distribution hypothesis and its target value
  is 1.
  
 \end_layout
 
 \begin_layout Standard
-The negative log-likelihood (NLL) score is defined by
+The negative log-likelihood (NLL) score can be written as
 \begin_inset CommandInset citation
 LatexCommand citep
 key "Busk2023"
@@ -1131,7 +1120,7 @@ key "Rasmussen2023"
 
  threat the NLL as if it had no predefined reference value and needed a
  simulated reference.
- This is note the case when the NLL is defined by Eq.
+ This is not the case when the NLL is defined by Eq.
 \begin_inset space \thinspace{}
 \end_inset
 
@@ -1145,12 +1134,12 @@ reference "eq:NLLdef"
 , but it might be for other likelihood definitions.
  In the present case, for a given set of uncertainties, validation of the
  NLL is equivalent to the validation of the ZMS, with the additional constraint
- of a normal generative distribution.
+ of a normal generative model.
  
 \end_layout
 
 \begin_layout Standard
-By similarity to the ENCE, one can define a ZMS-based mean calibration error
+By analogy with the ENCE, one can define a ZMS-based mean calibration error
 \begin_inset CommandInset citation
 LatexCommand citep
 key "Pernot2023c_arXiv"
@@ -1183,7 +1172,7 @@ where
 
 .
  The logarithm accounts for the fact that ZMS is a scale statistic (a ZMS
- of 2 entails a correction of the same amplitude as a ZMS of 0.5).
+ of 2 entails a deviation of the same amplitude as a ZMS of 0.5).
  As for the ENCE, the ZMSE measures conditional calibration, i.e.
  consistency if the binning variable is the uncertainty or adaptivity if
  it is an input feature.
@@ -1199,6 +1188,15 @@ reference "sec:Reference-values-for"
 \end_inset
 
 ), and doe not have a predefined reference value.
+ As observed for the ZVE defined by Pernot
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Pernot2023a_arXiv"
+
+\end_inset
+
+, one might expect the ZMSE to be more reliable than the ENCE for heavy-tailed
+ uncertainty distributions.
 \end_layout
 
 \begin_layout Subsection
@@ -1226,8 +1224,8 @@ key "Tynes2021"
  and small uncertainties to be associated with small absolute errors.
  However, the link is not symmetric, as small absolute errors might be associate
 d with large uncertainties.
- To account for possible non-linearities and to reduce the sensitivity to
- outliers, 
+ To account for a possible non linear relation and to reduce the sensitivity
+ to outliers, 
 \emph on
 Spearman's
 \emph default
@@ -1235,7 +1233,7 @@ Spearman's
 \emph on
 rank correlation coefficient
 \emph default
- is used to estimate CC.
+ is recommended to estimate CC.
  
 \end_layout
 
@@ -1248,8 +1246,8 @@ key "Pernot2022b"
 
 \end_inset
 
- In absence of a specified target value, the CC cannot be used in comparative
- studies, nor for validation.
+ In absence of a specified target value, the CC alone should not be used
+ in comparative studies, nor for validation.
  
 \end_layout
 
@@ -1476,8 +1474,7 @@ reference "eq:probmod"
 \end_layout
 
 \begin_layout Enumerate
-Repeat step 2.
- 
+Repeat step 2 
 \begin_inset Formula $N_{MC}$
 \end_inset
 
@@ -1522,10 +1519,18 @@ For
 \end_inset
 
 , one should have 
-\begin_inset Formula $u(\tilde{\vartheta}_{D,ref})\ll\sigma_{BS}$
+\begin_inset Formula $2u(\tilde{\vartheta}_{D,ref})\ll U_{BS}$
 \end_inset
 
- and Eq.
+, where 
+\begin_inset Formula $U_{BS}$
+\end_inset
+
+ is the half range of 
+\begin_inset Formula $I_{BS}$
+\end_inset
+
+, and Eq.
 \begin_inset space \thinspace{}
 \end_inset
 
@@ -1536,9 +1541,12 @@ reference "eq:zeta-def"
 
 \end_inset
 
- can be applied without accounting for the uncertainty on the reference
- value.
- On gets then 
+ can be applied without accounting for the uncertainty on 
+\begin_inset Formula $\tilde{\vartheta}_{D,ref}$
+\end_inset
+
+.
+ One applies then 
 \begin_inset Formula 
 \begin{equation}
 \zeta_{SimD}=\zeta(\vartheta_{est},\tilde{\vartheta}_{D,ref},I_{BS})\label{eq:simrefval}
@@ -1558,13 +1566,13 @@ key "Pernot2022c,Rasmussen2023"
 
 \end_inset
 
- where the value of the statistic was considered as fixed and the reference
+, where the value of the statistic was considered as fixed and the reference
  value as a random variable with uncertainty 
 \begin_inset Formula $\mathrm{sd}(\tilde{\vartheta_{D}})$
 \end_inset
 
 .
- This scenario is implemented for comparison as 
+ This scenario is implemented for comparison, with 
 \begin_inset Formula 
 \begin{equation}
 \zeta_{Sim2D}=\zeta(\vartheta_{est},\tilde{\vartheta}_{D,ref},I_{D})
@@ -1586,7 +1594,7 @@ using a confidence interval
 \begin_layout Standard
 It is important to acknowledge that validation tests based on the latter
  approach present two drawbacks when compared to the bootstrapping-based
- procedures: (1) they ignore uncertainty on 
+ procedure: (1) they ignore uncertainty on 
 \begin_inset Formula $\vartheta_{est}$
 \end_inset
 
@@ -1647,7 +1655,7 @@ reference "fig:Flowchart-for-the"
 \end_inset
 
  should be first confirmed as being fit to the purpose of the study, notably
- for datasets with highly skewed and heavy-tailed uncertainty distributions
+ for datasets with highly skewed and/or heavy-tailed uncertainty distributions
 \begin_inset CommandInset citation
 LatexCommand citep
 key "Pernot2024_arXiv"
@@ -1710,7 +1718,7 @@ Flowchart for the validation of a statistic
 \begin_inset Formula $D$
 \end_inset
 
- is the errors generative distribution.
+ is the error generative distribution.
 \end_layout
 
 \end_inset
@@ -1813,18 +1821,32 @@ reference "eq:simrefval"
 \end_inset
 
  and 
-\begin_inset Formula $D=t(\nu)/sqrt(\nu/(\nu-2))$
+\begin_inset Formula $D=t_{s}(\nu)$
 \end_inset
 
- with a value of 
+, the unit-variance Student's-
+\emph on
+t
+\emph default
+ distribution is defined as
+\begin_inset Formula 
+\begin{equation}
+t_{s}(\nu)=t(\nu)/\sqrt{\nu/(\nu-2)}
+\end{equation}
+
+\end_inset
+
+One should use a value of 
 \begin_inset Formula $\nu$
 \end_inset
 
- representative of the distribution of 
-\emph on
-z
-\emph default
--scores for the studied dataset(s).
+ small enough to provide a contrast with the normal distribution, but not
+ too small, as it might generate problematic error sets with many outliers.
+ A value of 
+\begin_inset Formula $\nu=6$
+\end_inset
+
+ is found as a good compromise in the following.
  If the simulated reference values for these choices of 
 \begin_inset Formula $D$
 \end_inset
@@ -1867,7 +1889,9 @@ The validation approach presented above is applied to nine datasets extracted
 \emph on
 z
 \emph default
--scores and their consequences for the validation process.
+-scores and their consequences for the validation process, followed by thorough
+ study of the sensitivity of the procedure to various parameters, such as
+ the uncertainty distribution and the shape of the generative distribution.
 \end_layout
 
 \begin_layout Subsection
@@ -2577,176 +2601,9 @@ reference "tab:uEfit"
 \end_inset
 
  (Sets 2, 3, 4, 6 and 7).
- This issue was traced back to the high sensitivity of the mean variance
- (MV) involved in the RCE expression to the upper tail of the uncertainty
+ This issue was traced back to the high sensitivity of the root mean variance
+ (RMV) involved in the RCE expression to the upper tail of the uncertainty
  distribution.
- 
-\end_layout
-
-\begin_layout Standard
-In order to have a clear view of the distributions involved in the generative
- model for the estimation of simulated references, the distributions of
- 
-\begin_inset Formula $u_{E,}$
-\end_inset
-
-, 
-\begin_inset Formula $E$
-\end_inset
-
- and 
-\begin_inset Formula $Z$
-\end_inset
-
- for the nine datasets are characterized in the next sections.
- 
-\end_layout
-
-\begin_layout Subsubsection
-Distributions of uncertainties 
-\begin_inset CommandInset label
-LatexCommand label
-name "sec:Uncertainty-distributions"
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-Fig.
-\begin_inset space \thinspace{}
-\end_inset
-
-
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "fig:Unc-dist"
-
-\end_inset
-
- presents histograms of the logarithm of squared uncertainties for the nine
- datasets.
- 
-\begin_inset Formula $u_{E}^{2}$
-\end_inset
-
- has been fitted by an inverse gamma distribution 
-\begin_inset Formula $IG(k,\theta)$
-\end_inset
-
-, to assess the pertinence of the NIG model.
- The best fit curves are compared to the data histograms and show a reasonable
- agreement, except for Sets 1, 2 and 6.
- Uncertainties of Sets 1 appear to be bimodal, which cannot be modeled by
- the 
-\begin_inset Formula $IG$
-\end_inset
-
- distribution, while for Set 2, the 
-\begin_inset Formula $IG$
-\end_inset
-
- model is defeated by a long tail of small uncertainties.
- Set 6 presents a combination of both features.
- The parameters of the fitted 
-\begin_inset Formula $IG(k,\theta$
-\end_inset
-
-) distribution are reported in Table
-\begin_inset space \thinspace{}
-\end_inset
-
-
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "tab:uEfit"
-
-\end_inset
-
-.
- One sees that if one excludes the problematic datasets, the shape parameter
- covers a large range, from 1.57 to 23.4, corresponding to skewness values
- varying from infinity to about 1 (skewness of the
-\emph on
- 
-\begin_inset Formula $IG$
-\end_inset
-
-
-\emph default
- distribution is not defined for 
-\begin_inset Formula $k\le3$
-\end_inset
-
-).
- 
-\begin_inset Float figure
-placement h
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\noindent
-\align center
-\begin_inset Graphics
-	filename Figs/fig_dist_uE.png
-	lyxscale 25
-	width 90text%
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption Standard
-
-\begin_layout Plain Layout
-\begin_inset CommandInset label
-LatexCommand label
-name "fig:Unc-dist"
-
-\end_inset
-
-Uncertainty distributions.
- The histograms of 
-\begin_inset Formula $log(u_{E}^{2})$
-\end_inset
-
- are compared to the fit of 
-\begin_inset Formula $u_{E}^{2}$
-\end_inset
-
- by an Inverse-Gamma distribution (blue line).
- The mean variance (
-\begin_inset Formula $MV=<u_{E}^{2}>$
-\end_inset
-
-) is marked by a red line and the median variance (
-\emph on
-MedV
-\emph default
-) by an orange line.
- The distance between 
-\begin_inset Formula $MV$
-\end_inset
-
- and 
-\begin_inset Formula $MedV$
-\end_inset
-
- characterizes the skewness of the distribution of squared uncertainties.
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
  
 \begin_inset Float table
 wide false
@@ -3920,6 +3777,173 @@ reference "tab:data-summary"
 \end_layout
 
 \begin_layout Standard
+In order to have a clear view of the distributions involved in the generative
+ model for the estimation of simulated references, the distributions of
+ 
+\begin_inset Formula $u_{E,}$
+\end_inset
+
+, 
+\begin_inset Formula $E$
+\end_inset
+
+ and 
+\begin_inset Formula $Z$
+\end_inset
+
+ for the nine datasets are characterized in the next sections.
+ 
+\end_layout
+
+\begin_layout Subsubsection
+Uncertainty distributions
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:Uncertainty-distributions"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Fig.
+\begin_inset space \thinspace{}
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Unc-dist"
+
+\end_inset
+
+ presents histograms of the logarithm of squared uncertainties for the nine
+ datasets.
+ 
+\begin_inset Formula $u_{E}^{2}$
+\end_inset
+
+ has been fitted by an inverse gamma distribution 
+\begin_inset Formula $IG(k,\theta)$
+\end_inset
+
+, to assess the pertinence of the NIG model defined above.
+ The best fit curves are compared to the data histograms and show a reasonable
+ agreement, except for Sets 1, 2 and 6.
+ Uncertainties of Sets 1 appear to be bimodal, which cannot be modeled by
+ the 
+\begin_inset Formula $IG$
+\end_inset
+
+ distribution, while for Set 2, the 
+\begin_inset Formula $IG$
+\end_inset
+
+ model is defeated by a long left tail of small uncertainties.
+ Set 6 presents a combination of both features.
+ The parameters of the fitted 
+\begin_inset Formula $IG(k,\theta$
+\end_inset
+
+) distribution are reported in Table
+\begin_inset space \thinspace{}
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:uEfit"
+
+\end_inset
+
+.
+ One sees that if one excludes the problematic datasets, the shape parameter
+ covers a large range, from 1.57 to 23.4, corresponding to skewness values
+ varying from infinity to about 1 (skewness of the
+\emph on
+ 
+\begin_inset Formula $IG$
+\end_inset
+
+
+\emph default
+ distribution is not defined for 
+\begin_inset Formula $k\le3$
+\end_inset
+
+).
+ 
+\begin_inset Float figure
+placement h
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename Figs/fig_dist_uE.png
+	lyxscale 25
+	width 90text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Unc-dist"
+
+\end_inset
+
+Uncertainty distributions.
+ The histograms of 
+\begin_inset Formula $log(u_{E}^{2})$
+\end_inset
+
+ are compared to the fit of 
+\begin_inset Formula $u_{E}^{2}$
+\end_inset
+
+ by an Inverse-Gamma distribution (blue line).
+ The mean variance (
+\begin_inset Formula $MV=<u_{E}^{2}>$
+\end_inset
+
+) is marked by a red line and the median variance (
+\emph on
+MedV
+\emph default
+) by an orange line.
+ The distance between 
+\begin_inset Formula $MV$
+\end_inset
+
+ and 
+\begin_inset Formula $MedV$
+\end_inset
+
+ characterizes the skewness of the distribution of squared uncertainties.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
 The mean variance and median variance were marked in Fig.
 \begin_inset space \thinspace{}
 \end_inset
@@ -3973,7 +3997,8 @@ reference "tab:uEfit"
 \begin_inset Formula $\beta_{GM}$
 \end_inset
 
- values (above 0.4), except for Set 6.
+ values (above 0.4), except for Set 6, for which skewness is not an adapted
+ statistic.
  One can see for the sets with a successful 
 \emph on
 
@@ -4036,15 +4061,16 @@ reference "tab:data-summary"
 \begin_inset Formula $\nu_{eff}$
 \end_inset
 
- resulting from the fit of the data by a Student's-
+ resulting from the fit of the data by a scaled and shifted Student's-
 \emph on
 t
 \emph default
- distribution (the smaller 
+ distribution.
+ The smaller 
 \begin_inset Formula $\nu_{eff}$
 \end_inset
 
-, the farther from a normal distribution).
+, the farther one is from a normal distribution.
  This fit accounts for a possible bias in the dataset, which is non-negligible
  (above 5
 \begin_inset space \thinspace{}
@@ -4083,7 +4109,7 @@ t
 \begin_inset Float table
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \noindent
@@ -5103,7 +5129,7 @@ z
 \end_inset
 
  is the number of degrees of freedom resulting from the fit of the data
- by a Student's-
+ by a scaled and shifted Student's-
 \emph on
 t
 \emph default
@@ -5121,7 +5147,7 @@ t
 \begin_inset Float figure
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \noindent
@@ -5146,7 +5172,8 @@ name "fig:E-dist"
 
 \end_inset
 
-Error distributions (histograms) with normal (red line) and Student's-
+Error distributions (histograms) with normal (red line) and scaled and shifted
+ Student's-
 \emph on
 t
 \emph default
@@ -5169,7 +5196,7 @@ t
 \begin_inset Float figure
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \noindent
@@ -5228,7 +5255,7 @@ The histograms and
 \end_inset
 
  values indicate that none of the the error distributions is close to normal,
- which is a common feature
+ which is a common feature of error distributions
 \begin_inset CommandInset citation
 LatexCommand citep
 key "Pernot2020b,Pernot2021"
@@ -5295,7 +5322,11 @@ z
 z
 \emph default
 -scores for 8 out of nine datasets.
- 
+ Note that the normality of 
+\emph on
+z
+\emph default
+-scores should not be used as a calibration criterion.
 \end_layout
 
 \begin_layout Subsection
@@ -5314,9 +5345,10 @@ Having characterized the uncertainty and error distributions, one can put
 
 \begin_layout Paragraph*
 Non-normality of 
-\begin_inset Formula $D.$
+\begin_inset Formula $D$
 \end_inset
 
+.
  
 \end_layout
 
@@ -5329,7 +5361,7 @@ In the hypothesis that the generative distribution
 \begin_inset Formula $\nu_{eff}\simeq2k$
 \end_inset
 
-, where 
+ for those sets with good IG fits, where 
 \begin_inset Formula $\nu_{eff}$
 \end_inset
 
@@ -5345,7 +5377,7 @@ reference "tab:data-summary"
 \end_inset
 
 ).
- This is the case for Set 4, and to a lesser extent for Sets 7.
+ This is the case for Set 4, and to a lesser extent for Set 7.
  On the contrary, Sets 5, 8 and 9 have very large shape parameters which
  contrast strongly with the small values of 
 \begin_inset Formula $\nu_{eff}$
@@ -5434,18 +5466,6 @@ reference "tab:data-summary"
 \end_inset
 
 ).
- The unit-variance Student's-
-\emph on
-t
-\emph default
- distribution is defined as
-\begin_inset Formula 
-\begin{equation}
-t_{s}(\nu)=t(\nu)/\sqrt{\nu/(\nu-2)}
-\end{equation}
-
-\end_inset
-
  The results are shown in Fig.
 \begin_inset space \thinspace{}
 \end_inset
@@ -5533,9 +5553,13 @@ t
 \end_layout
 
 \begin_layout Standard
-The Student's-based model offers a better fit to the errors histogram for
- Sets 2, 5, 6, 7, 8 and 9 (considering that Set 9 is affected by a notable
- bias of the errors).
+The 
+\begin_inset Formula $t_{s}$
+\end_inset
+
+-based model offers a better fit to the errors histogram for Sets 2, 5,
+ 6, 7, 8 and 9 (considering that Set 9 is affected by a notable bias of
+ the errors).
  For the other sets, it is on par with the normal model.
  Note that for Set 6 the value of 
 \begin_inset Formula $\nu_{eff,Z}$
@@ -5555,7 +5579,7 @@ It is thus clear that a normal generative distribution
 \end_inset
 
  is not likely to provide simulated error distributions with properties
- close to the actual errors, except for a few datasets.
+ close to the actual errors, except for a few datasets (Sets 1, 3 and 4).
  A Student's-
 \emph on
 t
@@ -5602,173 +5626,6 @@ In the previous section, we have seen that if there is a best choice for
 
 -scores.
  
-\begin_inset Note Note
-status collapsed
-
-\begin_layout Plain Layout
-The sensitivity of simulated reference values to the generative distribution
- is explored for the statistics presented above.
- Reference values are simulated with 
-\begin_inset Formula $u_{E}\sim IG(2,2)$
-\end_inset
-
- and 
-\begin_inset Formula $D=t(\nu)/sqrt(\nu/(\nu-2))$
-\end_inset
-
- for a range of degrees of freedom between 3 and 20 (Fig.
-\begin_inset space \thinspace{}
-\end_inset
-
-
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "fig:sensSynthD"
-
-\end_inset
-
-).
- The set's size is 
-\begin_inset Formula $M=10^{4}$
-\end_inset
-
-, the sampling size is 
-\begin_inset Formula $N_{MC}=10^{4}$
-\end_inset
-
- and the uncertainties are sorted and parted into 100 bins to estimate the
- ENCE, LZMSE and 
-\begin_inset Formula $f_{v,X}$
-\end_inset
-
- statistics.
- The results are presented in Fig.
-\begin_inset space \thinspace{}
-\end_inset
-
-
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "fig:sensSynthD"
-
-\end_inset
-
-.
- 
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\noindent
-\align center
-\begin_inset Graphics
-	filename Figs/fig_sens_Synth_D.png
-	lyxscale 20
-	width 95text%
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption Standard
-
-\begin_layout Plain Layout
-\begin_inset CommandInset label
-LatexCommand label
-name "fig:sensSynthD"
-
-\end_inset
-
-Sensitivity of the simulated reference values of various statistics.
- Synthetic datasets are generated using Eq.
-\begin_inset space \thinspace{}
-\end_inset
-
-
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "eq:probmod"
-
-\end_inset
-
- with 
-\begin_inset Formula $u_{E}\sim IG(2,2)$
-\end_inset
-
- and 
-\begin_inset Formula $D=t(\nu)/sqrt(\nu/(\nu-2))$
-\end_inset
-
-.
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-For the statistics with predefined reference values (ZMS, 
-\begin_inset Formula $f_{v,LRCE}$
-\end_inset
-
- and 
-\begin_inset Formula $f_{v,LZMS}$
-\end_inset
-
-) one expects to recover this value by simulation, whatever the chosen generativ
-e distribution.
- There is clearly a problem for the RCE when 
-\begin_inset Formula $\nu<5$
-\end_inset
-
-, as the simulated reference value differs significantly from the theoretical
- one.
- By contrast, deviations of the ZMS are within the statistical uncertainty
- bounds.
- 
-\color red
-The 
-\begin_inset Formula $f_{v}$
-\end_inset
-
- statistic seems also to have issues at small 
-\begin_inset Formula $\nu$
-\end_inset
-
- values, and fail to recover the expected frequency of 0.95 for 
-\begin_inset Formula $\nu<10$
-\end_inset
-
-.
- 
-\end_layout
-
-\begin_layout Plain Layout
-The CC, ENCE and ZMSE simulated reference values depend strongly on 
-\begin_inset Formula $D$
-\end_inset
-
-.
- They are therefore unsuitable for validation in cases where 
-\begin_inset Formula $D$
-\end_inset
-
- is unknown.
-\end_layout
-
-\end_inset
-
-
 \end_layout
 
 \begin_layout Subsubsection
@@ -5780,8 +5637,8 @@ Sensitivity of
 \end_layout
 
 \begin_layout Standard
-A first point is the confirmation of the dependence of the simulated reference
- values on the datasets.
+A first point is the appreciation of the dependence of the simulated reference
+ values on the uncertainty distributions.
  For this, a normal generative distribution is chosen [
 \begin_inset Formula $D=N(0,1)$
 \end_inset
@@ -5794,7 +5651,7 @@ A first point is the confirmation of the dependence of the simulated reference
 \begin_inset Formula $u(\tilde{\vartheta}_{D,ref})$
 \end_inset
 
- are estimated for each statistic and dataset.
+ are estimated for each statistic and the nine example datasets.
  The sampling size is 
 \begin_inset Formula $N_{MC}=10^{4}$
 \end_inset
@@ -5880,7 +5737,8 @@ reference "fig:sensitivity-1-1"
 
 \end_inset
 
-(a)], the simulation recovers correctly the predefined reference values.
+(a)], the simulation recovers correctly the predefined reference value,
+ showing the consistency of the simulation approach for this statistic.
  For CC [Fig.
 \begin_inset space \thinspace{}
 \end_inset
@@ -5896,7 +5754,7 @@ reference "fig:sensitivity-1-1"
 \begin_inset Formula $\tilde{\vartheta}_{D,ref}$
 \end_inset
 
- follows a random-looking pattern confirming the absence of a common reference
+ depends strongly on the dataset, confirming the absence of a common reference
  value for these datasets.
  The ENCE [Fig.
 \begin_inset space \thinspace{}
@@ -5920,8 +5778,8 @@ reference "fig:sensitivity-1-1"
 
 \end_inset
 
-(e)] follow a similar pattern, which is mostly due to the sensitivity of
- these variables to 
+(e)] follow a parallel pattern, which is mostly due to the sensitivity of
+ these variables to the dataset size, 
 \begin_inset Formula $M$
 \end_inset
 
@@ -5952,14 +5810,19 @@ reference "fig:sensitivity-1-1"
 
 \end_inset
 
-(d,f)] shows that this common pattern disappears and that each uncertainty
+(d,f)] shows that the common pattern disappears and that each uncertainty
  set leads to its own reference value, even if a few CIs overlap.
- 
+ The ENCE has an outstanding value of 
+\begin_inset Formula $\tilde{\vartheta}_{D,ref}$
+\end_inset
+
+ for Set 7, which is not the case for ZMSE, and might be the manifestation
+ of an over-sensitivity of the ENCE to features of the uncertainty distribution.
 \end_layout
 
 \begin_layout Standard
-Apart from the ZMS, on needs thus to estimate a simulated reference value
- for each set and statistic.
+Globally, apart from the ZMS, on needs therefore to estimate a simulated
+ reference value for each set and statistic.
  
 \end_layout
 
@@ -5978,7 +5841,7 @@ Sensitivity of
 \begin_layout Standard
 The simulated reference values are generated for Sets 7 and 8 (as representative
  of the largest sets with markedly different uncertainty distributions)
- from their actual uncertainties by using a scaled Student's-
+ from their actual uncertainties by using a unit-variance Student's-
 \emph on
 t
 \emph default
@@ -6091,10 +5954,10 @@ reference "fig:sensitivity-1"
 
 (a)], one expects to observe the conformity of the simulated reference value
  with the known reference value (
-\begin_inset Formula $\tilde{\vartheta}_{\nu,ref}\simeq\vartheta_{ref}$
+\begin_inset Formula $\tilde{\vartheta}_{\nu,ref}\simeq1$
 \end_inset
 
-), whatever the chosen generative distribution.
+), independently of the chosen generative distribution.
  This is the case, albeit with a notable increase of Monte Carlo sampling
  uncertainty as 
 \begin_inset Formula $v$
@@ -6156,8 +6019,8 @@ This sensitivity analysis is based on a worst case scenario where the lower
 \begin_inset Formula $\nu$
 \end_inset
 
- generate amounts of outliers that can disturb the reliability of conditional
- calibration statistics.
+ generate amounts of outliers that can disturb the reliability of calibration
+ statistics.
  It suggests that using too extreme generative distributions 
 \begin_inset Formula $D$
 \end_inset
@@ -6299,8 +6162,7 @@ name "fig:z-Scores"
 
 \end_inset
 
-Validation of an average calibration statistics (ZMS) and the correlation
- between absolute errors and uncertainties (CC) with 
+Validation of the ZMS and CC statistics with 
 \begin_inset Formula $\zeta$
 \end_inset
 
@@ -6345,7 +6207,7 @@ Let us first consider the results for the ZMS statistic.
  There is a good agreement between the three bootstrapped CI-based estimations
  (BS, SimN, SimT).
  The absence of notable difference between the SimN and SimT results confirms
- the low sensitivity of this method to the choice for 
+ the low sensitivity of this method to the choice of 
 \begin_inset Formula $D$
 \end_inset
 
@@ -6403,7 +6265,7 @@ For the CC statistic, it appears that the choice of
  agree on the binary validation diagnostic.
  One might be then tempted to conclude that only Sets 3 and 4 have CCs compatibl
 e with their simulated reference values.
- Note that in this case, the bootstrapped and simulated 
+ Note that in this case, the Sim and Sim2 
 \begin_inset Formula $\zeta$
 \end_inset
 
@@ -6484,13 +6346,14 @@ reference "fig:z-Scores-1"
 
 \end_inset
 
-): a strong sensitivity to 
+): a notable sensitivity to 
 \begin_inset Formula $D$
 \end_inset
 
- and a large difference between the Sim and Sim2 protocols.
- This confirms that one should not use the Monte Carlo CIs to estimate the
- 
+ and a large difference between the Sim and Sim2 protocols (except for Set
+ 3).
+ The latter observation confirms that one should not use the Monte Carlo
+ CIs to estimate the 
 \begin_inset Formula $\zeta$
 \end_inset
 
@@ -6504,7 +6367,7 @@ reference "fig:z-Scores-1"
 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "sec:Reference-values-for"
+reference "sec:Validation-of-ZMSE"
 
 \end_inset
 
@@ -6523,21 +6386,14 @@ name "sec:Discussion"
 \end_layout
 
 \begin_layout Standard
-This study focused on the validation of correlation and calibration statistics
+This study focuses on the validation of correlation and calibration statistics
  by standardized 
 \begin_inset Formula $\zeta$
 \end_inset
 
 -scores, for which one needs reference values and confidence interval estimates.
- Reference values are predefined for the ZMS, 
-\begin_inset Formula $f_{v,ZMS}$
-\end_inset
-
- and 
-\begin_inset Formula $f_{v,RCE}$
-\end_inset
-
- statistics, but not for CC, ENCE and ZMSE.
+ Reference values are predefined for the ZMS statistic, but not for CC,
+ ENCE and ZMSE.
  In the latter cases, it is possible to generate reference values by a Monte
  Carlo approach, which implies to generate simulated error sets from the
  actual uncertainties, using a generative distribution 
@@ -6545,7 +6401,8 @@ This study focused on the validation of correlation and calibration statistics
 \end_inset
 
 .
- A reference value and its CI can be obtained by repeating this random sampling.
+ A reference value and its standard error can be obtained by repeating this
+ random sampling.
  The choice of an interval-based validation method results from the often
  marked non-normality of the error and uncertainty datasets, which prevents
  the use of more standard 
@@ -6674,11 +6531,7 @@ Another and less manageable source of sensitivity of the
  absolute value, squared value...) is likely to be affected by the shape/width
  of the errors distribution.
  This is particularly visible for the CC, ENCE and ZMSE statistics, but
- much less for the ZMS, and 
-\begin_inset Formula $f_{v,X}$
-\end_inset
-
- statistics.
+ much less for the ZMS.
  For confidence curves, Pernot
 \begin_inset CommandInset citation
 LatexCommand citep
@@ -6701,143 +6554,6 @@ The sensitivity of a simulated reference value to the generative model has
 
 \color orange
  
-\begin_inset Note Note
-status collapsed
-
-\begin_layout Plain Layout
-
-\color orange
-The simulation approach is very easy to implement, but it comes with a serious
- caveat, which is that the simulated reference values are often very sensitive
- to the choice of 
-\begin_inset Formula $D$
-\end_inset
-
-.
- In general, one cannot default to a normal distribution, and an ill founded
- choice of 
-\begin_inset Formula $D$
-\end_inset
-
- will lead to ambiguous validation diagnostics.
- 
-\end_layout
-
-\begin_layout Plain Layout
-
-\color orange
-As an alternative to the default choice of a standard normal distribution
- for 
-\begin_inset Formula $D$
-\end_inset
-
-, it was shown above that using the distribution of 
-\emph on
-z
-\emph default
--scores was often leading to more realistic simulated error sets.
- However, the analogy between 
-\begin_inset Formula $D$
-\end_inset
-
- and the distribution of 
-\begin_inset Formula $Z$
-\end_inset
-
- rests on the hypothesis of calibrated datasets.
- As this is the aim of our tests, one gets a circular reasoning.
- It is therefore not clear whether the distribution of 
-\begin_inset Formula $Z$
-\end_inset
-
- presents a reliable alternative to the default.
- 
-\end_layout
-
-\end_inset
-
-
-\color inherit
-
-\begin_inset Note Note
-status collapsed
-
-\begin_layout Plain Layout
-Two factors can be affected by 
-\begin_inset Formula $D$
-\end_inset
-
-: the simulated reference value and the confidence interval on this value
- used for validation.
- For the simulated reference value, the sensitivity to 
-\begin_inset Formula $D$
-\end_inset
-
- has been observed to depend on the statistic (weak to null for ZMS and
- RCE, important for CC; see also Pernot
-\begin_inset CommandInset citation
-LatexCommand citep
-key "Pernot2022c"
-
-\end_inset
-
-).
- This implies that, unless the choice of 
-\begin_inset Formula $D$
-\end_inset
-
- is motivated, the simulation strategy is not of general applicability,
- and the sensitivity to 
-\begin_inset Formula $D$
-\end_inset
-
- should be assessed for each statistic.
- Statistics with high sensitivity to 
-\begin_inset Formula $D$
-\end_inset
-
-, such as CC, should clearly not be used for validation.
- 
-\end_layout
-
-\begin_layout Plain Layout
-Even for statistics with low sensitivity to 
-\begin_inset Formula $D$
-\end_inset
-
-, one is confronted to the fact that the uncertainty/CI on the simulated
- reference value is always sensitive to 
-\begin_inset Formula $D$
-\end_inset
-
-.
- Therefore, this uncertainty should not be used for validation, as was done
- in earlier studies
-\begin_inset CommandInset citation
-LatexCommand citep
-key "Pernot2022c,Rasmussen2023"
-
-\end_inset
-
-.
- Instead, the standard error on the simulated reference value should be
- lowered by sufficient repeats of the simulation procedure, in order to
- become negligible before the uncertainty on the statistic estimated by
- bootstrapping.
- 
-\end_layout
-
-\begin_layout Plain Layout
-The best way to use simulated reference values for validation is finally
- to use the benchmark bootstrapping approach with a plugged-in simulated
- reference value.
- It was shown on the ZMS and RCE to provide consistent results with the
- benchmark approach using the predefined reference value.
-\end_layout
-
-\end_inset
-
-
 \end_layout
 
 \begin_layout Section
@@ -6853,25 +6569,13 @@ name "sec:Conclusion"
 
 \begin_layout Standard
 This study sheds a critical look at the validation of an average calibration
- statistics (ZMS), a correlation statistic (CC) and four conditional calibration
- statistics (ENCE, ZMSE, 
-\begin_inset Formula $f_{v,RCE}$
-\end_inset
-
- and 
-\begin_inset Formula $f_{v,ZMS}$
-\end_inset
-
-).
+ statistics (ZMS), a correlation statistic (CC) and two conditional calibration
+ statistics (ENCE, ZMSE).
  A benchmark method was defined for those statistics with a predefined reference
- value (ZMS and 
-\begin_inset Formula $f_{v,X}$
-\end_inset
-
-) and compared to simulation approaches for statistics with no predefined
- reference value (CC, ENCE and ZMSE).
- A robust validation workflow was proposed to deal with the main obstacles
- of the simulation approach (Fig.
+ value (ZMS) and compared to simulation approaches for statistics with no
+ predefined reference value (CC, ENCE and ZMSE).
+ A validation workflow was proposed to deal with the main obstacles of the
+ simulation approach (Fig.
 \begin_inset space \thinspace{}
 \end_inset
 
@@ -6964,37 +6668,65 @@ if
 
  is unknown, one cannot estimate a reliable reference value for their validation.
  For CC, checking that it is positive is the best that can be done and there
- is no sens in comparing CC values of different datasets.
- A much more powerful and reliable substitute is the plotting of RMSE-based
+ is no sense in comparing CC values of different datasets.
+ A much more powerful and reliable approach is the plotting of RMSE-based
  
 \emph on
 confidence curves
 \emph default
- with bootstrapped CI and simulated reference value
-\begin_inset CommandInset citation
-LatexCommand citep
-key "Pernot2022c"
-
-\end_inset
-
-.
+ with bootstrapped CI and simulated reference value.
  Similarly, the simulated reference values for measures of conditional calibrati
 on such as the ENCE and ZMSE are very sensitive to the choice of 
 \begin_inset Formula $D$
 \end_inset
 
  and therefore cannot generally be used for validation.
- Instead, the fraction of valid bins, based on binwise testing of the RCE
- or the ZMS statistic, has a predefined reference value and can be used
- without limitations, as long as the datasets are large enough to ensure
- testing power.
+ When used for comparative studies, they should be limited to datasets of
+ identical sizes and to identical binning schemes.
+ Validation is possible by alternative approaches, such as the 
+\begin_inset Quotes eld
+\end_inset
+
+extrapolation to zero bins
+\begin_inset Quotes erd
+\end_inset
+
+ method used in Appendix
+\begin_inset space \thinspace{}
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Validation-of-ZMSE"
+
+\end_inset
+
+, or by the estimation of the 
+\begin_inset Quotes eld
+\end_inset
+
+fraction of valid bins
+\begin_inset Quotes erd
+\end_inset
+
+ proposed by Pernot
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Pernot2023d"
+
+\end_inset
+
+.
+ However, the reliability of these alternative approaches still needs to
+ be demonstrated for a diversity of datasets.
  
 \end_layout
 
 \begin_layout Standard
 Finally, the only case where the use of simulated reference values seems
- adapted is for confidence curves, as the RMSE-based reference curve does
- not depend on 
+ well adapted is for confidence curves, as the RMSE-based reference curve
+ does not depend on 
 \begin_inset Formula $D$
 \end_inset
 
@@ -7002,6 +6734,16 @@ Finally, the only case where the use of simulated reference values seems
  However, there are probably other calibration statistics for which this
  concept might be useful, and the proposed workflow should enable to validate
  them with confidence.
+\end_layout
+
+\begin_layout Section*
+Acknowledgments
+\end_layout
+
+\begin_layout Standard
+\noindent
+I warmly thank J.
+ Busk for providing the QM9 dataset.
 \end_layout
 
 \begin_layout Section*
@@ -16106,8 +15848,8 @@ reference "fig:ENCE-ZMSE"
 \end_inset
 
 .
- In both cases, the impact of the uncertainty distribution is minor and
- negligible for the validation process.
+ In both cases, the impact of the uncertainty distribution is minor, albeit
+ larger for ENCE than for ZMSE, and negligible for the validation process.
  
 \end_layout
 
@@ -16222,18 +15964,7 @@ The same linear relationship as for the normal generative distribution is
 .
  One is therefore facing the same problem as for the CC statistic, i.e.
  the absence of reference value if the generative distribution is unknown.
- The extrapolation to 
-\begin_inset Formula $N=0$
-\end_inset
-
- method proposed by Pernot
-\begin_inset CommandInset citation
-LatexCommand citep
-key "Pernot2023a_arXiv"
-
-\end_inset
-
- is presently the only validation alternative.
+ 
 \end_layout
 
 \begin_layout Standard
@@ -16245,11 +15976,18 @@ key "Pernot2023a_arXiv"
 
 \begin_layout Section
 Validation of ZMSE for the application datasets
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:Validation-of-ZMSE"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
 For each of the nine datasets, one establishes a ZMSE validation diagnostic
- by a method which is independent on a generative distribution hypothesis.
+ by a method which is independent of a generative distribution hypothesis.
  For this, the ZMSE is estimated for a series of bin numbers and fitted
  by a linear model as a function of 
 \begin_inset Formula $(N/M)^{1/2}$
@@ -16263,7 +16001,18 @@ key "Pernot2023a_arXiv"
 
 \end_inset
 
- The reference lines for the NIG and T6IG models are also plotted for comparison.
+ The reference lines for the NIG and T6IG models defined in Appendix
+\begin_inset space \thinspace{}
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Reference-values-for"
+
+\end_inset
+
+ are also plotted for comparison.
  
 \begin_inset Float figure
 wide false
@@ -16317,8 +16066,8 @@ name "figZMSEval"
 \end_layout
 
 \begin_layout Standard
-All the datasets are failing this consistency test, as none of the red intervals
- is containing zero.
+All the datasets are failing this validation test of conditional calibration
+ (consistency), as none of the red intervals is containing zero.
  Note however that for some datasets (e.g.
  Sets 3 and 4), it is possible to choose a number of bins such that the
  ZMSE is compatible with the T6IG reference (dotted line).

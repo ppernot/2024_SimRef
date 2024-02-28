@@ -1,3 +1,5 @@
+# Sensitivity of theta_ref to D
+
 set.seed(123)
 
 setListCal = setList[7:8]
@@ -8,7 +10,6 @@ nBin = 50
 intrv = ErrViewLib::genIntervals(1:10, nBin)
 stats = names(calScoresBS2(1:10,cbind(1:10,1:10),intrv))
 
-# Sensitivity to D ####
 nuSeq = c(3,4,5,7,10,15,20)
 smc     = matrix(NA, nrow = nMC, ncol = length(stats))
 scores = uscores =
@@ -37,6 +38,6 @@ for(i in seq_along(setListCal)) {
   }
 }
 
-
 save(nuSeq, stats, setListCal, scores, uscores,
-     file ='sensitivity.Rda')
+     file = file.path(tmpDir,"sensitivity.Rda"))
+

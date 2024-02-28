@@ -1,3 +1,5 @@
+# Sensitivity of scores to D
+
 cl <- makeCluster(detectCores())
 methods = c('BS','SimN','SimT','Sim2N','Sim2T')
 
@@ -91,6 +93,5 @@ save(
   stats, methods, setList, scores, bias, ciScores, zmatBS,
   muSimN, seSimN, zmatSimN, ci2N, zmatSim2N,
   muSimT, seSimT, zmatSimT, ci2T, zmatSim2T,
-  file = 'zetaScores.Rda'
-)
+  file = file.path(tmpDir,"zetaScores.Rda"))
 

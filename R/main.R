@@ -2,6 +2,7 @@ setwd("~/Bureau/2024_SimRef/R")
 
 figDir = '../Figs'
 tabDir = '../Tabs'
+tmpDir = '../Tmp'
 
 library(fitdistrplus)
 library(nptest)
@@ -24,12 +25,317 @@ nBoot =  5000
 ## Data summary and properties ####
 source("./datasetsProperties.R")
 
-## Sensitivity ####
+### Tables ####
+df = cbind(
+  iD = 1:length(setList),
+  data = setList,
+  M = size,
+  Reference = NA
+)
+sink(file =  file.path(tabDir,'tabDataPres.tex'))
+print(knitr::kable(df, 'latex'))
+sink()
 
-### Sensitivity of ref to dataset
+df = cbind(
+  iD = 1:length(setList),
+  mean = meanE,
+  sig  = sigE,
+  bias = round(100*biasE),
+  nu_eff = round(EdistPars[,1],1)
+)
+sink(file =  file.path(tabDir,'tabDataPropE.tex'))
+print(knitr::kable(df, 'latex'))
+sink()
+
+df = cbind(
+  iD = 1:length(setList),
+  mean = meanZ,
+  sig  = sigZ,
+  bias = round(100*biasZ),
+  nu_eff = round(ZdistPars[,1],1)
+)
+sink(file =  file.path(tabDir,'tabDataPropZ.tex'))
+print(knitr::kable(df, 'latex'))
+sink()
+
+### Fig. 2 ####
+
+png(
+  file = file.path(figDir, paste0('fig_dist_uE.png')),
+  width  = 2*gPars$reso,
+  height = 2*gPars$reso
+)
+par(
+  mfrow = c(3, 3),
+  mar = c(3,2,2,0), #gPars$mar,
+  mgp = gPars$mgp,
+  pty = 's',
+  tcl = gPars$tcl,
+  cex = 1 * gPars$cex,
+  cex.main = 1,
+  lwd = gPars$lwd
+)
+
+parstab = matrix(NA, nrow = length(setList), ncol = 2)
+colnames(parstab) = c("shape","scale")
+
+gi = bgm = c()
+
+for(i in seq_along(setList)) {
+  D2 = dataList[[paste0(setList[i],'_cal')]]
+  uE = D2$uE
+
+  fit.t<-fitdistrplus::fitdist(
+    1/uE^2, "gamma", method = "mle",
+    start = list(shape = 10, scale = 1),
+    keepdata = FALSE)
+  pars = summary(fit.t)$estimate
+  shape = pars["shape"]
+  scale = pars["scale"]
+
+  # sel = uE^2 < quantile(uE^2,probs = 0.99)
+  # X = uE[sel]^2
+  X = log(uE^2)
+  lMeaV = log(mean(uE^2))
+  lMedV = log(median(uE^2))
+  h1 = hist(X, nclass = 33, plot = FALSE)
+  ylim = c(0,1.1*max(h1$density))
+  hist(
+    X, freq = FALSE, col = NULL,
+    border = gPars$cols_tr2[1],
+    main = paste0('Set ',i), nclass = 33,
+    ylim = ylim, yaxs = 'i',
+    xlab = 'log(uE^2)'
+  )
+  curve(
+    MCMCpack::dinvgamma(exp(x),
+                        shape = shape,
+                        scale = 1/scale)*exp(x),
+    from = min(X), to = max(X), lwd = 2*gPars$lwd,
+    n= 1000, col = gPars$cols[6], add=TRUE)
+
+  abline(v = lMeaV, lwd = 2*gPars$lwd,
+         col = gPars$cols[2], lty = 1)
+  abline(v = lMedV, lwd = 2*gPars$lwd,
+         col = gPars$cols[3], lty = 1)
+  if(i==3)
+    legend(
+      'topright', bty = 'n',
+      legend = c('IG fit','MV', 'MedV'),
+      pch = NA, lwd = 2*gPars$lwd,
+      lty = c(1,1,1),
+      col = gPars$cols[c(6,2,3)]
+    )
+  box()
+
+
+  parstab[i,]=c(shape, 1/scale)
+
+  gi[i] = ErrViewLib::gimc(uE)
+  bgm[i] = ErrViewLib::skewgm(uE)
+}
+
+dev.off()
+
+parstab = cbind(gi, bgm, parstab)
+sink(file =  file.path(tabDir,'tabParsFituE.tex'))
+print(knitr::kable(signif(parstab,3), 'latex'))
+sink()
+
+### Fig. 3 ####
+
+png(
+  file = file.path(figDir, paste0('fig_dist_E.png')),
+  width  = 2*gPars$reso,
+  height = 2*gPars$reso
+)
+par(
+  mfrow = c(3, 3),
+  mar = c(3,2,2,0), #gPars$mar,
+  mgp = gPars$mgp,
+  pty = 's',
+  tcl = gPars$tcl,
+  cex = 1 * gPars$cex,
+  cex.main = 1,
+  lwd = gPars$lwd
+)
+for(i in seq_along(setList)) {
+  D2 = dataList[[paste0(setList[i],'_cal')]]
+  E  = D2$E
+  uE = D2$uE
+  xlim = sd(E)*c(-3,3)
+  sel = abs(E) < xlim[2]
+
+  h1 = hist(E[sel], nclass = 25, plot = FALSE)
+  ylim = c(0,1.35*max(h1$density))
+  hist(
+    E[sel], freq = FALSE, col = NULL, nclass=25,
+    border = gPars$cols_tr2[1], yaxs = 'i',
+    xlim = xlim, main = paste0('Set ',i),
+    xlab = paste0('Error ',D2$unit), ylim = ylim
+  )
+  abline(v=0, lty = 2, col = 'gray25', lwd = 2* gPars$lwd)
+  curve(
+    dnorm(x,mean(E),sd(E)),
+    from = xlim[1], to = xlim[2], lwd = 2*gPars$lwd,
+    n= 1000, col = gPars$cols[2], add=TRUE)
+
+  curve(
+    dt_ls(x,
+          df = EdistPars[i,"df"],
+          mu = EdistPars[i,"mu"],
+          sigma = EdistPars[i,"sigma"]),
+    from = xlim[1], to = xlim[2], lwd = 2*gPars$lwd,
+    n= 1000, col = gPars$cols[6], add=TRUE)
+
+  if(i==1)
+    legend(
+      'topright', bty = 'n', cex=0.75,
+      legend = c('Data','Normal', 'Student'),
+      col = gPars$cols[c(1,2,6)],
+      lty = c(0,1,1), lwd = 2 * gPars$lwd,
+      pch = c(22,NA,NA), pt.bg = 'white',
+      pt.lwd = 2, pt.cex = 1.5
+    )
+  box()
+}
+dev.off()
+
+### Fig. 4 ####
+
+png(
+  file = file.path(figDir, paste0('fig_dist_Z.png')),
+  width  = 2*gPars$reso,
+  height = 2*gPars$reso
+)
+par(
+  mfrow = c(3, 3),
+  mar = c(3,2,2,0), #gPars$mar,
+  mgp = gPars$mgp,
+  pty = 's',
+  tcl = gPars$tcl,
+  cex = 1 * gPars$cex,
+  cex.main = 1,
+  lwd = gPars$lwd
+)
+for(i in seq_along(setList)) {
+  D2 = dataList[[paste0(setList[i],'_cal')]]
+  E  = D2$E
+  uE = D2$uE
+  Z  = E / uE
+  xlim = sd(Z) * c(-3,3)
+  sel = abs(Z)/sd(Z) < xlim[2]
+  h = hist(Z[sel], nclass = 25, plot = FALSE)
+  hist(
+    Z[sel], freq = FALSE, col = NULL, nclass = 25,
+    border = gPars$cols_tr2[1],
+    xlim = xlim, main = paste0('Set ',i), yaxs = 'i',
+    xlab = 'Z', ylim = 1.35 * c(0,max(h$density))
+  )
+  abline(v=0, lty = 2, col = 'gray25', lwd = 2* gPars$lwd)
+  # Normal fit
+  curve(
+    dnorm(x,mean(Z),sd(Z)),
+    from = xlim[1], to = xlim[2], lwd = 2*gPars$lwd,
+    n= 1000, col = gPars$cols[2], add=TRUE)
+  # Student's fit
+  curve(
+    dt_ls(x,
+          df = ZdistPars[i,"df"],
+          mu = ZdistPars[i,"mu"],
+          sigma = ZdistPars[i,"sigma"]),
+    from = xlim[1], to = xlim[2], lwd = 2*gPars$lwd,
+    n= 1000, col = gPars$cols[6], add=TRUE)
+
+  if(i==1)
+    legend(
+      'topright', bty = 'n', cex=0.75,
+      legend = c('Data','Normal', 'Student'),
+      col = c(gPars$cols[c(1,2,6)]),
+      lty = c(0,1,1), lwd = 3 * gPars$lwd,
+      pch = c(22,NA,NA), pt.bg = 'white',
+      pt.lwd = 2, pt.cex = 1.5
+    )
+  box()
+}
+dev.off()
+
+### Fig. 5 ####
+
+png(
+  file = file.path(figDir, paste0('fig_dist_Esim.png')),
+  width  = 2*gPars$reso,
+  height = 2*gPars$reso
+)
+par(
+  mfrow = c(3, 3),
+  mar = c(3,2,2,0), #gPars$mar,
+  mgp = gPars$mgp,
+  pty = 's',
+  tcl = gPars$tcl,
+  cex = 1 * gPars$cex,
+  cex.main = 1,
+  lwd = gPars$lwd
+)
+for(i in seq_along(setList)) {
+  D2 = dataList[[paste0(setList[i],'_cal')]]
+  E  = D2$E; mu = mean(E)
+  uE = D2$uE
+  xlim = sd(E)*c(-3,3)
+  sel = abs(E) < xlim[2]
+
+  h1 = hist(E[sel], nclass = 25, plot = FALSE)
+  ylim = c(0,1.35*max(h1$density))
+  hist(
+    E[sel], freq = FALSE, nclass = 25, col = NULL,
+    border = gPars$cols_tr2[1],
+    xlim = xlim, main = paste0('Set ',i),
+    xlab = paste0('Error ',D2$unit),
+    ylim = ylim, yaxs = 'i'
+  )
+  abline(v=0, lty = 2, col = 'gray25', lwd = 2* gPars$lwd)
+
+  df = ZdistPars[i,"df"]
+  if(df <= 2)
+    df = 2.1
+  sample = as.vector(
+    replicate(
+      100,
+      uE * rt_ls(length(uE), df = df, mu = 0, sigma = 1)/
+        sqrt(df/(df-2))
+    )
+  )
+  sel = abs(sample) < xlim[2]
+  h2 = hist(sample[sel], nclass = 55, plot = FALSE)
+  lines(h2$mids, h2$density, lwd = 2* gPars$lwd,
+        col = gPars$cols[6])
+
+  sample = as.vector(replicate(100, uE * rnorm(length(uE))))
+  sel = abs(sample) < xlim[2]
+  h3 = hist(sample[sel], nclass = 55, plot = FALSE)
+  lines(h3$mids, h3$density, lwd = 2* gPars$lwd,
+        col = gPars$cols[2])
+
+  if(i==1)
+    legend(
+      'topright', bty = 'n', cex=0.8,
+      legend = c('Data','Normal', 'Student'),
+      col = c(gPars$cols[c(1,2,6)]),
+      lty = c(0,1,1), lwd = 2 * gPars$lwd,
+      pch = c(22,NA,NA), pt.bg = 'white',
+      pt.lwd = 2, pt.cex = 1.5
+    )
+  box()
+}
+dev.off()
+
+
+
+## Sensitivity of theta_ref to uE ####
 
 source("sensitivityData.R")
 
+### Fig. 6 ####
 png(
   file = file.path(figDir, paste0('fig_sensData_s.png')),
   width  = 2*gPars$reso,
@@ -108,16 +414,17 @@ for(istat in seq_along(statst)) {
 dev.off()
 
 
-### Sensitivity of ref to generative dist. D
+## Sensitivity of theta_ref to D ####
 
 calcSens = FALSE
 if(calcSens) {
   # Runtime about 1 hour
   source("sensitivity.R")
 } else {
-  load("./sensitivity.Rda")
+  load(file = file.path(tmpDir,"sensitivity.Rda"))
 }
 
+### Fig. 7 ####
 png(
   file = file.path(figDir, paste0('fig_sensitivity78.png')),
   width  = 2*gPars$reso,
@@ -175,15 +482,15 @@ for(stat in stats) {
 }
 dev.off()
 
-## Scores ####
+## Sensitivity of Scores to D ####
 calcScores = FALSE
 if(calcScores) {
   source("calcZetaScores.R")
 } else {
-  load("./zetaScores.Rda")
+  load(file = file.path(tmpDir,"zetaScores.Rda"))
 }
 
-### Results table and Fig ####
+### Tables ####
 for(i in seq_along(stats)) {
   df = data.frame(
     set      = 1:length(setList),
@@ -210,6 +517,7 @@ for(i in seq_along(stats)) {
   sink()
 }
 
+### Fig. 8 ####
 png(
   file = file.path(figDir, 'fig_scores_linear1.png'),
   width  = 1.5 * gPars$reso,
@@ -259,6 +567,7 @@ for(stat in 1:2) {
 }
 dev.off()
 
+### Fig. 9 ####
 png(
   file = file.path(figDir, 'fig_scores_linear2.png'),
   width  = 1.5 * gPars$reso,
@@ -309,13 +618,419 @@ for(stat in 3:4) {
 dev.off()
 
 # Appendices ####
-
 ## Appendix B ####
-if(FALSE)
-  source("testCLT.R")
 
+calcAppB = FALSE
+if(calcAppB)
+  source('testENCE.R')
 
+### Fig. 10 ####
+png(
+  file = file.path(figDir, paste0('fig_ENCE_ZMSE.png')),
+  width  = 2*gPars$reso,
+  height = 2*gPars$reso
+)
+par(
+  mfrow = c(2,2),
+  mar = c(4,4,1,1),
+  mgp = gPars$mgp,
+  pty = 's',
+  tcl = gPars$tcl,
+  cex = 1.0*gPars$cex,
+  cex.main = 1,
+  lwd = gPars$lwd
+)
+lwd = 1.5 *gPars$lwd
+pch = c(0,1,2,3,6)
 
+load(file = file.path(tmpDir,"testENCE.Rda"))
+ylim = range(c(scorest[,,,1]-2*uscorest[,,,1],
+               scorest[,,,1]+2*uscorest[,,,1]))
+for(k in seq_along(nuSeq)) {
+  sc  = scorest[,k,,1]
+  usc = uscorest[,k,,1]
+  if(k==1) {
+    matplot(mSeq, sc, type = 'b', log = 'xy',
+            pch = pch,
+            lty = 1, col = gPars$cols[k],
+            lwd = lwd,
+            xlab = 'Set size (M)',
+            ylim = ylim,
+            ylab = expression(tilde(theta)[list(nu,ref)]),
+            main = 'ENCE')
+    grid(equilogs = FALSE)
+  } else {
+    matlines(mSeq, sc, type = 'b',
+             lwd = lwd,
+             pch = pch, lty = 1, col = gPars$cols[k])
+  }
+}
+legend(
+  'topright', bty = 'n', cex = 0.85, ncol = 2,
+  title = expression(nu/2),
+  legend = nuSeq,
+  lty = 1, pch = 20, lwd = lwd,
+  col = gPars$cols
+)
+legend(
+  'bottomleft', bty = 'n', cex = 0.85,
+  title = 'N',
+  legend = nBinSeq,
+  lty = 0, pch = pch, lwd = lwd,
+  col = gPars$cols[1]
+)
+box()
+
+xt = yt = c()
+for(k in seq_along(nuSeq)) {
+  for(j in seq_along(nBinSeq)) {
+    nBint = nBinSeq[j]
+    xt = c(xt, sqrt(nBint/mSeq))
+    yt = c(yt, scorest[,k,j,1])
+  }
+}
+
+xlim = c(0, 1.1*max(xt))
+ylim = c(0, 1.1*max(yt))
+for(k in seq_along(nuSeq)) {
+  for(j in seq_along(nBinSeq)) {
+    nBint = nBinSeq[j]
+    x = sqrt(nBint/mSeq)
+    y = scorest[,k,j,1]
+    if(k == 1 & j == 1) {
+      plot(x, y, type = 'b',
+           pch = pch[j], lty = 1, col = gPars$cols[k],
+           lwd = lwd,
+           xlim = xlim, xaxs = 'i',
+           xlab = '(N/M)^1/2',
+           ylim = ylim, yaxs = 'i',
+           ylab = expression(tilde(theta)[list(nu,ref)]),
+           main = 'ENCE')
+      grid()
+    } else {
+      lines(x, y, type = 'b',
+            lwd = lwd,
+            pch = pch[j], lty = 1, col = gPars$cols[k])
+    }
+  }
+}
+abline(reg = lm(yt~xt), lty = 2, col = 'gray25')
+box()
+print(coefficients(lm(yt~xt)))
+
+load(file = file.path(tmpDir,"testZMSE.Rda"))
+ylim = range(c(scorest[,,,1]-2*uscorest[,,,1],
+               scorest[,,,1]+2*uscorest[,,,1]))
+for(k in seq_along(nuSeq)) {
+  sc  = scorest[,k,,1]
+  usc = uscorest[,k,,1]
+  if(k==1) {
+    matplot(mSeq, sc, type = 'b', log = 'xy',
+            pch = pch,
+            lty = 1, col = gPars$cols[k],
+            lwd = lwd,
+            xlab = 'Set size (M)',
+            ylim = ylim,
+            ylab = expression(tilde(theta)[list(nu,ref)]),
+            main = 'ZMSE')
+    grid(equilogs = FALSE)
+  } else {
+    matlines(mSeq, sc, type = 'b',
+             lwd = lwd,
+             pch = pch, lty = 1, col = gPars$cols[k])
+  }
+}
+legend(
+  'topright', bty = 'n', cex = 0.85, ncol = 2,
+  title = expression(nu/2),
+  legend = nuSeq,
+  lty = 1, pch = 20, lwd = lwd,
+  col = gPars$cols
+)
+legend(
+  'bottomleft', bty = 'n', cex = 0.85,
+  title = 'N',
+  legend = nBinSeq,
+  lty = 0, pch = pch, lwd = lwd,
+  col = gPars$cols[1]
+)
+box()
+
+xt = yt = c()
+for(k in seq_along(nuSeq)) {
+  for(j in seq_along(nBinSeq)) {
+    nBint = nBinSeq[j]
+    xt = c(xt, sqrt(nBint/mSeq))
+    yt = c(yt, scorest[,k,j,1])
+  }
+}
+
+xlim = c(0, 1.1*max(xt))
+ylim = c(0, 1.1*max(yt))
+for(k in seq_along(nuSeq)) {
+  for(j in seq_along(nBinSeq)) {
+    nBint = nBinSeq[j]
+    x = sqrt(nBint/mSeq)
+    y = scorest[,k,j,1]
+    if(k == 1 & j == 1) {
+      plot(x, y, type = 'b',
+           pch = pch[j], lty = 1, col = gPars$cols[k],
+           lwd = lwd,
+           xlim = xlim, xaxs = 'i',
+           xlab = '(N/M)^1/2',
+           ylim = ylim, yaxs = 'i',
+           ylab = expression(tilde(theta)[list(nu,ref)]),
+           main = 'ZMSE')
+      grid()
+    } else {
+      lines(x, y, type = 'b',
+            lwd = lwd,
+            pch = pch[j], lty = 1, col = gPars$cols[k])
+    }
+  }
+}
+abline(reg = lm(yt~xt), lty = 2, col = 'gray25')
+box()
+print(coefficients(lm(yt~xt)))
+
+dev.off()
+
+### Fig. 11 ####
+
+png(
+  file = file.path(figDir, paste0('fig_ENCE_ZMSE_T6.png')),
+  width  = 2*gPars$reso,
+  height = 2*gPars$reso
+)
+par(
+  mfrow = c(2,2),
+  mar = c(4,4,1,1),
+  mgp = gPars$mgp,
+  pty = 's',
+  tcl = gPars$tcl,
+  cex = 1.0*gPars$cex,
+  cex.main = 1,
+  lwd = gPars$lwd
+)
+lwd = 1.5 *gPars$lwd
+pch = c(0,1,2,3,6)
+
+load(file = file.path(tmpDir,"testENCE_T6.Rda"))
+ylim = range(c(scorest[,,,1]-2*uscorest[,,,1],
+               scorest[,,,1]+2*uscorest[,,,1]))
+for(k in seq_along(nuSeq)) {
+  sc  = scorest[,k,,1]
+  usc = uscorest[,k,,1]
+  if(k==1) {
+    matplot(mSeq, sc, type = 'b', log = 'xy',
+            pch = pch,
+            lty = 1, col = gPars$cols[k],
+            lwd = lwd,
+            xlab = 'Set size (M)',
+            ylim = ylim,
+            ylab = expression(tilde(theta)[list(nu,ref)]),
+            main = 'ENCE')
+    grid(equilogs = FALSE)
+  } else {
+    matlines(mSeq, sc, type = 'b',
+             lwd = lwd,
+             pch = pch, lty = 1, col = gPars$cols[k])
+  }
+}
+legend(
+  'topright', bty = 'n', cex = 0.85, ncol = 2,
+  title = expression(nu/2),
+  legend = nuSeq,
+  lty = 1, pch = 20, lwd = lwd,
+  col = gPars$cols
+)
+legend(
+  'bottomleft', bty = 'n', cex = 0.85,
+  title = 'N',
+  legend = nBinSeq,
+  lty = 0, pch = pch, lwd = lwd,
+  col = gPars$cols[1]
+)
+box()
+
+xt = yt = c()
+for(k in seq_along(nuSeq)) {
+  for(j in seq_along(nBinSeq)) {
+    nBint = nBinSeq[j]
+    xt = c(xt, sqrt(nBint/mSeq))
+    yt = c(yt, scorest[,k,j,1])
+  }
+}
+
+xlim = c(0, 1.1*max(xt))
+ylim = c(0, 1.1*max(yt))
+for(k in seq_along(nuSeq)) {
+  for(j in seq_along(nBinSeq)) {
+    nBint = nBinSeq[j]
+    x = sqrt(nBint/mSeq)
+    y = scorest[,k,j,1]
+    if(k == 1 & j == 1) {
+      plot(x, y, type = 'b',
+           pch = pch[j], lty = 1, col = gPars$cols[k],
+           lwd = lwd,
+           xlim = xlim, xaxs = 'i',
+           xlab = '(N/M)^1/2',
+           ylim = ylim, yaxs = 'i',
+           ylab = expression(tilde(theta)[list(nu,ref)]),
+           main = 'ENCE')
+      grid()
+    } else {
+      lines(x, y, type = 'b',
+            lwd = lwd,
+            pch = pch[j], lty = 1, col = gPars$cols[k])
+    }
+  }
+}
+abline(reg = lm(yt~xt), lty = 2, col = 'gray25')
+box()
+print(coefficients(lm(yt~xt)))
+
+load(file = file.path(tmpDir,"testZMSE_T6.Rda"))
+ylim = range(c(scorest[,,,1]-2*uscorest[,,,1],
+               scorest[,,,1]+2*uscorest[,,,1]))
+for(k in seq_along(nuSeq)) {
+  sc  = scorest[,k,,1]
+  usc = uscorest[,k,,1]
+  if(k==1) {
+    matplot(mSeq, sc, type = 'b', log = 'xy',
+            pch = pch,
+            lty = 1, col = gPars$cols[k],
+            lwd = lwd,
+            xlab = 'Set size (M)',
+            ylim = ylim,
+            ylab = expression(tilde(theta)[list(nu,ref)]),
+            main = 'ZMSE')
+    grid(equilogs = FALSE)
+  } else {
+    matlines(mSeq, sc, type = 'b',
+             lwd = lwd,
+             pch = pch, lty = 1, col = gPars$cols[k])
+  }
+}
+legend(
+  'topright', bty = 'n', cex = 0.85, ncol = 2,
+  title = expression(nu/2),
+  legend = nuSeq,
+  lty = 1, pch = 20, lwd = lwd,
+  col = gPars$cols
+)
+legend(
+  'bottomleft', bty = 'n', cex = 0.85,
+  title = 'N',
+  legend = nBinSeq,
+  lty = 0, pch = pch, lwd = lwd,
+  col = gPars$cols[1]
+)
+box()
+
+xt = yt = c()
+for(k in seq_along(nuSeq)) {
+  for(j in seq_along(nBinSeq)) {
+    nBint = nBinSeq[j]
+    xt = c(xt, sqrt(nBint/mSeq))
+    yt = c(yt, scorest[,k,j,1])
+  }
+}
+
+xlim = c(0, 1.1*max(xt))
+ylim = c(0, 1.1*max(yt))
+for(k in seq_along(nuSeq)) {
+  for(j in seq_along(nBinSeq)) {
+    nBint = nBinSeq[j]
+    x = sqrt(nBint/mSeq)
+    y = scorest[,k,j,1]
+    if(k == 1 & j == 1) {
+      plot(x, y, type = 'b',
+           pch = pch[j], lty = 1, col = gPars$cols[k],
+           lwd = lwd,
+           xlim = xlim, xaxs = 'i',
+           xlab = '(N/M)^1/2',
+           ylim = ylim, yaxs = 'i',
+           ylab = expression(tilde(theta)[list(nu,ref)]),
+           main = 'ZMSE')
+      grid()
+    } else {
+      lines(x, y, type = 'b',
+            lwd = lwd,
+            pch = pch[j], lty = 1, col = gPars$cols[k])
+    }
+  }
+}
+abline(reg = lm(yt~xt), lty = 2, col = 'gray25')
+box()
+print(coefficients(lm(yt~xt)))
+
+dev.off()
+
+## Appendix C ####
+### Fig. 12 ####
+png(
+  file = file.path(figDir, paste0('fig_ZMSEval.png')),
+  width  = 2.5*gPars$reso,
+  height = 2.5*gPars$reso
+)
+par(
+  mfrow = c(3,3),
+  mar = c(4,4,1,1),
+  mgp = gPars$mgp,
+  pty = 's',
+  tcl = gPars$tcl,
+  cex = 1.25*gPars$cex,
+  cex.main = 1,
+  lwd = 2*gPars$lwd
+)
+lwd = 1.5 *gPars$lwd
+for(i in seq_along(setList)) {
+  D2 = dataList[[paste0(setList[i],'_cal')]]; print(setList[i])
+  io = order(D2$uE)
+  uEt = D2$uE[io]
+  Et  = D2$E[io]
+  res = varBinSize(Et, uEt)
+  Mt = length(uEt)
+
+  x = sqrt(res$nBins / Mt)
+  y = res$ZMSE
+  plot(x, y,
+       col = gPars$cols[5], pch = 16, cex = 1,
+       xlab = '(N/M)^1/2', xlim = c(0,1.1*max(x)), xaxs = 'i',
+       ylab = 'ZMSE', ylim = c(0,1.1*max(y)), yaxs = 'i',
+       main = paste0('Set ',i))
+  grid()
+
+  sel = res$nBins > 20
+  x   = x[sel]
+  y   = y[sel]
+  reg = lm(y~x)
+  int = summary(reg)$coefficients[1,1]
+  Uint = 2*summary(reg)$coefficients[1,2]
+  abline(reg = reg, lty = 1, lwd = lwd, col = gPars$cols[2])
+  segments(
+    0.0005,int-Uint,
+    0.0005,int+Uint,
+    lwd = 4*lwd,
+    lty = 1,
+    lend = 2,
+    col = gPars$cols[2])
+  abline(a=0, b=1.14, lty = 2, lwd = lwd,
+         col = gPars$cols[1])
+  abline(a=0.006, b=1.577, lty = 3, lwd = lwd,
+         col = gPars$cols[1])
+  box()
+  if(i==1)
+    legend(
+      'topleft', bty = 'n', cex = 0.65,
+      legend = c('Data','Linear fit','NIG ref.','T6IG ref.'),
+      lty = c(0,1,2,3),
+      pch = c(16,NULL,NULL,NULL),
+      col = gPars$cols[c(5,2,1,1)]
+    )
+}
+dev.off()
 
 
 

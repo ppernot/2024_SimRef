@@ -67,7 +67,7 @@ sink()
 ### Fig. 2 ####
 
 png(
-  file = file.path(figDir, paste0('fig_dist_uE.png')),
+  file = file.path(figDir, paste0('fig_02.png')),
   width  = 2*gPars$reso,
   height = 2*gPars$reso
 )
@@ -151,7 +151,7 @@ sink()
 ### Fig. 3 ####
 
 png(
-  file = file.path(figDir, paste0('fig_dist_E.png')),
+  file = file.path(figDir, paste0('fig_03.png')),
   width  = 2*gPars$reso,
   height = 2*gPars$reso
 )
@@ -210,7 +210,7 @@ dev.off()
 ### Fig. 4 ####
 
 png(
-  file = file.path(figDir, paste0('fig_dist_Z.png')),
+  file = file.path(figDir, paste0('fig_04.png')),
   width  = 2*gPars$reso,
   height = 2*gPars$reso
 )
@@ -269,7 +269,7 @@ dev.off()
 ### Fig. 5 ####
 
 png(
-  file = file.path(figDir, paste0('fig_dist_Esim.png')),
+  file = file.path(figDir, paste0('fig_05.png')),
   width  = 2*gPars$reso,
   height = 2*gPars$reso
 )
@@ -346,7 +346,7 @@ if(calcSens1) {
 
 ### Fig. 6 ####
 png(
-  file = file.path(figDir, paste0('fig_sensData_s.png')),
+  file = file.path(figDir, paste0('fig_06.png')),
   width  = 2*gPars$reso,
   height = 2.75*gPars$reso
 )
@@ -433,7 +433,7 @@ if(calcSens2) {
 
 ### Fig. 7 ####
 png(
-  file = file.path(figDir, paste0('fig_sensitivity78.png')),
+  file = file.path(figDir, paste0('fig_07.png')),
   width  = 2*gPars$reso,
   height = 2*gPars$reso
 )
@@ -525,7 +525,7 @@ for(i in seq_along(stats)) {
 
 ### Fig. 8 ####
 png(
-  file = file.path(figDir, 'fig_scores_linear1.png'),
+  file = file.path(figDir, 'fig_08.png'),
   width  = 1.5 * gPars$reso,
   height = 1.5 * gPars$reso
 )
@@ -539,6 +539,7 @@ par(
   lwd = gPars$lwd
 )
 nS = length(setList)
+label = 0
 for(stat in 1:2) {
   df = c()
   for (meth in methods) {
@@ -568,14 +569,20 @@ for(stat in 1:2) {
           xpd = FALSE,
           col = gPars$cols[1:length(methods)],
           add = TRUE)
-
   box()
+  label = label + 1
+  mtext(
+    text = paste0('(', letters[label], ')'),
+    side = 3,
+    adj = 1,
+    cex = par()$cex,
+    line = 0.3)
 }
 dev.off()
 
 ### Fig. 9 ####
 png(
-  file = file.path(figDir, 'fig_scores_linear2.png'),
+  file = file.path(figDir, 'fig_09.png'),
   width  = 1.5 * gPars$reso,
   height = 1.5 * gPars$reso
 )
@@ -589,6 +596,7 @@ par(
   lwd = gPars$lwd
 )
 nS = length(setList)
+label = 0
 for(stat in 3:4) {
   df = c()
   for (meth in methods) {
@@ -618,8 +626,14 @@ for(stat in 3:4) {
           xpd = FALSE,
           col = gPars$cols[1:length(methods)],
           add = TRUE)
-
   box()
+  label = label + 1
+  mtext(
+    text = paste0('(', letters[label], ')'),
+    side = 3,
+    adj = 1,
+    cex = par()$cex,
+    line = 0.3)
 }
 dev.off()
 
@@ -630,13 +644,13 @@ if(calcAppB)
 
 ### Fig. 10 ####
 png(
-  file = file.path(figDir, paste0('fig_ENCE_ZMSE.png')),
+  file = file.path(figDir, paste0('fig_10.png')),
   width  = 2*gPars$reso,
   height = 2*gPars$reso
 )
 par(
   mfrow = c(2,2),
-  mar = c(4,4,1,1),
+  mar = c(4,4,1.5,1),
   mgp = gPars$mgp,
   pty = 's',
   tcl = gPars$tcl,
@@ -650,6 +664,7 @@ pch = c(0,1,2,3,6)
 load(file = file.path(tmpDir,"testENCE.Rda"))
 ylim = range(c(scorest[,,,1]-2*uscorest[,,,1],
                scorest[,,,1]+2*uscorest[,,,1]))
+label = 0
 for(k in seq_along(nuSeq)) {
   sc  = scorest[,k,,1]
   usc = uscorest[,k,,1]
@@ -684,6 +699,13 @@ legend(
   col = gPars$cols[1]
 )
 box()
+label = label + 1
+mtext(
+  text = paste0('(', letters[label], ')'),
+  side = 3,
+  adj = 1,
+  cex = par()$cex,
+  line = 0.3)
 
 xt = yt = c()
 for(k in seq_along(nuSeq)) {
@@ -693,7 +715,6 @@ for(k in seq_along(nuSeq)) {
     yt = c(yt, scorest[,k,j,1])
   }
 }
-
 xlim = c(0, 1.1*max(xt))
 ylim = c(0, 1.1*max(yt))
 for(k in seq_along(nuSeq)) {
@@ -720,6 +741,13 @@ for(k in seq_along(nuSeq)) {
 }
 abline(reg = lm(yt~xt), lty = 2, col = 'gray25')
 box()
+label = label + 1
+mtext(
+  text = paste0('(', letters[label], ')'),
+  side = 3,
+  adj = 1,
+  cex = par()$cex,
+  line = 0.3)
 print(coefficients(lm(yt~xt)))
 
 load(file = file.path(tmpDir,"testZMSE.Rda"))
@@ -759,6 +787,13 @@ legend(
   col = gPars$cols[1]
 )
 box()
+label = label + 1
+mtext(
+  text = paste0('(', letters[label], ')'),
+  side = 3,
+  adj = 1,
+  cex = par()$cex,
+  line = 0.3)
 
 xt = yt = c()
 for(k in seq_along(nuSeq)) {
@@ -795,6 +830,13 @@ for(k in seq_along(nuSeq)) {
 }
 abline(reg = lm(yt~xt), lty = 2, col = 'gray25')
 box()
+label = label + 1
+mtext(
+  text = paste0('(', letters[label], ')'),
+  side = 3,
+  adj = 1,
+  cex = par()$cex,
+  line = 0.3)
 print(coefficients(lm(yt~xt)))
 
 dev.off()
@@ -802,13 +844,13 @@ dev.off()
 ### Fig. 11 ####
 
 png(
-  file = file.path(figDir, paste0('fig_ENCE_ZMSE_T6.png')),
+  file = file.path(figDir, paste0('fig_11.png')),
   width  = 2*gPars$reso,
   height = 2*gPars$reso
 )
 par(
   mfrow = c(2,2),
-  mar = c(4,4,1,1),
+  mar = c(4,4,1.5,1),
   mgp = gPars$mgp,
   pty = 's',
   tcl = gPars$tcl,
@@ -822,6 +864,8 @@ pch = c(0,1,2,3,6)
 load(file = file.path(tmpDir,"testENCE_T6.Rda"))
 ylim = range(c(scorest[,,,1]-2*uscorest[,,,1],
                scorest[,,,1]+2*uscorest[,,,1]))
+label = 0
+
 for(k in seq_along(nuSeq)) {
   sc  = scorest[,k,,1]
   usc = uscorest[,k,,1]
@@ -856,6 +900,13 @@ legend(
   col = gPars$cols[1]
 )
 box()
+label = label + 1
+mtext(
+  text = paste0('(', letters[label], ')'),
+  side = 3,
+  adj = 1,
+  cex = par()$cex,
+  line = 0.3)
 
 xt = yt = c()
 for(k in seq_along(nuSeq)) {
@@ -892,6 +943,13 @@ for(k in seq_along(nuSeq)) {
 }
 abline(reg = lm(yt~xt), lty = 2, col = 'gray25')
 box()
+label = label + 1
+mtext(
+  text = paste0('(', letters[label], ')'),
+  side = 3,
+  adj = 1,
+  cex = par()$cex,
+  line = 0.3)
 print(coefficients(lm(yt~xt)))
 
 load(file = file.path(tmpDir,"testZMSE_T6.Rda"))
@@ -931,6 +989,13 @@ legend(
   col = gPars$cols[1]
 )
 box()
+label = label + 1
+mtext(
+  text = paste0('(', letters[label], ')'),
+  side = 3,
+  adj = 1,
+  cex = par()$cex,
+  line = 0.3)
 
 xt = yt = c()
 for(k in seq_along(nuSeq)) {
@@ -967,6 +1032,13 @@ for(k in seq_along(nuSeq)) {
 }
 abline(reg = lm(yt~xt), lty = 2, col = 'gray25')
 box()
+label = label + 1
+mtext(
+  text = paste0('(', letters[label], ')'),
+  side = 3,
+  adj = 1,
+  cex = par()$cex,
+  line = 0.3)
 print(coefficients(lm(yt~xt)))
 
 dev.off()
@@ -974,7 +1046,7 @@ dev.off()
 ## Appendix C ####
 ### Fig. 12 ####
 png(
-  file = file.path(figDir, paste0('fig_ZMSEval.png')),
+  file = file.path(figDir, paste0('fig_12.png')),
   width  = 2.5*gPars$reso,
   height = 2.5*gPars$reso
 )

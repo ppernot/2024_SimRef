@@ -1,3 +1,5 @@
+# ENCE and ZMSE for synthetic datasets
+
 ENCEfun = function(x, data, intrv) {
   # !!!! REQUIRES ORDERED uE !!!!!
   E  = data[x,1]
@@ -10,7 +12,6 @@ ENCEfun = function(x, data, intrv) {
     RMSE[i] = sqrt(mean(E[sel]^2))
   }
   ENCE  = mean( abs(RMV - RMSE) / RMV )
-  # ENCEs = ENCE * sqrt( length(uE) / intrv$nbr )
   return(ENCE)
 }
 ZMSEfun = function(x, data, intrv) {
@@ -25,14 +26,14 @@ ZMSEfun = function(x, data, intrv) {
     AE[i] = abs(log(mean(Z[sel]^2)))
   }
   ZMSE = mean(AE)
-  # ZMSEs = ZMSE * sqrt( length(uE) / intrv$nbr )
   return(ZMSE)
 }
 
-nMC     = 5000
-nuSeq   = c(3:6,12,24)
-mSeq    = c(2000,4000,8000,12000,16000)
-nBinSeq = 10*(1:5)
+# Parameters #####
+nMC     = 5000 # Nb of Monte Carlo samples
+nuSeq   = c(3:6,12,24) # Shape of uncertainties IG distribution
+mSeq    = c(2000,4000,8000,12000,16000) # Dataset sizes
+nBinSeq = 10*(1:5) # Binning sizes(for equal-size bins)
 
 # D = N(0,1) ####
 smct =  matrix(NA, nrow = nMC, ncol = 2)
@@ -93,11 +94,7 @@ save(nMC, nuSeq, mSeq, nBinSeq, scorest, uscorest, ZMSEfun,
      file = file.path(tmpDir,"testZMSE.Rda"))
 
 
-
-
-
 # D = ts(6) ####
-
 smct =  matrix(NA, nrow = nMC, ncol = 2)
 scorest = uscorest =
   array(

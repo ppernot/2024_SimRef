@@ -1672,7 +1672,7 @@ status open
 \begin_layout Plain Layout
 \align center
 \begin_inset Graphics
-	filename Figs/flowChart.tif
+	filename Figs/fig_01.tif
 	lyxscale 40
 	width 80text%
 	BoundingBox 0bp 0bp 1000bp 1123bp
@@ -3884,7 +3884,7 @@ status open
 \noindent
 \align center
 \begin_inset Graphics
-	filename Figs/fig_dist_uE.png
+	filename Figs/fig_02.png
 	lyxscale 25
 	width 90text%
 
@@ -5147,13 +5147,13 @@ t
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \noindent
 \align center
 \begin_inset Graphics
-	filename Figs/fig_dist_E.png
+	filename Figs/fig_03.png
 	lyxscale 25
 	width 90text%
 
@@ -5196,13 +5196,13 @@ t
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \noindent
 \align center
 \begin_inset Graphics
-	filename Figs/fig_dist_Z.png
+	filename Figs/fig_04.png
 	lyxscale 25
 	width 90text%
 
@@ -5487,7 +5487,7 @@ status open
 \noindent
 \align center
 \begin_inset Graphics
-	filename Figs/fig_dist_Esim.png
+	filename Figs/fig_05.png
 	lyxscale 25
 	width 90text%
 
@@ -5684,7 +5684,7 @@ status open
 \noindent
 \align center
 \begin_inset Graphics
-	filename Figs/fig_sensData_s.png
+	filename Figs/fig_06.png
 	lyxscale 20
 	width 75text%
 
@@ -5897,7 +5897,7 @@ status open
 \noindent
 \align center
 \begin_inset Graphics
-	filename Figs/fig_sensitivity78.png
+	filename Figs/fig_07.png
 	lyxscale 20
 	width 75text%
 
@@ -6143,7 +6143,7 @@ status open
 \noindent
 \align center
 \begin_inset Graphics
-	filename Figs/fig_scores_linear1.png
+	filename Figs/fig_08.png
 	lyxscale 25
 	width 87text%
 
@@ -6203,7 +6203,18 @@ key "Rasmussen2023"
 \end_layout
 
 \begin_layout Standard
-Let us first consider the results for the ZMS statistic.
+Let us first consider the results for the ZMS statistic [Figs.
+\begin_inset space \thinspace{}
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:z-Scores"
+
+\end_inset
+
+(a)].
  There is a good agreement between the three bootstrapped CI-based estimations
  (BS, SimN, SimT).
  The absence of notable difference between the SimN and SimT results confirms
@@ -6247,7 +6258,18 @@ key "Cho2005"
 \end_layout
 
 \begin_layout Standard
-For the CC statistic, it appears that the choice of 
+For the CC statistic [Figs.
+\begin_inset space \thinspace{}
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:z-Scores"
+
+\end_inset
+
+(b)], it appears that the choice of 
 \begin_inset Formula $D$
 \end_inset
 
@@ -6284,7 +6306,7 @@ status open
 \noindent
 \align center
 \begin_inset Graphics
-	filename Figs/fig_scores_linear2.png
+	filename Figs/fig_09.png
 	lyxscale 25
 	width 87text%
 
@@ -15709,15 +15731,15 @@ u_{E}^{2} & \sim IG(\nu/2,\nu/2)
 \end_inset
 
 with three varying parameters: the dataset size 
-\begin_inset Formula $M$
+\begin_inset Formula $M\in\left\{ 2000,4000,8000,12000,16000\right\} $
 \end_inset
 
-, the number of equal-size bins 
-\begin_inset Formula $N$
+ , the number of equal-size bins 
+\begin_inset Formula $N\in\left\{ 10,20,30,40,50\right\} $
 \end_inset
 
  and the shape of the uncertainty distribution 
-\begin_inset Formula $\nu$
+\begin_inset Formula $\nu\in\left\{ 3,4,5,6,12,24\right\} $
 \end_inset
 
 .
@@ -15749,7 +15771,7 @@ status open
 \noindent
 \align center
 \begin_inset Graphics
-	filename Figs/fig_ENCE_ZMSE.png
+	filename Figs/fig_10.png
 	lyxscale 20
 	width 75text%
 
@@ -15905,7 +15927,7 @@ status open
 \noindent
 \align center
 \begin_inset Graphics
-	filename Figs/fig_ENCE_ZMSE_T6.png
+	filename Figs/fig_11.png
 	lyxscale 20
 	width 75text%
 
@@ -15988,8 +16010,9 @@ name "sec:Validation-of-ZMSE"
 \begin_layout Standard
 For each of the nine datasets, one establishes a ZMSE validation diagnostic
  by a method which is independent of a generative distribution hypothesis.
- For this, the ZMSE is estimated for a series of bin numbers and fitted
- by a linear model as a function of 
+ For this, the ZMSE is estimated for a series of bin numbers between 20
+ and 150, with the constraint that bins should not contain less than 20
+ data points) and fitted by a linear model as a function of 
 \begin_inset Formula $(N/M)^{1/2}$
 \end_inset
 
@@ -16023,7 +16046,7 @@ status open
 \noindent
 \align center
 \begin_inset Graphics
-	filename Figs/fig_ZMSEval.png
+	filename Figs/fig_12.png
 	lyxscale 20
 	width 95text%
 

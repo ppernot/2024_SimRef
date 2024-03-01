@@ -1,4 +1,8 @@
 
+
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10730985.svg)](https://doi.org/10.5281/zenodo.10730985)
+
+
 # 2024_SimRef
 
 Code and data to reproduce the results of 

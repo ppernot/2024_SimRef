@@ -1,5 +1,5 @@
 
-# 2023_SimRef
+# 2024_SimRef
 
 Code and data to reproduce the results of 
-"How hard can it be to validate a calibration metric ?" by P. Pernot
+"Validation of ML-UQ calibration statistics using simulated reference values: a sensitivity analysis" by P. Pernot
